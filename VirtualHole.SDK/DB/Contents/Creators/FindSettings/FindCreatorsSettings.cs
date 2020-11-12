@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using VirtualHole.Common;
 
 namespace VirtualHole.DB.Contents.Creators
 {

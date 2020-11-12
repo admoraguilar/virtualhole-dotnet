@@ -11,11 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\VirtualHole.Common\VirtualHole.Common.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="DB\" />
     <Folder Include="UserAuthentication\" />
     <Folder Include="Storage\" />
   </ItemGroup>
