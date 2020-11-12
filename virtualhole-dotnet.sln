@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30225.117
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtualHole.SDK", "VirtualHole.SDK\VirtualHole.SDK.csproj", "{6A27DD80-815B-482B-81F7-441FD659AAD2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtualHole.SDK", "VirtualHole.SDK\VirtualHole.SDK.csproj", "{6A27DD80-815B-482B-81F7-441FD659AAD2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtualHole.Common", "VirtualHole.Common\VirtualHole.Common.csproj", "{0272388A-D5BD-4A84-9528-99BB43A11CC2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{6A27DD80-815B-482B-81F7-441FD659AAD2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6A27DD80-815B-482B-81F7-441FD659AAD2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6A27DD80-815B-482B-81F7-441FD659AAD2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0272388A-D5BD-4A84-9528-99BB43A11CC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0272388A-D5BD-4A84-9528-99BB43A11CC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0272388A-D5BD-4A84-9528-99BB43A11CC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0272388A-D5BD-4A84-9528-99BB43A11CC2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
