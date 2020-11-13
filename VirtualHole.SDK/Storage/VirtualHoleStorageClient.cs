@@ -5,8 +5,6 @@ using System.Threading.Tasks;
 
 namespace VirtualHole.Storage
 {
-	using Common;
-
 	public class VirtualHoleStorageClient
 	{
 		public string Endpoint { get; private set; } = string.Empty;

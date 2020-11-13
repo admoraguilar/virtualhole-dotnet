@@ -3,8 +3,6 @@ using Newtonsoft.Json;
 
 namespace VirtualHole.API
 {
-	using Common;
-
 	public static class WebApiConfig
 	{
 		public static void Register(HttpConfiguration config)
