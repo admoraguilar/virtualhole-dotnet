@@ -1,10 +1,14 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
+using System;
 
 namespace VirtualHole.DB.Common
 {
 	public abstract class FindSettings<T>
 	{
+		public DateTimeOffset Timestamp = DateTimeOffset.UtcNow;
+		public string Locale = "en-US";
+
 		public int BatchSize = 20;
 		public int ResultsLimit = 500;
 		public int Skip = 0;

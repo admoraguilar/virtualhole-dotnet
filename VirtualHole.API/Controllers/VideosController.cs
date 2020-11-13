@@ -1,6 +1,8 @@
 ﻿using System.Web.Http;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Globalization;
+using Humanizer;
 
 namespace VirtualHole.API.Controllers
 {
@@ -55,6 +57,16 @@ namespace VirtualHole.API.Controllers
 			FindResults<TVideo> findResults = await videoClient.FindVideosAsync(request);
 			await findResults.MoveNextAsync();
 			results.AddRange(findResults.Current);
+
+			foreach(TVideo result in results) {
+				if(result is Video video) {
+					video.CreationDateDisplay = video.CreationDate.Humanize(request.Timestamp, new CultureInfo(request.Locale));
+				}
+				
+				if(result is Broadcast broadcast) {
+					broadcast.ScheduleDisplay = broadcast.Schedule.Humanize(request.Timestamp, new CultureInfo(request.Locale));
+				}
+			}
 
 			return results;
 		}
