@@ -6,7 +6,6 @@ namespace VirtualHole.API.Controllers
 {
 	using DB.Common;
 	using DB.Contents.Videos;
-	using Common;
 	using Services;
 
 	public class VideosController : ApiController
@@ -42,9 +41,9 @@ namespace VirtualHole.API.Controllers
 
 		[Route("api/Broadcasts/ListCreatorBroadcasts")]
 		[HttpPost]
-		public async Task<List<Broadcast>> ListCreatorBroadcastsAsync([FromBody] FindCreatorRelatedVideosSettings<Broadcast> request)
+		public async Task<List<Broadcast>> ListCreatorBroadcastsAsync([FromBody] FindCreatorVideosSettings<Broadcast> request)
 		{
-			return await InternalListVideos<Broadcast, FindCreatorRelatedVideosSettings<Broadcast>>(request);
+			return await InternalListVideos<Broadcast, FindCreatorVideosSettings<Broadcast>>(request);
 		}
 
 		private async Task<List<TVideo>> InternalListVideos<TVideo, TFind>(TFind request)
