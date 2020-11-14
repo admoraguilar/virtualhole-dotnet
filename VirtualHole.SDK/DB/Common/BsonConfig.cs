@@ -8,7 +8,7 @@ namespace VirtualHole.DB.Common
 {
 	using Contents.Videos;
 
-	public static class BsonUtilities
+	public static class BsonConfig
 	{
 		public static void SetConvention()
 		{

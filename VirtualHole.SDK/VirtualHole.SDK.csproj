@@ -2,6 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>midnight-cigarettes</Authors>
+    <Product>VirtualHole</Product>
+    <Version>0.0.1.2</Version>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>D:\(S)Water\(I)Collective\Programming\NuGet Packages\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>

@@ -9,7 +9,7 @@ namespace VirtualHole.DB.Common
 		public static IMongoClient GetMongoClient(string connectionString)
 		{
 			if(client != null) { return client; }
-			BsonUtilities.SetConvention();
+			BsonConfig.SetConvention();
 			return client = new MongoClient(connectionString);
 		}
 	}

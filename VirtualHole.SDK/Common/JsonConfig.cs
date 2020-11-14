@@ -3,7 +3,7 @@ using Newtonsoft.Json.Serialization;
 
 namespace VirtualHole
 {
-	public static class JsonUtilities
+	public static class JsonConfig
 	{
 		public static JsonSerializerSettings DefaultSettings
 		{

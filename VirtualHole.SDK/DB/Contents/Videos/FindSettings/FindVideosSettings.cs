@@ -15,7 +15,7 @@ namespace VirtualHole.DB.Contents.Videos
 			get 
 			{
 				if(SortMode == SortMode.ByCreationDate) { return Sort(nameof(Content.CreationDate).ToCamelCase()); } 
-				else if(SortMode == SortMode.BySchedule) { return Sort(nameof(Broadcast.Schedule).ToCamelCase()); } 
+				else if(SortMode == SortMode.BySchedule) { return Sort(nameof(Broadcast.ScheduleDate).ToCamelCase()); } 
 				else { return null; }
 
 				BsonDocument Sort(string fieldName) =>
