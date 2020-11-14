@@ -8,7 +8,7 @@ namespace VirtualHole.API
 		public static void Register(HttpConfiguration config)
 		{
 			// Web API configuration and services
-			JsonConvert.DefaultSettings = () => JsonUtilities.DefaultSettings;
+			JsonConvert.DefaultSettings = () => JsonConfig.DefaultSettings;
 
 			// Web API routes
 			config.MapHttpAttributeRoutes();

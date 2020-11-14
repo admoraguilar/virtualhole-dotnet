@@ -64,7 +64,7 @@ namespace VirtualHole.API.Controllers
 				}
 				
 				if(result is Broadcast broadcast) {
-					broadcast.ScheduleDisplay = broadcast.Schedule.Humanize(request.Timestamp, new CultureInfo(request.Locale));
+					broadcast.ScheduleDateDisplay = broadcast.ScheduleDate.Humanize(request.Timestamp, new CultureInfo(request.Locale));
 				}
 			}
 
