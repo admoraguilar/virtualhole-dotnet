@@ -3,8 +3,6 @@ using MongoDB.Driver;
 
 namespace VirtualHole.DB.Contents.Videos
 {
-	using Common;
-
 	public abstract class FindVideosSettings<T> : FindSettings<T> where T : Video
 	{
 		public SortMode SortMode = SortMode.None;

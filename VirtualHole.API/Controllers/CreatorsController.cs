@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace VirtualHole.API.Controllers
 {
-	using DB.Common;
+	using DB;
 	using DB.Contents.Creators;
 	using Services;
 

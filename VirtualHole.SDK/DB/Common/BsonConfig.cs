@@ -4,7 +4,7 @@ using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Bson.Serialization.Serializers;
 
-namespace VirtualHole.DB.Common
+namespace VirtualHole.DB
 {
 	using Contents.Videos;
 

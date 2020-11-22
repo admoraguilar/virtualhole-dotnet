@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using MongoDB.Driver;
 
-namespace VirtualHole.DB.Common
+namespace VirtualHole.DB
 {
 	public class FindResults<T> : IDisposable
 	{

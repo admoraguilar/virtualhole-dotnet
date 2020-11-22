@@ -7,8 +7,6 @@ using MongoDB.Driver;
 
 namespace VirtualHole.DB.Contents.Creators
 {
-	using Common;
-
 	public class CreatorClient
 	{
 		internal const string CreatorsCollectionName = "creators";

@@ -2,7 +2,6 @@
 
 namespace VirtualHole.DB
 {
-	using Common;
 	using Contents;
 
 	public class VirtualHoleDBClient

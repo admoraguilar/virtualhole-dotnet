@@ -5,7 +5,6 @@ using MongoDB.Driver;
 
 namespace VirtualHole.DB.Contents.Videos
 {
-	using Common;
 	using Creators;
 
 	public class FindCreatorRelatedVideosSettings<T> : FindVideosSettings<T> where T : Video

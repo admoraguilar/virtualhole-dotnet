@@ -6,7 +6,7 @@ using Humanizer;
 
 namespace VirtualHole.API.Controllers
 {
-	using DB.Common;
+	using DB;
 	using DB.Contents.Videos;
 	using Services;
 

@@ -4,8 +4,6 @@ using MongoDB.Driver;
 
 namespace VirtualHole.DB.Contents.Creators
 {
-	using Common;
-
 	public class FindCreatorsSettings : FindSettings<Creator>
 	{
 		public bool IsHidden = false;

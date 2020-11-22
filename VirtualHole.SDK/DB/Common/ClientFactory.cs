@@ -1,6 +1,6 @@
 ﻿using MongoDB.Driver;
 
-namespace VirtualHole.DB.Common
+namespace VirtualHole.DB
 {
 	internal static class ClientFactory
 	{

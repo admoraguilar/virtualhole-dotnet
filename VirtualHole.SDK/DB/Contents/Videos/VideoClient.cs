@@ -7,8 +7,6 @@ using MongoDB.Driver;
 
 namespace VirtualHole.DB.Contents.Videos
 {
-	using Common;
-	
 	public class VideoClient
 	{
 		internal const string VideosCollectionName = "videos";

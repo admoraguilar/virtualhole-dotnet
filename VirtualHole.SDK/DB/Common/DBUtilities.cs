@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
-namespace VirtualHole.DB.Common
+namespace VirtualHole.DB
 {
 	internal static class DBUtilities
 	{

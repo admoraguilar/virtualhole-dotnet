@@ -2,7 +2,7 @@
 using MongoDB.Driver;
 using System;
 
-namespace VirtualHole.DB.Common
+namespace VirtualHole.DB
 {
 	public abstract class FindSettings<T>
 	{
