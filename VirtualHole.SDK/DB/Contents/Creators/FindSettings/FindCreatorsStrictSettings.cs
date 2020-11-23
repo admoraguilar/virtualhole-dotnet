@@ -1,4 +1,5 @@
 ﻿using MongoDB.Bson;
+using Midnight;
 
 namespace VirtualHole.DB.Contents.Creators
 {

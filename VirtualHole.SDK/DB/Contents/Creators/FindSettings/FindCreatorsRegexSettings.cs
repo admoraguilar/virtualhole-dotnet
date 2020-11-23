@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using MongoDB.Bson;
+using Midnight;
 
 namespace VirtualHole.DB.Contents.Creators
 {

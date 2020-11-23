@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using Midnight;
 
 namespace VirtualHole.DB.Contents.Creators
 {

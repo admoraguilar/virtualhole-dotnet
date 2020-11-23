@@ -1,12 +1,12 @@
 ﻿using System.Net;
 using System.Net.Http;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 
 namespace VirtualHole.Scraper
 {
 	public class HttpClientFactory
 	{
-		private static Dictionary<string, HttpClient> lookup = new Dictionary<string, HttpClient>();
+		private static ConcurrentDictionary<string, HttpClient> lookup = new ConcurrentDictionary<string, HttpClient>();
 
 		public static HttpClient Get(Proxy proxy)
 		{
