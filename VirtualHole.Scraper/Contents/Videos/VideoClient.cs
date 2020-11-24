@@ -81,8 +81,6 @@ namespace VirtualHole.Scraper.Contents.Videos
 							   youtube, "Videos",
 							   (Social yt) => _youTubeScraperFactory.Get().GetChannelVideosAsync(creator, yt.Url, channelVideoSettings)));
 						}),
-
-						// LEAK ON THESE METHODS!!! CHECK OUT YOUTUBE EXPLODE BROADCAST CLIENT IMPL!!!
 						Task.Run(async () => {
 							videos.AddRange(await ProcessSocialVideo(
 							   youtube, "Scheduled",

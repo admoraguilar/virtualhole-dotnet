@@ -24,7 +24,7 @@ namespace VirtualHole.Scraper
 
 		public async Task RunAsync(CancellationToken cancellationToken = default)
 		{
-			MLog.Log("Starting to scrape creator details..");
+			MLog.Log($"Starting to scrape {_creators.Count} creator details..");
 			while(true) {
 				_videos = new List<Video>();
 				_videos.AddRange(await _client.videos.ScrapeAsync(_creators, false, cancellationToken));
@@ -38,10 +38,10 @@ namespace VirtualHole.Scraper
 
 		public void Run()
 		{
-			string proxyListPath = Path.Combine(PathUtilities.GetApplicationPath(), "config/proxy-list.txt");
+			string proxyListPath = Path.Combine(PathUtilities.GetApplicationPath(), "data/proxy-list.txt");
 			string proxyList = File.ReadAllText(proxyListPath);
 
-			string creatorListPath = Path.Combine(PathUtilities.GetApplicationPath(), "config/creators.json");
+			string creatorListPath = Path.Combine(PathUtilities.GetApplicationPath(), "data/creators.json");
 			string creatorList = File.ReadAllText(creatorListPath);
 			_creators = JsonConvert.DeserializeObject<List<Creator>>(creatorList);
 			_creators = _creators.Take(20).ToList();
