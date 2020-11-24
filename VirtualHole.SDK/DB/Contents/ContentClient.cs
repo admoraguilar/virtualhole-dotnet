@@ -1,11 +1,10 @@
 ﻿using MongoDB.Driver;
+using VirtualHole.DB.Contents.Blogs;
+using VirtualHole.DB.Contents.Videos;
+using VirtualHole.DB.Contents.Creators;
 
 namespace VirtualHole.DB.Contents
 {
-	using Blogs;
-	using Creators;
-	using Videos;
-
 	public class ContentClient
 	{
 		internal const string ContentDatabaseName = "content";

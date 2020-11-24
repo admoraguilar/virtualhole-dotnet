@@ -29,27 +29,6 @@ namespace VirtualHole.Scraper.Contents.Videos
 			this.dbClient = dbClient;
 		}
 
-		public async Task WriteToDBAsync(
-			IEnumerable<Video> videos, bool incremental = false,
-			CancellationToken cancellationToken = default)
-		{
-			using(StopwatchScope s = new StopwatchScope(
-				nameof(VideoClient),
-				"Writing to videos collection...",
-				"Finished writing to videos collection!")) {
-				await TaskExt.RetryAsync(
-					() => WriteAsync(),
-					TimeSpan.FromSeconds(1), 3,
-					cancellationToken);
-			}
-
-			Task WriteAsync()
-			{
-				if(incremental) { return dbVideoClient.UpsertManyVideosAsync(videos, cancellationToken); } 
-				else { return dbVideoClient.UpsertManyVideosAndDeleteDanglingAsync(videos, cancellationToken); }
-			}
-		}
-
 		public async Task<List<Video>> ScrapeAsync(
 			IEnumerable<Creator> creators, bool incremental = false,
 			CancellationToken cancellationToken = default)
@@ -103,6 +82,27 @@ namespace VirtualHole.Scraper.Contents.Videos
 						return await TaskExt.RetryAsync(() => task(social), TimeSpan.FromSeconds(1), 99, cancellationToken);
 					}
 				}
+			}
+		}
+
+		public async Task WriteToDBAsync(
+			IEnumerable<Video> videos, bool incremental = false,
+			CancellationToken cancellationToken = default)
+		{
+			using(StopwatchScope s = new StopwatchScope(
+				nameof(VideoClient),
+				"Writing to videos collection...",
+				"Finished writing to videos collection!")) {
+				await TaskExt.RetryAsync(
+					() => WriteAsync(),
+					TimeSpan.FromSeconds(1), 3,
+					cancellationToken);
+			}
+
+			Task WriteAsync()
+			{
+				if(incremental) { return dbVideoClient.UpsertManyVideosAsync(videos, cancellationToken); } 
+				else { return dbVideoClient.UpsertManyVideosAndDeleteDanglingAsync(videos, cancellationToken); }
 			}
 		}
 	}

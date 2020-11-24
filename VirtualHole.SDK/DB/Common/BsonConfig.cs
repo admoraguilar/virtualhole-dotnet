@@ -3,11 +3,10 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Bson.Serialization.Serializers;
+using VirtualHole.DB.Contents.Videos;
 
 namespace VirtualHole.DB
 {
-	using Contents.Videos;
-
 	public static class BsonConfig
 	{
 		public static void SetConvention()

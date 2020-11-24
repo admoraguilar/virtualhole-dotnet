@@ -99,6 +99,8 @@
     <Compile Include="Common\Scrapers\ScraperFactory.cs" />
     <Compile Include="Common\Scrapers\YouTube\YouTubeScraper.cs" />
     <Compile Include="Common\Scrapers\YouTube\YouTubeScraperFactory.cs" />
+    <Compile Include="Runner\VirtualHoleScraperRunner.cs" />
+    <Compile Include="Runner\VirtualHoleScraperSettings.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

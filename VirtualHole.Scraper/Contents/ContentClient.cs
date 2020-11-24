@@ -10,8 +10,8 @@ namespace VirtualHole.Scraper
 	using DB.Contents.Videos;
 	using DB.Contents.Creators;
 
-	using ScraperVideoClient = Contents.Videos.VideoClient;
-	using ScraperCreatorClient = Contents.Creators.CreatorClient;
+	using DBVideoClient = DB.Contents.Videos.VideoClient;
+	using DBCreatorClient = DB.Contents.Creators.CreatorClient;
 
 	public class ContentClientSettings
 	{
@@ -23,8 +23,8 @@ namespace VirtualHole.Scraper
 
 	public class ContentClient
 	{
-		public ScraperVideoClient Videos { get; private set; } = null;
-		public ScraperCreatorClient Creators { get; private set; } = null;
+		public Contents.Videos.VideoClient Videos { get; private set; } = null;
+		public CreatorClient Creators { get; private set; } = null;
 
 		private ScraperClient scraperClient = null;
 		private VirtualHoleDBClient dbClient = null;

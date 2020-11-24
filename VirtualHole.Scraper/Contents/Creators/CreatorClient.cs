@@ -50,7 +50,6 @@ namespace VirtualHole.Scraper.Contents.Creators
 				"Finished writing creators to DB")) {
 				await dbCreatorClient.UpsertManyCreatorsAndDeleteDanglingAsync(creators, cancellationToken);
 			}
-
 		}
 	}
 }

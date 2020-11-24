@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Midnight;
+using VirtualHole.DB.Contents.Creators;
 
 namespace VirtualHole.DB.Contents.Videos
 {
-	using Creators;
-
 	public class FindCreatorVideosSettings<T> : FindVideosSettings<T> where T : Video
 	{
 		public bool IsBroadcast = false;

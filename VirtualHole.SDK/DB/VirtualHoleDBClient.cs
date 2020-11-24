@@ -1,9 +1,8 @@
 ﻿using MongoDB.Driver;
+using VirtualHole.DB.Contents;
 
 namespace VirtualHole.DB
 {
-	using Contents;
-
 	public class VirtualHoleDBClient
 	{
 		public ContentClient Contents { get; private set; } = null;
