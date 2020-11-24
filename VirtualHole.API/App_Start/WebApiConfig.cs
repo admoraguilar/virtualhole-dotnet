@@ -1,5 +1,6 @@
 ﻿using System.Web.Http;
 using Newtonsoft.Json;
+using Midnight;
 
 namespace VirtualHole.API
 {
@@ -8,7 +9,7 @@ namespace VirtualHole.API
 		public static void Register(HttpConfiguration config)
 		{
 			// Web API configuration and services
-			JsonConvert.DefaultSettings = () => JsonConfig.DefaultSettings;
+			JsonConvert.DefaultSettings = () => JsonUtilities.SerializerSettings.DefaultCamelCase;
 
 			// Web API routes
 			config.MapHttpAttributeRoutes();
