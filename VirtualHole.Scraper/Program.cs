@@ -77,6 +77,10 @@ namespace VirtualHole.Scraper
 
 		public void Run()
 		{
+			string startupPath = Path.Combine(PathUtilities.GetApplicationPath(), "data/startup.json");
+			string startupTxt = File.ReadAllText(startupPath);
+			VirtualHoleScraperSettings scraperSettings = JsonConvert.DeserializeObject<VirtualHoleScraperSettings>(startupTxt);
+
 			string proxyListPath = Path.Combine(PathUtilities.GetApplicationPath(), "data/proxy-list.txt");
 			string proxyList = File.ReadAllText(proxyListPath);
 
@@ -86,9 +90,9 @@ namespace VirtualHole.Scraper
 			creators = creators.Take(20).ToList();
 
 			ContentClientSettings settings = new ContentClientSettings() {
-				ConnectionString = "mongodb+srv://<username>:<password>@us-east-1-free.41hlb.mongodb.net/test",
-				Password = "holoverse-editor",
-				UserName = "RBqYN3ugVTb2stqD",
+				ConnectionString = scraperSettings.ConnectionString,
+				UserName = scraperSettings.UserName,
+				Password = scraperSettings.Password,
 				ProxyPool = new ProxyPool(proxyList)
 			};
 
@@ -103,6 +107,10 @@ namespace VirtualHole.Scraper
 	{
 		private static void Main(string[] args)
 		{
+			// We do this as we're dealing with camel case convention JSON files
+			// which is not aligned with C#'s naming convention
+			JsonConvert.DefaultSettings = () => JsonUtilities.SerializerSettings.DefaultCamelCase;
+
 			MLog.Log("Running scraper...");
 
 			VirtualHoleScraperRunner runner = new VirtualHoleScraperRunner();
