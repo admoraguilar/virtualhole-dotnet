@@ -1,19 +1,19 @@
 ﻿
 namespace VirtualHole.Scraper
 {
-	public class YouTubeScraperFactory : ScraperFactory<YouTubeScraper>
+	public class YoutubeScraperFactory : ScraperFactory<YoutubeScraper>
 	{
-		public YouTubeScraperFactory(ProxyPool proxyPool) : base(proxyPool)
+		public YoutubeScraperFactory(ProxyPool proxyPool) : base(proxyPool)
 		{ }
 
-		protected override YouTubeScraper InternalGet_Impl(Proxy proxy)
+		protected override YoutubeScraper InternalGet_Impl(Proxy proxy)
 		{
-			return new YouTubeScraper(HttpClientFactory.Get(proxy));
+			return new YoutubeScraper(HttpClientFactory.Get(proxy));
 		}
 
-		protected override YouTubeScraper InternalGet_Impl()
+		protected override YoutubeScraper InternalGet_Impl()
 		{
-			return new YouTubeScraper();
+			return new YoutubeScraper();
 		}
 	}
 }

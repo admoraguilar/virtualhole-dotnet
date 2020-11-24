@@ -89,18 +89,18 @@
   <ItemGroup>
     <Compile Include="Common\Scrapers\ScraperClient.cs" />
     <Compile Include="Common\HTTP\HttpClientFactory.cs" />
-    <Compile Include="Contents\ContentClient.cs" />
-    <Compile Include="Contents\Creators\CreatorClient.cs" />
-    <Compile Include="Contents\Videos\VideoClient.cs" />
+    <Compile Include="Scraper\Contents\ContentClient.cs" />
+    <Compile Include="Scraper\Contents\CreatorClient.cs" />
+    <Compile Include="Scraper\Contents\VideoClient.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Common\HTTP\Proxy.cs" />
     <Compile Include="Common\HTTP\ProxyPool.cs" />
     <Compile Include="Common\Scrapers\ScraperFactory.cs" />
-    <Compile Include="Common\Scrapers\YouTube\YouTubeScraper.cs" />
-    <Compile Include="Common\Scrapers\YouTube\YouTubeScraperFactory.cs" />
-    <Compile Include="Runner\VirtualHoleScraperRunner.cs" />
-    <Compile Include="Runner\VirtualHoleScraperSettings.cs" />
+    <Compile Include="Common\Scrapers\YouTube\YoutubeScraper.cs" />
+    <Compile Include="Common\Scrapers\YouTube\YoutubeScraperFactory.cs" />
+    <Compile Include="Scraper\VirtualHoleScraperClient.cs" />
+    <Compile Include="Scraper\VirtualHoleScraperSettings.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

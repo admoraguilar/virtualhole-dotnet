@@ -5,20 +5,20 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using YoutubeExplode;
 using YoutubeExplode.Videos;
+using VirtualHole.DB.Contents;
+using VirtualHole.DB.Contents.Creators;
+
+using ExplodeVideo = YoutubeExplode.Videos.Video;
+using ExplodeBroadcast = YoutubeExplode.Videos.Broadcast;
+using ExplodeChannel = YoutubeExplode.Channels.Channel;
+using DBVideo = VirtualHole.DB.Contents.Videos.Video;
+using DBBroadcast = VirtualHole.DB.Contents.Videos.Broadcast;
 
 namespace VirtualHole.Scraper
 {
-	using DB.Contents;
-	using DB.Contents.Creators;
-	using DB.Contents.Videos;
-
-	using ExplodeChannel = YoutubeExplode.Channels.Channel;
-	using ExplodeVideo = YoutubeExplode.Videos.Video;
-	using ExplodeBroadcast = YoutubeExplode.Videos.Broadcast;
-
-	public class YouTubeScraper
+	public class YoutubeScraper
 	{
-		public class ChannelVideoSettings
+		public class GetChannelVideoSettings
 		{
 			public DateTimeOffset AnchorDate = DateTimeOffset.MinValue;
 			public bool IsForward = true;
@@ -26,12 +26,12 @@ namespace VirtualHole.Scraper
 
 		private YoutubeClient client = null;
 
-		public YouTubeScraper()
+		public YoutubeScraper()
 		{
 			client = new YoutubeClient();
 		}
 
-		public YouTubeScraper(HttpClient httpClient)
+		public YoutubeScraper(HttpClient httpClient)
 		{
 			client = new YoutubeClient(httpClient);
 		}
@@ -48,11 +48,11 @@ namespace VirtualHole.Scraper
 			};
 		}
 
-		public async Task<List<Video>> GetChannelVideosAsync(
+		public async Task<List<DBVideo>> GetChannelVideosAsync(
 			Creator creator, string channelUrl,
-			ChannelVideoSettings settings = null)
+			GetChannelVideoSettings settings = null)
 		{
-			List<Video> results = new List<Video>();
+			List<DBVideo> results = new List<DBVideo>();
 
 			IReadOnlyList<ExplodeVideo> videos = await client.Channels.GetUploadsAsync(channelUrl);
 			DateTimeOffset uploadDateAnchor = default;
@@ -86,7 +86,7 @@ namespace VirtualHole.Scraper
 					if(!settings.IsForward && settings.AnchorDate < uploadDateAnchor) { continue; }
 				}
 
-				results.Add(new Video() {
+				results.Add(new DBVideo() {
 					Title = video.Title,
 					Platform = Platform.YouTube,
 					Id = video.Id,
@@ -110,25 +110,25 @@ namespace VirtualHole.Scraper
 			return results;
 		}
 
-		public async Task<List<Broadcast>> GetChannelLiveBroadcastsAsync(Creator creator, string channelUrl)
+		public async Task<List<DBBroadcast>> GetChannelLiveBroadcastsAsync(Creator creator, string channelUrl)
 		{
 			return await GetChannelBroadcastsAsync(creator, channelUrl, BroadcastType.Now);
 		}
 
-		public async Task<List<Broadcast>> GetChannelUpcomingBroadcastsAsync(Creator creator, string channelUrl)
+		public async Task<List<DBBroadcast>> GetChannelUpcomingBroadcastsAsync(Creator creator, string channelUrl)
 		{
 			return await GetChannelBroadcastsAsync(creator, channelUrl, BroadcastType.Upcoming);
 		}
 
-		private async Task<List<Broadcast>> GetChannelBroadcastsAsync(
+		private async Task<List<DBBroadcast>> GetChannelBroadcastsAsync(
 			Creator creator, string channelUrl,
 			BroadcastType type)
 		{
-			List<Broadcast> results = new List<Broadcast>();
+			List<DBBroadcast> results = new List<DBBroadcast>();
 
 			IReadOnlyList<ExplodeVideo> broadcasts = await client.Channels.GetBroadcastsAsync(channelUrl, type);
 			foreach(ExplodeBroadcast broadcast in broadcasts.Select(v => v as ExplodeBroadcast)) {
-				results.Add(new Broadcast() {
+				results.Add(new DBBroadcast() {
 					Title = broadcast.Title,
 					Platform = Platform.YouTube,
 					Id = broadcast.Id,
