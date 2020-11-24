@@ -3,13 +3,12 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Globalization;
 using Humanizer;
+using VirtualHole.DB;
+using VirtualHole.DB.Contents.Videos;
+using VirtualHole.API.Services;
 
 namespace VirtualHole.API.Controllers
 {
-	using DB;
-	using DB.Contents.Videos;
-	using Services;
-
 	public class VideosController : ApiController
     {
 		private VideoClient videoClient => dbService.Client.Contents.Videos;

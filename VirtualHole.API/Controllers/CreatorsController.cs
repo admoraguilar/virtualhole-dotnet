@@ -1,13 +1,12 @@
 ﻿using System.Web.Http;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using VirtualHole.DB;
+using VirtualHole.DB.Contents.Creators;
+using VirtualHole.API.Services;
 
 namespace VirtualHole.API.Controllers
 {
-	using DB;
-	using DB.Contents.Creators;
-	using Services;
-
 	public class CreatorsController : ApiController
     {
 		private CreatorClient creatorClient => dbService.Client.Contents.Creators;

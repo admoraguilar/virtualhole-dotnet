@@ -1,9 +1,8 @@
 ﻿using System.Web.Configuration;
+using VirtualHole.DB;
 
 namespace VirtualHole.API.Services
 {
-	using DB;
-
 	public class VirtualHoleDBService
 	{
 		private static VirtualHoleDBClient client { get; set; } = null;
