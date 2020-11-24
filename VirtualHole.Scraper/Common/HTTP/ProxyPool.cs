@@ -7,11 +7,11 @@ namespace VirtualHole.Scraper
 {
 	public class ProxyPool
 	{
-		public ICollection<Proxy> proxies => _proxyList;
-		private List<Proxy> _proxyList = new List<Proxy>();
-		private Queue<Proxy> _proxyQueue = new Queue<Proxy>();
+		public ICollection<Proxy> Proxies => proxyList;
+		private List<Proxy> proxyList = new List<Proxy>();
+		private Queue<Proxy> proxyQueue = new Queue<Proxy>();
 
-		private Random _random = new Random();
+		private Random random = new Random();
 
 		public ProxyPool()
 		{ }
@@ -23,21 +23,21 @@ namespace VirtualHole.Scraper
 
 		public Proxy Get()
 		{
-			if(_proxyQueue.Count <= 0) {
-				_proxyList = _proxyList.OrderBy(p => _random.Next()).ToList();
-				_proxyQueue = new Queue<Proxy>(_proxyList);
+			if(proxyQueue.Count <= 0) {
+				proxyList = proxyList.OrderBy(p => random.Next()).ToList();
+				proxyQueue = new Queue<Proxy>(proxyList);
 			}
-			return _proxyQueue.Dequeue();
+			return proxyQueue.Dequeue();
 		}
 
 		public void Set(string source)
 		{
-			_proxyList.Clear();
+			proxyList.Clear();
 
 			IReadOnlyList<string> rawProxies = TextFileUtilities.GetNLSV(source);
 			foreach(string rawProxy in rawProxies) {
 				if(Proxy.TryParse(rawProxy, out Proxy proxy)) {
-					_proxyList.Add(proxy);
+					proxyList.Add(proxy);
 				}
 			}
 		}

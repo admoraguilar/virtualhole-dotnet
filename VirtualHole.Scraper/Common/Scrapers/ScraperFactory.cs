@@ -6,15 +6,15 @@ namespace VirtualHole.Scraper
 {
 	public abstract class ScraperFactory<T> : ScraperFactory
 	{
-		private ConcurrentDictionary<string, T> _cache = new ConcurrentDictionary<string, T>();
+		private ConcurrentDictionary<string, T> cache = new ConcurrentDictionary<string, T>();
 
 		public ScraperFactory(ProxyPool proxyPool) : base(proxyPool)
 		{ }
 
 		public T Get()
 		{
-			if(_proxyPool != null || isUseProxy) {
-				Proxy proxy = _proxyPool.Get();
+			if(proxyPool != null || IsUseProxy) {
+				Proxy proxy = proxyPool.Get();
 				MLog.Log(typeof(T).Name, $"Proxy: {proxy}");
 				return InternalGet(proxy); 
 			} else {
@@ -39,8 +39,8 @@ namespace VirtualHole.Scraper
 
 		private T FromCacheGetOrSet(string id, Func<T> factory)
 		{
-			if(!_cache.TryGetValue(id, out T instance)) {
-				_cache[id] = instance = factory();
+			if(!cache.TryGetValue(id, out T instance)) {
+				cache[id] = instance = factory();
 			}
 			return instance;
 		}
@@ -48,24 +48,24 @@ namespace VirtualHole.Scraper
 
 	public abstract class ScraperFactory 
 	{
-		public bool isUseProxy 
+		public bool IsUseProxy 
 		{
-			get => _isUseProxy;
+			get => isUseProxy;
 			set {
-				if(_proxyPool == null && value) {
+				if(proxyPool == null && value) {
 					throw new InvalidOperationException("Can't use proxies without a proxy pool.");
 				}
-				_isUseProxy = value;
+				isUseProxy = value;
 			}
 		}
-		private bool _isUseProxy = false;
+		private bool isUseProxy = false;
 
-		protected ProxyPool _proxyPool { get; private set; } = null;
+		protected ProxyPool proxyPool { get; private set; } = null;
 
 		public ScraperFactory(ProxyPool proxyPool)
 		{
-			_proxyPool = proxyPool;
-			if(_proxyPool == null) { isUseProxy = false; }
+			this.proxyPool = proxyPool;
+			if(this.proxyPool == null) { IsUseProxy = false; }
 		}
 	}
 }

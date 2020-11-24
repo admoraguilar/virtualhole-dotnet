@@ -17,16 +17,16 @@ namespace VirtualHole.Scraper.Contents.Videos
 
 	public class VideoClient
 	{
-		private YouTubeScraperFactory _youTubeScraperFactory => _scraperClient.youtube;
-		private ScraperClient _scraperClient = null;
+		private YouTubeScraperFactory youtubeScraperFactory => scraperClient.youtube;
+		private ScraperClient scraperClient = null;
 
-		private DBVideoClient _dbVideoClient => _dbClient.Contents.Videos;
-		private VirtualHoleDBClient _dbClient = null;
+		private DBVideoClient dbVideoClient => dbClient.Contents.Videos;
+		private VirtualHoleDBClient dbClient = null;
 
 		public VideoClient(ScraperClient scraperClient, VirtualHoleDBClient dbClient)
 		{
-			_scraperClient = scraperClient;
-			_dbClient = dbClient;
+			this.scraperClient = scraperClient;
+			this.dbClient = dbClient;
 		}
 
 		public async Task WriteToDBAsync(
@@ -45,8 +45,8 @@ namespace VirtualHole.Scraper.Contents.Videos
 
 			Task WriteAsync()
 			{
-				if(incremental) { return _dbVideoClient.UpsertManyVideosAsync(videos, cancellationToken); } 
-				else { return _dbVideoClient.UpsertManyVideosAndDeleteDanglingAsync(videos, cancellationToken); }
+				if(incremental) { return dbVideoClient.UpsertManyVideosAsync(videos, cancellationToken); } 
+				else { return dbVideoClient.UpsertManyVideosAndDeleteDanglingAsync(videos, cancellationToken); }
 			}
 		}
 
@@ -68,8 +68,8 @@ namespace VirtualHole.Scraper.Contents.Videos
 				YouTubeScraper.ChannelVideoSettings channelVideoSettings = null;
 				if(incremental) {
 					channelVideoSettings = new YouTubeScraper.ChannelVideoSettings {
-						anchorDate = DateTimeOffset.UtcNow.Date,
-						isForward = true
+						AnchorDate = DateTimeOffset.UtcNow.Date,
+						IsForward = true
 					};
 				}
 
@@ -79,17 +79,17 @@ namespace VirtualHole.Scraper.Contents.Videos
 						Task.Run(async () => {
 							videos.AddRange(await ProcessSocialVideo(
 							   youtube, "Videos",
-							   (Social yt) => _youTubeScraperFactory.Get().GetChannelVideosAsync(creator, yt.Url, channelVideoSettings)));
+							   (Social yt) => youtubeScraperFactory.Get().GetChannelVideosAsync(creator, yt.Url, channelVideoSettings)));
 						}),
 						Task.Run(async () => {
 							videos.AddRange(await ProcessSocialVideo(
 							   youtube, "Scheduled",
-							   (Social yt) => _youTubeScraperFactory.Get().GetChannelUpcomingBroadcastsAsync(creator, yt.Url)));
+							   (Social yt) => youtubeScraperFactory.Get().GetChannelUpcomingBroadcastsAsync(creator, yt.Url)));
 						}),
 						Task.Run(async () => {
 							videos.AddRange(await ProcessSocialVideo(
 								youtube, "Live",
-								(Social yt) => _youTubeScraperFactory.Get().GetChannelLiveBroadcastsAsync(creator, yt.Url)));
+								(Social yt) => youtubeScraperFactory.Get().GetChannelLiveBroadcastsAsync(creator, yt.Url)));
 						})
 					);
 				}

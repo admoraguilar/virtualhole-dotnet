@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Linq;
 using System.Net.Http;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using YoutubeExplode;
@@ -20,25 +20,25 @@ namespace VirtualHole.Scraper
 	{
 		public class ChannelVideoSettings
 		{
-			public DateTimeOffset anchorDate = DateTimeOffset.MinValue;
-			public bool isForward = true;
+			public DateTimeOffset AnchorDate = DateTimeOffset.MinValue;
+			public bool IsForward = true;
 		}
 
-		private YoutubeClient _client = null;
+		private YoutubeClient client = null;
 
 		public YouTubeScraper()
 		{
-			_client = new YoutubeClient();
+			client = new YoutubeClient();
 		}
 
 		public YouTubeScraper(HttpClient httpClient)
 		{
-			_client = new YoutubeClient(httpClient);
+			client = new YoutubeClient(httpClient);
 		}
 
 		public async Task<Social> GetChannelInfoAsync(string channelUrl)
 		{
-			ExplodeChannel channel = await _client.Channels.GetAsync(channelUrl);
+			ExplodeChannel channel = await client.Channels.GetAsync(channelUrl);
 			return new Social {
 				Name = channel.Title,
 				Platform = Platform.YouTube,
@@ -54,7 +54,7 @@ namespace VirtualHole.Scraper
 		{
 			List<Video> results = new List<Video>();
 
-			IReadOnlyList<ExplodeVideo> videos = await _client.Channels.GetUploadsAsync(channelUrl);
+			IReadOnlyList<ExplodeVideo> videos = await client.Channels.GetUploadsAsync(channelUrl);
 			DateTimeOffset uploadDateAnchor = default;
 			foreach(ExplodeVideo video in videos) {
 				// We process the video date because sometimes
@@ -82,8 +82,8 @@ namespace VirtualHole.Scraper
 				}
 
 				if(settings != null) {
-					if(settings.isForward && settings.anchorDate > uploadDateAnchor) { continue; }
-					if(!settings.isForward && settings.anchorDate < uploadDateAnchor) { continue; }
+					if(settings.IsForward && settings.AnchorDate > uploadDateAnchor) { continue; }
+					if(!settings.IsForward && settings.AnchorDate < uploadDateAnchor) { continue; }
 				}
 
 				results.Add(new Video() {
@@ -126,7 +126,7 @@ namespace VirtualHole.Scraper
 		{
 			List<Broadcast> results = new List<Broadcast>();
 
-			IReadOnlyList<ExplodeVideo> broadcasts = await _client.Channels.GetBroadcastsAsync(channelUrl, type);
+			IReadOnlyList<ExplodeVideo> broadcasts = await client.Channels.GetBroadcastsAsync(channelUrl, type);
 			foreach(ExplodeBroadcast broadcast in broadcasts.Select(v => v as ExplodeBroadcast)) {
 				results.Add(new Broadcast() {
 					Title = broadcast.Title,

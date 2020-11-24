@@ -89,6 +89,7 @@
   <ItemGroup>
     <Compile Include="Common\Scrapers\ScraperClient.cs" />
     <Compile Include="Common\HTTP\HttpClientFactory.cs" />
+    <Compile Include="Contents\ContentClient.cs" />
     <Compile Include="Contents\Creators\CreatorClient.cs" />
     <Compile Include="Contents\Videos\VideoClient.cs" />
     <Compile Include="Program.cs" />

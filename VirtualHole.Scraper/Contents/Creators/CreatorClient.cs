@@ -12,16 +12,16 @@ namespace VirtualHole.Scraper.Contents.Creators
 
 	public class CreatorClient
 	{
-		private YouTubeScraperFactory _youtubeScraperFactory => _scraperClient.youtube;
-		private ScraperClient _scraperClient = null;
+		private YouTubeScraperFactory youtubeScraperFactory => scraperClient.youtube;
+		private ScraperClient scraperClient = null;
 
-		private DBCreatorClient _dbCreatorClient => _dbClient.Contents.Creators;
-		private VirtualHoleDBClient _dbClient = null;
+		private DBCreatorClient dbCreatorClient => dbClient.Contents.Creators;
+		private VirtualHoleDBClient dbClient = null;
 
 		public CreatorClient(ScraperClient scraperClient, VirtualHoleDBClient dbClient)
 		{
-			_scraperClient = scraperClient;
-			_dbClient = dbClient;
+			this.scraperClient = scraperClient;
+			this.dbClient = dbClient;
 		}
 
 		public async Task<IEnumerable<Creator>> GetAllFromDBAsync(CancellationToken cancellationToken = default)
@@ -33,7 +33,7 @@ namespace VirtualHole.Scraper.Contents.Creators
 				"Start getting all creators from DB",
 				"Finished getting all creators from DB")) {
 				FindCreatorsStrictSettings findSettings = new FindCreatorsStrictSettings { IsAll = true };
-				FindResults<Creator> findResults = await _dbCreatorClient.FindCreatorsAsync(findSettings, cancellationToken);
+				FindResults<Creator> findResults = await dbCreatorClient.FindCreatorsAsync(findSettings, cancellationToken);
 				while(await findResults.MoveNextAsync(cancellationToken)) {
 					results.AddRange(findResults.Current);
 				}
@@ -48,7 +48,7 @@ namespace VirtualHole.Scraper.Contents.Creators
 				nameof(CreatorClient),
 				"Start writing creators to DB",
 				"Finished writing creators to DB")) {
-				await _dbCreatorClient.UpsertManyCreatorsAndDeleteDanglingAsync(creators, cancellationToken);
+				await dbCreatorClient.UpsertManyCreatorsAndDeleteDanglingAsync(creators, cancellationToken);
 			}
 
 		}
