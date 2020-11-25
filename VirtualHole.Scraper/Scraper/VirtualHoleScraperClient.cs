@@ -18,7 +18,9 @@ namespace VirtualHole.Scraper
 
 		private int iterationGapAmount = 300;
 		private bool isStartIncremental = false;
+
 		private bool isRunning = false;
+		private int runCounter = 0;
 
 		public VirtualHoleScraperClient(VirtualHoleScraperSettings settings)
 		{
@@ -40,15 +42,14 @@ namespace VirtualHole.Scraper
 			if(isRunning) { return; }
 			isRunning = true;
 
-			lastFullRun = DateTime.Now;
+			MLog.Clear();
 
-			// HACK: Do a universal way of clearing logs with MLog.Clear();
-			Console.Clear();
+			lastFullRun = DateTime.Now;
 
 			using(StopwatchScope stopwatch = new StopwatchScope(
 				nameof(ContentClient),
 				"Start run..",
-				"Success! Taking a break before next iteration.")) {
+				$"Success! Taking a break before next iteration. Break for {iterationGapAmount}s")) {
 				await TaskExt.RetryAsync(
 					() => contentClient.WriteToVideosDBUsingCreatorsDBAsync(
 						isStartIncremental, cancellationToken),
@@ -65,15 +66,22 @@ namespace VirtualHole.Scraper
 				});
 			} else {
 				actionQueue.Enqueue(() => {
-					isStartIncremental = true;
 					Task.Run(() => RunAsync(cancellationToken));
 				});
 			}
 
+			runCounter++;
 			lastRun = DateTime.Now;
+			isRunning = false;
+
+			MLog.Log(
+				nameof(VirtualHoleScraperClient), 
+				$"Run details: {Environment.NewLine}" +
+				$"Run count: {runCounter} | Last Run: {lastRun} {Environment.NewLine}" +
+				$"Last Full Run: {lastFullRun}");
 
 			await Task.Delay(TimeSpan.FromSeconds(iterationGapAmount));
-			
+
 			Action nextTask = actionQueue.Dequeue();
 			nextTask();
 		}

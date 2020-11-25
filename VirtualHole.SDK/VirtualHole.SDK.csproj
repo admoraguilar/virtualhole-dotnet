@@ -5,11 +5,16 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>midnight-cigarettes</Authors>
     <Product>VirtualHole</Product>
-    <Version>0.0.1.4</Version>
+    <Version>0.0.1.6</Version>
+    <Description>VirtualHole SDK for .NET.</Description>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputPath>D:\(S)Water\(I)Collective\Programming\NuGet Packages\</OutputPath>
+    <OutputPath>D:\(S)Water\(I)Collective\Programming\NuGet Packages</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>D:\(S)Water\(I)Collective\Programming\NuGet Packages</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,7 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Midnight" Version="0.0.1.5" />
+    <PackageReference Include="Midnight" Version="0.0.1.9" />
     <PackageReference Include="MongoDB.Driver" Version="2.11.4" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
