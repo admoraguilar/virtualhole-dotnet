@@ -1,5 +1,6 @@
 ﻿using System.Web.Http;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using Midnight;
 
 namespace VirtualHole.API
@@ -10,6 +11,9 @@ namespace VirtualHole.API
 		{
 			// Web API configuration and services
 			JsonConvert.DefaultSettings = () => JsonUtilities.SerializerSettings.DefaultCamelCase;
+
+			config.Formatters.JsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+			config.Formatters.JsonFormatter.UseDataContractJsonSerializer = false;
 
 			// Web API routes
 			config.MapHttpAttributeRoutes();
