@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>VirtualHole.SDK</AssemblyName>
+    <RootNamespace>VirtualHole</RootNamespace>
+    <OutputType>Exe</OutputType>
+    <Authors>midnight-cigarettes</Authors>
+    <Product>VirtualHole</Product>
+    <Description>VirtualHole SDK for .NET.</Description>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="DB\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Midnight" Version="0.0.1.9" />
+  </ItemGroup>
+
+</Project>

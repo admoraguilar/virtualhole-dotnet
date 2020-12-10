@@ -327,9 +327,9 @@
     <Content Include="Scripts\jquery-3.4.1.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\VirtualHole.SDK\VirtualHole.SDK.csproj">
+    <ProjectReference Include="..\VirtualHole.SDK\VirtualHole.SDK.Legacy.csproj">
       <Project>{6a27dd80-815b-482b-81f7-441fd659aad2}</Project>
-      <Name>VirtualHole.SDK</Name>
+      <Name>VirtualHole.SDK.Legacy</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
