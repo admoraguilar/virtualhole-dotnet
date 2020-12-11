@@ -1,6 +1,6 @@
-﻿using Midnight;
+﻿using System.Collections.Generic;
 using MongoDB.Bson;
-using MongoDB.Driver;
+using Midnight;
 
 namespace VirtualHole.DB.Contents
 {
@@ -11,8 +11,8 @@ namespace VirtualHole.DB.Contents
 		internal override BsonDocument FilterDocument
 		{
 			get {
+				ContentType = new List<string>() { ContentTypes.Broadcast };
 				BsonDocument bson = base.FilterDocument;
-				bson.Add(nameof(Content.ContentType).ToCamelCase(), ContentTypes.Broadcast);
 				return bson;
 			}
 		}

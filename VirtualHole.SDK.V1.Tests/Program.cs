@@ -216,7 +216,9 @@ namespace VirtualHole.SDK.V1.Tests
 			FindResults<Creator> creatorResults = await dbClient.Creators.FindCreatorsAsync(new FindCreatorsStrictSettings { IsAll = true });
 			await creatorResults.MoveNextAsync();
 
-			FindSettings<Content> findContentSettings = new FindBroadcastContentSettings { };
+			FindSettings<Content> findContentSettings = new FindContentSettings { 
+				ContentType = new List<string>() { ContentTypes.Video } 
+			};
 			FindResults<Content> contentResults = await dbClient.Contents.FindContentsAsync(findContentSettings);
 			await contentResults.MoveNextAsync();
 
@@ -281,8 +283,8 @@ namespace VirtualHole.SDK.V1.Tests
 
 			MLog.Log(MLogLevel.Warning, "Start Program");
 			//await DBUpsertTest();
-			//await DBFindTest();
-			await DBConvertCreatorsV1();
+			await DBFindTest();
+			//await DBConvertCreatorsV1();
 			MLog.Log(MLogLevel.Warning, "End Program");
 
 			Console.ReadLine();

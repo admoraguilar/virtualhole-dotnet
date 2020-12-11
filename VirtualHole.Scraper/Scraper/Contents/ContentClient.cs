@@ -84,8 +84,8 @@ namespace VirtualHole.Scraper.Contents
 		{
 			using(StopwatchScope s = new StopwatchScope(
 				nameof(ContentClient),
-				"Writing to videos collection...",
-				"Finished writing to videos collection!")) {
+				"Writing to content collection...",
+				"Finished writing to content collection!")) {
 				await TaskExt.RetryAsync(
 					() => WriteAsync(),
 					TimeSpan.FromSeconds(1), 3,

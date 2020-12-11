@@ -90,7 +90,9 @@ namespace VirtualHole.Scraper
 					ThumbnailUrl = video.Thumbnails.MediumResUrl,
 					Description = video.Description,
 					Duration = video.Duration,
-					ViewsCount = video.Engagement.ViewCount
+					ViewsCount = video.Engagement.ViewCount,
+					LikesCount = video.Engagement.LikeCount,
+					DislikesCount = video.Engagement.DislikeCount
 				});
 			}
 
@@ -128,7 +130,9 @@ namespace VirtualHole.Scraper
 					ViewsCount = broadcast.Engagement.ViewCount,
 					IsLive = broadcast.IsLive,
 					ViewerCount = broadcast.ViewerCount,
-					ScheduleDate = broadcast.Schedule
+					ScheduleDate = broadcast.Schedule,
+					LikesCount = broadcast.Engagement.LikeCount,
+					DislikesCount = broadcast.Engagement.DislikeCount
 				});
 			}
 

@@ -1,12 +1,13 @@
-﻿using MongoDB.Bson;
+﻿using System.Collections.Generic;
+using MongoDB.Bson;
 using Midnight;
 
 namespace VirtualHole.DB.Contents
 {
 	public class FindContentSettings : FindSettings<Content>
 	{
-		public string SocialType { get; set; } = string.Empty;
-		public string ContentType { get; set; } = string.Empty;
+		public List<string> SocialType { get; set; } = new List<string>();
+		public List<string> ContentType { get; set; } = new List<string>();
 		public bool IsSortAscending { get; set; } = false;
 
 		internal override BsonDocument FilterDocument
@@ -14,12 +15,16 @@ namespace VirtualHole.DB.Contents
 			get {
 				BsonDocument bson = new BsonDocument();
 
-				if(!string.IsNullOrEmpty(SocialType)) {
-					bson.Add(nameof(Content.SocialType).ToCamelCase(), SocialType);
+				if(SocialType != null && SocialType.Count > 0) {
+					bson.Add(
+						nameof(Content.SocialType).ToCamelCase(),
+						new BsonDocument("$in", new BsonArray(SocialType)));
 				}
 
-				if(!string.IsNullOrEmpty(ContentType)) {
-					bson.Add(nameof(Content.ContentType).ToCamelCase(), ContentType);
+				if(ContentType != null && ContentType.Count > 0) {
+					bson.Add(
+						nameof(Content.ContentType).ToCamelCase(),
+						new BsonDocument("$in", new BsonArray(ContentType)));
 				}
 
 				return bson;
