@@ -10,7 +10,13 @@ namespace VirtualHole.API
 		public static void Register(HttpConfiguration config)
 		{
 			// Web API configuration and services
-			JsonConvert.DefaultSettings = () => JsonUtilities.SerializerSettings.DefaultCamelCase;
+			JsonConvert.DefaultSettings = () => new JsonSerializerSettings {
+				ContractResolver = new DefaultContractResolver {
+					NamingStrategy = new CamelCaseNamingStrategy()
+				},
+				ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
+				DateParseHandling = DateParseHandling.None,
+			};
 
 			config.Formatters.JsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
 			config.Formatters.JsonFormatter.UseDataContractJsonSerializer = false;
