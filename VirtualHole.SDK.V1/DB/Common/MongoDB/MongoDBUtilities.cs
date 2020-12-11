@@ -14,7 +14,7 @@ namespace VirtualHole.DB
 		public const string LastOperationTimestampFieldKey = "_lastOperationTimestamp";
 
 		public static async Task<IAsyncCursor<T>> FindAsync<T>(
-			IMongoCollection<T> collection, FindSettings<T> settings,
+			IMongoCollection<T> collection, FindSettings settings,
 			CancellationToken cancellationToken = default)
 		{
 			return await collection.FindAsync(

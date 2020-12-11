@@ -18,46 +18,32 @@ namespace VirtualHole.API.Controllers
 			dbService = new VirtualHoleDBService();
 		}
 
-		[Route("api/v1/Creators/ListCreators")]
+		[Route("api/v1/creators")]
 		[HttpGet]
-		public async Task<List<Creator>> ListAllCreators([FromUri] PaginatedQuery query)
+		public async Task<List<Creator>> GetCreators([FromUri] CreatorQuery query)
 		{
-			return await InternalListCreators(new FindCreatorsStrictSettings() {
-				IsAll = true,
-				IsCheckForIsGroup = false,
-				PageSize = query.PageSize,
-				MaxPages = query.MaxPages,
-				Page = query.Page
-			});
+			FindCreatorsSettings creatorSettings = null;
+
+			if(string.IsNullOrEmpty(query.Search)) {
+				creatorSettings = new FindCreatorsStrictSettings() {
+					IsAll = true,
+					IsCheckForIsGroup = false,
+				};
+			} else {
+				creatorSettings = new FindCreatorsRegexSettings() {
+					SearchQueries = new List<string>() { query.Search }
+				};
+			}
+
+			return await InternalListCreators(query, creatorSettings);
 		}
 
-		[Route("api/Creators/ListCreatorsRegex")]
-		[HttpPost]
-		public async Task<List<Creator>> ListCreatorsRegexAsync([FromBody] FindCreatorsRegexSettings request)
-		{
-			return await InternalListCreators(request);
-		}
-
-		[Route("api/Creators/ListCreatorsStrict")]
-		[HttpPost]
-		public async Task<List<Creator>> ListCreatorsStrictAsync([FromBody] FindCreatorsStrictSettings request)
-		{
-			return await InternalListCreators(request);
-		}
-
-		[Route("api/Creators/ListCreators")]
-		[HttpPost]
-		public async Task<List<Creator>> ListCreatorsAsync([FromBody] FindCreatorsSettings request)
-		{
-			return await InternalListCreators(request);
-		}
-
-		private async Task<List<Creator>> InternalListCreators<T>(T request)
+		private async Task<List<Creator>> InternalListCreators<T>(PaginatedQuery query, T request)
 			where T : FindCreatorsSettings
 		{
 			List<Creator> results = new List<Creator>();
 			
-			FindResults<Creator> findResults = await creatorClient.FindCreatorsAsync(request);
+			FindResults<Creator> findResults = await creatorClient.FindCreatorsAsync(request.SetPage(query));
 			await findResults.MoveNextAsync();
 			results.AddRange(findResults.Current);
 

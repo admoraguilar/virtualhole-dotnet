@@ -3,7 +3,7 @@ using MongoDB.Bson;
 
 namespace VirtualHole.DB
 {
-	public abstract class FindSettings<T>
+	public abstract class FindSettings
 	{
 		public int PageSize 
 		{

@@ -24,7 +24,7 @@ namespace VirtualHole.DB.Creators
 		}
 
 		public async Task<FindResults<Creator>> FindCreatorsAsync(
-			FindSettings<Creator> settings = default, CancellationToken cancellationToken = default)
+			FindSettings settings = default, CancellationToken cancellationToken = default)
 		{
 			return new FindResults<Creator>(
 				await MongoDBUtilities.FindAsync(creatorCollection, settings, cancellationToken));

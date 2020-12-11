@@ -24,7 +24,7 @@ namespace VirtualHole.DB.Contents
 		}
 
 		public async Task<FindResults<Content>> FindContentsAsync(
-			FindSettings<Content> settings = default, CancellationToken cancellationToken = default)
+			FindSettings settings = default, CancellationToken cancellationToken = default)
 		{
 			return new FindResults<Content>(
 				await MongoDBUtilities.FindAsync(contentCollection, settings, cancellationToken));

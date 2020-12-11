@@ -4,7 +4,7 @@ using Midnight;
 
 namespace VirtualHole.DB.Contents
 {
-	public class FindContentSettings : FindSettings<Content>
+	public class FindContentSettings : FindSettings
 	{
 		public List<string> SocialType { get; set; } = new List<string>();
 		public List<string> ContentType { get; set; } = new List<string>();
