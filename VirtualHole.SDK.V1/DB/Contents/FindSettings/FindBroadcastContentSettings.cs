@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using Midnight;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace VirtualHole.DB.Contents
@@ -7,20 +8,20 @@ namespace VirtualHole.DB.Contents
 	{
 		public bool IsSortAscendingBySchedule = false;
 
-		internal override FilterDefinition<Content> Filter
+		internal override BsonDocument FilterDocument
 		{
 			get {
-				BsonDocument bson = base.Filter.ToBsonDocument();
-				bson.Add(nameof(Content.ContentType), "Broadcast");
+				BsonDocument bson = base.FilterDocument;
+				bson.Add(nameof(Content.ContentType).ToCamelCase(), ContentTypes.Broadcast);
 				return bson;
 			}
 		}
 
-		internal override SortDefinition<Content> Sort 
+		internal override BsonDocument SortDocument 
 		{
 			get {
 				BsonDocument bson = new BsonDocument() { 
-					{ nameof(YouTubeBroadcast.ScheduleDate), IsSortAscendingBySchedule ? 1 : -1 } 
+					{ nameof(YouTubeBroadcast.ScheduleDate).ToCamelCase(), IsSortAscendingBySchedule ? 1 : -1 } 
 				};
 				return bson;
 			}

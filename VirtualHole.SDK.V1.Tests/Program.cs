@@ -121,17 +121,35 @@ namespace VirtualHole.SDK.V1.Tests
 				new YouTubeBroadcast() {
 					Id = "1",
 					Title = "Test Broadcast 1",
-					CreationDate = DateTimeOffset.UtcNow,
+					CreationDate = DateTimeOffset.MinValue,
 					ViewsCount = 423123,
 					Description = "This is a test broadcast.",
 					IsLive = true,
-					ScheduleDate = DateTimeOffset.UtcNow
+					ScheduleDate = DateTimeOffset.MinValue
 				},
 				new TwitterTweet() {
 					Id = "2",
 					Text = "This is a test tweet",
 					HeartsCount = 9239,
 					RetweetsCount = 2233
+				},
+				new YouTubeBroadcast() {
+					Id = "3",
+					Title = "Test Broadcast 2",
+					CreationDate = DateTimeOffset.MinValue,
+					ViewsCount = 423123,
+					Description = "This is a test broadcast 2.",
+					IsLive = true,
+					ScheduleDate = DateTimeOffset.UtcNow
+				},
+				new YouTubeBroadcast() {
+					Id = "4",
+					Title = "Test Broadcast 3",
+					CreationDate = DateTimeOffset.MinValue,
+					ViewsCount = 423123,
+					Description = "This is a test broadcast 3.",
+					IsLive = true,
+					ScheduleDate = DateTimeOffset.UtcNow.AddMinutes(-10)
 				}
 			};
 
@@ -141,20 +159,29 @@ namespace VirtualHole.SDK.V1.Tests
 				"RBqYN3ugVTb2stqD");
 			await dbClient.Creators.UpsertManyCreatorsAndDeleteDanglingAsync(creators);
 			await dbClient.Contents.UpsertManyContentsAndDeleteDanglingAsync(contents);
+
+			Console.WriteLine("Done");
 		}
 
-		//private static async Task DBFindTest()
-		//{
-		//	List<Creator> creators = new List<Creator>();
-		//	List<Content> contents = new List<Content>();
+		private static async Task DBFindTest()
+		{
+			VirtualHoleDBClient dbClient = new VirtualHoleDBClient(
+				"mongodb+srv://<username>:<password>@us-east-1-free.41hlb.mongodb.net/test",
+				"holoverse-editor",
+				"RBqYN3ugVTb2stqD");
 
-		//	VirtualHoleDBClient dbClient = new VirtualHoleDBClient(
-		//		"mongodb+srv://<username>:<password>@us-east-1-free.41hlb.mongodb.net/test",
-		//		"holoverse-editor",
-		//		"RBqYN3ugVTb2stqD");
-		//	await dbClient.Creators.UpsertManyCreatorsAndDeleteDanglingAsync(creators);
-		//	await dbClient.Contents.UpsertManyContentsAndDeleteDanglingAsync(contents);
-		//}
+			FindResults<Creator> creatorResults = await dbClient.Creators.FindCreatorsAsync(new FindCreatorsStrictSettings { IsAll = true });
+			await creatorResults.MoveNextAsync();
+
+			FindSettings<Content> findContentSettings = new FindBroadcastContentSettings { };
+			FindResults<Content> contentResults = await dbClient.Contents.FindContentsAsync(findContentSettings);
+			await contentResults.MoveNextAsync();
+
+			List<Creator> creators = new List<Creator>(creatorResults.Current);
+			List<Content> contents = new List<Content>(contentResults.Current);
+
+			Console.WriteLine("Done");
+		}
 
 		async static Task Main(string[] args)
 		{
@@ -162,7 +189,8 @@ namespace VirtualHole.SDK.V1.Tests
 			//ContentTest();
 
 			Console.WriteLine("Start Program");
-			await DBUpsertTest();
+			//await DBUpsertTest();
+			await DBFindTest();
 			Console.WriteLine("End Program");
 
 			Console.ReadLine();

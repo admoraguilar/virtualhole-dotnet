@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
 using MongoDB.Bson;
-using MongoDB.Driver;
 using Midnight;
 using VirtualHole.DB.Creators;
 
@@ -11,10 +10,10 @@ namespace VirtualHole.DB.Contents
 	{
 		public List<Creator> Creators = new List<Creator>();
 
-		internal override FilterDefinition<Content> Filter
+		internal override BsonDocument FilterDocument
 		{
 			get {
-				BsonDocument bson = base.Filter.ToBsonDocument();
+				BsonDocument bson = base.FilterDocument;
 
 				if(Creators != null) {
 					bson.Add(

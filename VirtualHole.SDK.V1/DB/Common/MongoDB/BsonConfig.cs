@@ -3,12 +3,21 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Bson.Serialization.Serializers;
+using Midnight;
+using VirtualHole.DB.Creators;
+using VirtualHole.DB.Contents;
 
 namespace VirtualHole.DB
 {
 	internal static class BsonConfig
 	{
-		public static void SetConvention()
+		public static void Initialize()
+		{
+			SetConvention();
+			RegisterClassMaps();
+		}
+
+		private static void SetConvention()
 		{
 			ConventionPack camelCaseFields = new ConventionPack() { new CamelCaseElementNameConvention() };
 			ConventionRegistry.Register("Camel Case Fields", camelCaseFields, t => true);
@@ -38,21 +47,22 @@ namespace VirtualHole.DB
 			ConventionRegistry.Register("Id Naming", idNaming, t => true);
 		}
 
-		//public static void RegisterClassMaps()
-		//{
-		//	RegisterClassMap<CreatorSocial>();
-		//	RegisterClassMap<Content>();
+		private static void RegisterClassMaps()
+		{
+			RegisterClassMap<CreatorSocial>();
+			RegisterClassMap<Content>();
 
-		//	void RegisterClassMap<T>()
-		//	{
-		//		BsonClassMap.RegisterClassMap<T>(cm => {
-		//			cm.AutoMap();
-		//			cm.SetIsRootClass(true);
-		//		});
-		//		foreach(Type type in typeof(T).GetAllTypeDerivatives(false)) {
-		//			BsonClassMap.RegisterClassMap(new BsonClassMap(type, new BsonClassMap(type.BaseType)));
-		//		}
-		//	}
-		//}
+			void RegisterClassMap<T>()
+			{
+				BsonClassMap.RegisterClassMap<T>(cm => {
+					cm.AutoMap();
+					cm.SetIsRootClass(true);
+				});
+
+				Type type = typeof(T);
+				Type[] types = type.GetAllTypeDerivatives(false);
+				types.ForEach(t => BsonClassMap.LookupClassMap(t));
+			}
+		}
 	}
 }

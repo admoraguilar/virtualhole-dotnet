@@ -1,33 +1,32 @@
-﻿using MongoDB.Bson;
-using MongoDB.Driver;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using MongoDB.Bson;
 
 namespace VirtualHole.DB
 {
 	public class FindSettingsComposition<T> : FindSettings<T>
 	{
-		public IEnumerable<FilterDefinition<T>> Filters = null;
-		public IEnumerable<SortDefinition<T>> Sorts = null;
+		public IEnumerable<FindSettings<T>> Filters = null;
+		public IEnumerable<FindSettings<T>> Sorts = null;
 
-		internal override FilterDefinition<T> Filter 
+		internal override BsonDocument FilterDocument 
 		{
 			get {
 				BsonDocument bson = new BsonDocument();
 				if(Filters != null) { 
-					foreach(FilterDefinition<T> filter in Filters) {
-						bson.Merge(filter.ToBsonDocument());
+					foreach(FindSettings<T> setting in Filters) {
+						bson.Merge(setting.FilterDocument);
 					}
 				}
 				return bson;
 			}
 		}
 
-		internal override SortDefinition<T> Sort
+		internal override BsonDocument SortDocument
 		{
 			get {
 				BsonDocument bson = new BsonDocument();
 				if(Sorts != null) {
-					foreach(SortDefinition<T> sort in Sorts) {
+					foreach(FindSettings<T> sort in Sorts) {
 						bson.Merge(sort.ToBsonDocument());
 					}
 				}

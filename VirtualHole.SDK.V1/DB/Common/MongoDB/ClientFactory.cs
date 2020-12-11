@@ -10,7 +10,7 @@ namespace VirtualHole.DB
 		{
 			if(client != null) { return client; }
 
-			BsonConfig.SetConvention();
+			BsonConfig.Initialize();
 			return client = new MongoClient(connectionString);
 		}
 	}

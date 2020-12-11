@@ -18,11 +18,11 @@ namespace VirtualHole.DB
 			CancellationToken cancellationToken = default)
 		{
 			return await collection.FindAsync(
-				settings.Filter,
+				settings.FilterDocument,
 				new FindOptions<T, T> {
 					BatchSize = settings.BatchSize,
 					Limit = settings.ResultsLimit,
-					Sort = settings.Sort,
+					Sort = settings.SortDocument,
 					Skip = settings.Skip
 				},
 				cancellationToken);

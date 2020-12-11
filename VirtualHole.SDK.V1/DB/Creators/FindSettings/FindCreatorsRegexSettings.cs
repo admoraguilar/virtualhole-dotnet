@@ -14,46 +14,46 @@ namespace VirtualHole.DB.Creators
 		//public bool IsCheckSocialCustomKeywords { get; set; } = true;
 		//public bool IsCheckCustomKeywords { get; set; } = true;
 
-		protected override BsonDocument CreateFilterDocument()
+		internal override BsonDocument FilterDocument
 		{
-			BsonDocument bson = new BsonDocument();
+			get {
+				BsonDocument bson = base.FilterDocument;
 
-			if(SearchQueries.Count > 0) {
-				BsonArray orArray = new BsonArray();
-				foreach(string searchQuery in SearchQueries) {
-					if(IsCheckName) {
-						orArray.Add(new BsonDocument(nameof(Creator.Name).ToCamelCase(), CreateRegexQuery(searchQuery)));
+				if(SearchQueries.Count > 0) {
+					BsonArray orArray = new BsonArray();
+					foreach(string searchQuery in SearchQueries) {
+						if(IsCheckName) {
+							orArray.Add(new BsonDocument(nameof(Creator.Name).ToCamelCase(), CreateRegexQuery(searchQuery)));
+						}
+
+						if(IsCheckId) {
+							orArray.Add(new BsonDocument(nameof(Creator.Id).ToCamelCase(), CreateRegexQuery(searchQuery)));
+						}
+
+						if(IsCheckSocialName) {
+							orArray.Add(
+								new BsonDocument($"{nameof(Creator.Socials).ToCamelCase()}.{nameof(CreatorSocial.Name).ToCamelCase()}",
+									CreateRegexQuery(searchQuery)));
+						}
+
+						//if(IsCheckSocialCustomKeywords) {
+						//	orArray.Add(
+						//		new BsonDocument($"{nameof(Creator.Socials).ToCamelCase()}.{nameof(CreatorSocial.CustomKeywords).ToCamelCase()}",
+						//			new BsonDocument("$elemMatch", CreateRegexQuery(searchQuery))));
+						//}
+
+						//if(IsCheckCustomKeywords) {
+						//	orArray.Add(
+						//		new BsonDocument(nameof(Creator.CustomKeywords).ToCamelCase(),
+						//			new BsonDocument("$elemMatch", CreateRegexQuery(searchQuery))));
+						//}
 					}
 
-					if(IsCheckId) {
-						orArray.Add(new BsonDocument(nameof(Creator.Id).ToCamelCase(), CreateRegexQuery(searchQuery)));
-					}
-
-					if(IsCheckSocialName) {
-						orArray.Add(
-							new BsonDocument($"{nameof(Creator.Socials).ToCamelCase()}.{nameof(CreatorSocial.Name).ToCamelCase()}",
-								CreateRegexQuery(searchQuery)));
-					}
-
-					//if(IsCheckSocialCustomKeywords) {
-					//	orArray.Add(
-					//		new BsonDocument($"{nameof(Creator.Socials).ToCamelCase()}.{nameof(CreatorSocial.CustomKeywords).ToCamelCase()}",
-					//			new BsonDocument("$elemMatch", CreateRegexQuery(searchQuery))));
-					//}
-
-					//if(IsCheckCustomKeywords) {
-					//	orArray.Add(
-					//		new BsonDocument(nameof(Creator.CustomKeywords).ToCamelCase(),
-					//			new BsonDocument("$elemMatch", CreateRegexQuery(searchQuery))));
-					//}
+					bson.Add("$or", orArray);
 				}
 
-				bson.Add("$or", orArray);
+				return bson;
 			}
-
-			bson.AddRange(base.CreateFilterDocument());
-
-			return bson;
 		}
 
 		private BsonDocument CreateRegexQuery(string searchQuery)

@@ -1,4 +1,4 @@
-﻿using MongoDB.Driver;
+﻿using MongoDB.Bson;
 
 namespace VirtualHole.DB
 {
@@ -8,7 +8,7 @@ namespace VirtualHole.DB
 		public int ResultsLimit { get; set; } = 500;
 		public int Skip { get; set; } = 0;
 
-		internal abstract FilterDefinition<T> Filter { get; }
-		internal abstract SortDefinition<T> Sort { get; }
+		internal abstract BsonDocument FilterDocument { get; }
+		internal abstract BsonDocument SortDocument { get; }
 	}
 }

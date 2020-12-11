@@ -10,23 +10,23 @@ namespace VirtualHole.DB.Creators
 		public string Name { get; set; } = string.Empty;
 		public string Id { get; set; } = string.Empty;
 
-		protected override BsonDocument CreateFilterDocument()
+		internal override BsonDocument FilterDocument
 		{
-			BsonDocument bson = new BsonDocument();
-			
-			if(IsAll) { return bson; }
+			get {
+				BsonDocument bson = base.FilterDocument;
 
-			if(!string.IsNullOrEmpty(Name)) {
-				bson.Add(nameof(Creator.Name).ToCamelCase(), Name);
+				if(IsAll) { return bson; }
+
+				if(!string.IsNullOrEmpty(Name)) {
+					bson.Add(nameof(Creator.Name).ToCamelCase(), Name);
+				}
+
+				if(!string.IsNullOrEmpty(Id)) {
+					bson.Add(nameof(Creator.Id).ToCamelCase(), Id);
+				}
+
+				return bson;
 			}
-
-			if(!string.IsNullOrEmpty(Id)) {
-				bson.Add(nameof(Creator.Id).ToCamelCase(), Id);
-			}
-
-			bson.AddRange(base.CreateFilterDocument());
-
-			return bson;
 		}
 	}
 }

@@ -1,5 +1,5 @@
 ﻿using MongoDB.Bson;
-using MongoDB.Driver;
+using Midnight;
 
 namespace VirtualHole.DB.Contents
 {
@@ -9,24 +9,24 @@ namespace VirtualHole.DB.Contents
 		public string ContentType { get; set; } = string.Empty;
 		public bool IsSortAscending { get; set; } = false;
 
-		internal override FilterDefinition<Content> Filter
+		internal override BsonDocument FilterDocument
 		{
 			get {
 				BsonDocument bson = new BsonDocument();
 
 				if(!string.IsNullOrEmpty(SocialType)) {
-					bson.Add(nameof(Content.SocialType), SocialType);
+					bson.Add(nameof(Content.SocialType).ToCamelCase(), SocialType);
 				}
 
 				if(!string.IsNullOrEmpty(ContentType)) {
-					bson.Add(nameof(Content.ContentType), ContentType);
+					bson.Add(nameof(Content.ContentType).ToCamelCase(), ContentType);
 				}
 
 				return bson;
 			}
 		}
 
-		internal override SortDefinition<Content> Sort =>
-			new BsonDocument() { { nameof(Content.CreationDate), IsSortAscending ? 1 : -1 } };
+		internal override BsonDocument SortDocument =>
+			new BsonDocument() { { nameof(Content.CreationDate).ToCamelCase(), IsSortAscending ? 1 : -1 } };
 	}
 }
