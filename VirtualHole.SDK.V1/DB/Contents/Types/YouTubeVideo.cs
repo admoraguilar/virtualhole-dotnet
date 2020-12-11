@@ -10,8 +10,8 @@ namespace VirtualHole.DB.Contents
 		public string ThumbnailUrl { get; set; } = string.Empty;
 		public string Description { get; set; } = string.Empty;
 		public TimeSpan Duration { get; set; } = TimeSpan.MinValue;
-		public int ViewsCount { get; set; } = 0;
-		public int LikesCount { get; set; } = 0;
-		public int DislikesCount { get; set; } = 0;
+		public long ViewsCount { get; set; } = 0;
+		public long LikesCount { get; set; } = 0;
+		public long DislikesCount { get; set; } = 0;
 	}
 }

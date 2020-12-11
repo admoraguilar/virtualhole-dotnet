@@ -5,14 +5,9 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using YoutubeExplode;
 using YoutubeExplode.Videos;
+using YoutubeExplode.Channels;
+using VirtualHole.DB.Creators;
 using VirtualHole.DB.Contents;
-using VirtualHole.DB.Contents.Creators;
-
-using ExplodeVideo = YoutubeExplode.Videos.Video;
-using ExplodeBroadcast = YoutubeExplode.Videos.Broadcast;
-using ExplodeChannel = YoutubeExplode.Channels.Channel;
-using DBVideo = VirtualHole.DB.Contents.Videos.Video;
-using DBBroadcast = VirtualHole.DB.Contents.Videos.Broadcast;
 
 namespace VirtualHole.Scraper
 {
@@ -36,27 +31,26 @@ namespace VirtualHole.Scraper
 			client = new YoutubeClient(httpClient);
 		}
 
-		public async Task<Social> GetChannelInfoAsync(string channelUrl)
+		public async Task<YouTubeSocial> GetChannelInfoAsync(string channelUrl)
 		{
-			ExplodeChannel channel = await client.Channels.GetAsync(channelUrl);
-			return new Social {
+			Channel channel = await client.Channels.GetAsync(channelUrl);
+			return new YouTubeSocial {
 				Name = channel.Title,
-				Platform = Platform.YouTube,
 				Id = channel.Id,
 				Url = channel.Url,
 				AvatarUrl = channel.LogoUrl
 			};
 		}
 
-		public async Task<List<DBVideo>> GetChannelVideosAsync(
+		public async Task<List<YouTubeVideo>> GetChannelVideosAsync(
 			Creator creator, string channelUrl,
 			GetChannelVideoSettings settings = null)
 		{
-			List<DBVideo> results = new List<DBVideo>();
+			List<YouTubeVideo> results = new List<YouTubeVideo>();
 
-			IReadOnlyList<ExplodeVideo> videos = await client.Channels.GetUploadsAsync(channelUrl);
+			IReadOnlyList<Video> videos = await client.Channels.GetUploadsAsync(channelUrl);
 			DateTimeOffset uploadDateAnchor = default;
-			foreach(ExplodeVideo video in videos) {
+			foreach(Video video in videos) {
 				// We process the video date because sometimes
 				// the dates are messed up, so we run a correction to
 				// fix it
@@ -86,67 +80,52 @@ namespace VirtualHole.Scraper
 					if(!settings.IsForward && settings.AnchorDate < uploadDateAnchor) { continue; }
 				}
 
-				results.Add(new DBVideo() {
+				results.Add(new YouTubeVideo {
 					Title = video.Title,
-					Platform = Platform.YouTube,
 					Id = video.Id,
 					Url = video.Url,
-
-					Creator = video.Author,
 					CreatorId = video.ChannelId,
-					CreatorUniversal = creator.UniversalName,
-					CreatorIdUniversal = creator.UniversalId,
-
 					CreationDate = uploadDateAnchor,
-					Tags = video.Keywords.ToArray(),
-
-					ThumbnailUrl = video.Thumbnails.HighRes720Url,
+					Tags = video.Keywords.ToList(),
+					ThumbnailUrl = video.Thumbnails.MediumResUrl,
 					Description = video.Description,
 					Duration = video.Duration,
-					ViewCount = video.Engagement.ViewCount
+					ViewsCount = video.Engagement.ViewCount
 				});
 			}
 
 			return results;
 		}
 
-		public async Task<List<DBBroadcast>> GetChannelLiveBroadcastsAsync(Creator creator, string channelUrl)
+		public async Task<List<YouTubeBroadcast>> GetChannelLiveBroadcastsAsync(Creator creator, string channelUrl)
 		{
 			return await GetChannelBroadcastsAsync(creator, channelUrl, BroadcastType.Now);
 		}
 
-		public async Task<List<DBBroadcast>> GetChannelUpcomingBroadcastsAsync(Creator creator, string channelUrl)
+		public async Task<List<YouTubeBroadcast>> GetChannelUpcomingBroadcastsAsync(Creator creator, string channelUrl)
 		{
 			return await GetChannelBroadcastsAsync(creator, channelUrl, BroadcastType.Upcoming);
 		}
 
-		private async Task<List<DBBroadcast>> GetChannelBroadcastsAsync(
+		private async Task<List<YouTubeBroadcast>> GetChannelBroadcastsAsync(
 			Creator creator, string channelUrl,
 			BroadcastType type)
 		{
-			List<DBBroadcast> results = new List<DBBroadcast>();
+			List<YouTubeBroadcast> results = new List<YouTubeBroadcast>();
 
-			IReadOnlyList<ExplodeVideo> broadcasts = await client.Channels.GetBroadcastsAsync(channelUrl, type);
-			foreach(ExplodeBroadcast broadcast in broadcasts.Select(v => v as ExplodeBroadcast)) {
-				results.Add(new DBBroadcast() {
+			IReadOnlyList<Video> broadcasts = await client.Channels.GetBroadcastsAsync(channelUrl, type);
+			foreach(Broadcast broadcast in broadcasts.Select(v => v as Broadcast)) {
+				results.Add(new YouTubeBroadcast() {
 					Title = broadcast.Title,
-					Platform = Platform.YouTube,
 					Id = broadcast.Id,
 					Url = broadcast.Url,
-
-					Creator = broadcast.Author,
 					CreatorId = broadcast.ChannelId,
-					CreatorUniversal = creator.UniversalName,
-					CreatorIdUniversal = creator.UniversalId,
-
 					CreationDate = broadcast.UploadDate,
-					Tags = broadcast.Keywords.ToArray(),
-
-					ThumbnailUrl = broadcast.Thumbnails.HighRes720Url,
+					Tags = broadcast.Keywords.ToList(),
+					ThumbnailUrl = broadcast.Thumbnails.MediumResUrl,
 					Description = broadcast.Description,
 					Duration = broadcast.Duration,
-					ViewCount = broadcast.Engagement.ViewCount,
-
+					ViewsCount = broadcast.Engagement.ViewCount,
 					IsLive = broadcast.IsLive,
 					ViewerCount = broadcast.ViewerCount,
 					ScheduleDate = broadcast.Schedule

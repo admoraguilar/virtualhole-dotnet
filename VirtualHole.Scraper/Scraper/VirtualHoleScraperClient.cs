@@ -10,7 +10,7 @@ namespace VirtualHole.Scraper
 {
 	public class VirtualHoleScraperClient
 	{
-		private ContentClient contentClient = null;
+		private ScraperRootClient contentClient = null;
 
 		private Queue<Action> actionQueue = new Queue<Action>();
 		private DateTime lastFullRun = DateTime.MinValue;
@@ -29,7 +29,7 @@ namespace VirtualHole.Scraper
 				settings.ConnectionString, settings.UserName, 
 				settings.Password);
 
-			contentClient = new ContentClient(scraperClient, dbClient);
+			contentClient = new ScraperRootClient(scraperClient, dbClient);
 
 			iterationGapAmount = settings.IterationGapAmount;
 			isStartIncremental = settings.IsStartIncremental;
@@ -47,7 +47,7 @@ namespace VirtualHole.Scraper
 			lastFullRun = DateTime.Now;
 
 			using(StopwatchScope stopwatch = new StopwatchScope(
-				nameof(ContentClient),
+				nameof(ScraperRootClient),
 				"Start run..",
 				$"Success! Taking a break before next iteration. Break for {iterationGapAmount}s")) {
 				await TaskExt.RetryAsync(
