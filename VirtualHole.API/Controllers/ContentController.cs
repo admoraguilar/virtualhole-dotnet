@@ -27,7 +27,40 @@ namespace VirtualHole.API.Controllers
 		[HttpGet]
 		public async Task<IHttpActionResult> GetContent([FromUri] ContentQuery query)
 		{
-			return Ok(await InternalListContents(query, new FindContentSettings { }));
+			FindContentSettings settings = null;
+			if(query == null) {
+				settings = new FindContentSettings() { };
+				return Ok(await InternalListContents(query, settings));
+			}
+
+			if(query.CreatorIds != null && query.CreatorIds.Count > 0) {
+				if(query.IsCreatorRelated) {
+					settings = new FindCreatorRelatedContentSettings() {
+						IsCreatorsInclude = query.IsCreatorsInclude,
+						CreatorIds = query.CreatorIds,
+						CreatorNames = query.CreatorNames,
+						CreatorSocialIds = query.CreatorSocialIds,
+						CreatorSocialUrls = query.CreatorSocialUrls
+					};
+				} else {
+					settings = new FindCreatorContentSettings() {
+						IsCreatorsInclude = query.IsCreatorsInclude,
+						CreatorIds = query.CreatorIds
+					};
+				}
+			}
+
+			if(query.SocialType != null && query.SocialType.Count > 0) {
+				settings.IsSocialTypeInclude = query.IsSocialTypeInclude;
+				settings.SocialType = query.SocialType;
+			}
+
+			if(query.ContentType != null && query.ContentType.Count > 0) {
+				settings.IsContentTypeInclude = query.IsContentTypeInclude;
+				settings.ContentType = query.ContentType;
+			}
+
+			return Ok(await InternalListContents(query, settings));
 		}
 
 		private async Task<List<Content>> InternalListContents<T>(PaginatedQuery query, T request)

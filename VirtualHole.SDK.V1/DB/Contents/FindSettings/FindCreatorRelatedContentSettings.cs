@@ -2,33 +2,30 @@
 using System.Collections.Generic;
 using MongoDB.Bson;
 using Midnight;
-using VirtualHole.DB.Creators;
 
 namespace VirtualHole.DB.Contents
 {
 	public class FindCreatorRelatedContentSettings : FindContentSettings
 	{
-		public List<Creator> Creators = new List<Creator>();
+		public bool IsCreatorsInclude { get; set; } = true;
+		public List<string> CreatorIds { get; set; } = new List<string>();
+		public List<string> CreatorNames { get; set; } = new List<string>();
+		public List<string> CreatorSocialIds { get; set; } = new List<string>();
+		public List<string> CreatorSocialUrls { get; set; } = new List<string>();
 
 		internal override BsonDocument FilterDocument
 		{
 			get {
 				BsonDocument bson = base.FilterDocument;
 
-				IEnumerable<string> creatorIds = Creators.Select(c => c.Id);
-				IEnumerable<string> creatorNames = Creators.Select(c => c.Name);
-				IEnumerable<string> creatorSocialIds = Creators.SelectMany(c => c.Socials.Select(s => s.Id));
-				IEnumerable<string> creatorSocialUrls = Creators.SelectMany(c => c.Socials.Select(s => s.Url));
-
 				BsonArray andExpressions = new BsonArray();
-
 				andExpressions.Add(
 					new BsonDocument(
 						nameof(Content.CreatorId).ToCamelCase(),
-						new BsonDocument("$not", new BsonDocument("$in", new BsonArray(creatorIds)))));
+						new BsonDocument("$not", new BsonDocument(IsCreatorsInclude ? "$in" : "$nin", new BsonArray(CreatorIds)))));
 				andExpressions.Add(
 					new BsonDocument("$text",
-						new BsonDocument("$search", Join(Concat(creatorNames, creatorSocialIds)))));
+						new BsonDocument("$search", Join(Concat(CreatorNames, CreatorSocialIds, CreatorSocialUrls)))));
 
 				bson.AddRange(new BsonDocument("$and", andExpressions));
 				return bson;

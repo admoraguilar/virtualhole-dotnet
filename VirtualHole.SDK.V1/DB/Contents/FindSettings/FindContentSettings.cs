@@ -6,8 +6,12 @@ namespace VirtualHole.DB.Contents
 {
 	public class FindContentSettings : FindSettings
 	{
+		public bool IsSocialTypeInclude { get; set; } = true;
 		public List<string> SocialType { get; set; } = new List<string>();
+
+		public bool IsContentTypeInclude { get; set; } = true;
 		public List<string> ContentType { get; set; } = new List<string>();
+
 		public bool IsSortAscending { get; set; } = false;
 
 		internal override BsonDocument FilterDocument
@@ -19,13 +23,13 @@ namespace VirtualHole.DB.Contents
 				if(SocialType != null && SocialType.Count > 0) {
 					typeAndExpr.Add(new BsonDocument(
 						nameof(Content.SocialType).ToCamelCase(),
-						new BsonDocument("$in", new BsonArray(SocialType))));
+						new BsonDocument(IsSocialTypeInclude ? "$in" : "$nin", new BsonArray(SocialType))));
 				}
 
 				if(ContentType != null && ContentType.Count > 0) {
 					typeAndExpr.Add(new BsonDocument(
 						nameof(Content.ContentType).ToCamelCase(),
-						new BsonDocument("$in", new BsonArray(ContentType))));
+						new BsonDocument(IsContentTypeInclude ? "$in" : "$nin", new BsonArray(ContentType))));
 				}
 
 				if(typeAndExpr.Count > 0) {

@@ -1,4 +1,5 @@
-﻿using System.Web.Http;
+﻿using System.Net;
+using System.Web.Http;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Swashbuckle.Swagger.Annotations;
@@ -19,25 +20,30 @@ namespace VirtualHole.API.Controllers
 			dbService = new VirtualHoleDBService();
 		}
 
+		// Source: https://stackoverflow.com/a/49076281
 		[Route("api/v1/creators")]
-		[SwaggerResponse(System.Net.HttpStatusCode.OK, Type = typeof(List<Creator>))]
+		[SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<Creator>))]
 		[HttpGet]
 		public async Task<IHttpActionResult> GetCreators([FromUri] CreatorQuery query)
 		{
-			FindCreatorsSettings creatorSettings = null;
+			FindCreatorsSettings settings = null;
+			if(query == null) {
+				settings = new FindCreatorsSettings() { };
+				return Ok(await InternalListCreators(query, settings));
+			}
 
 			if(string.IsNullOrEmpty(query.Search)) {
-				creatorSettings = new FindCreatorsStrictSettings() {
+				settings = new FindCreatorsStrictSettings() {
 					IsAll = true,
 					IsCheckForIsGroup = false,
 				};
 			} else {
-				creatorSettings = new FindCreatorsRegexSettings() {
+				settings = new FindCreatorsRegexSettings() {
 					SearchQueries = new List<string>() { query.Search }
 				};
 			}
 
-			return Ok(await InternalListCreators(query, creatorSettings));
+			return Ok(await InternalListCreators(query, settings));
 		}
 
 		private async Task<List<Creator>> InternalListCreators<T>(PaginatedQuery query, T request)
