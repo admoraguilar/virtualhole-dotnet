@@ -216,8 +216,8 @@ namespace VirtualHole.SDK.V1.Tests
 			FindResults<Creator> creatorResults = await dbClient.Creators.FindCreatorsAsync(new FindCreatorsStrictSettings { IsAll = true });
 			await creatorResults.MoveNextAsync();
 
-			FindSettings<Content> findContentSettings = new FindContentSettings { 
-				ContentType = new List<string>() { ContentTypes.Video } 
+			FindSettings<Content> findContentSettings = new FindContentSettings {
+				ContentType = new List<string>() { ContentTypes.Broadcast } 
 			};
 			FindResults<Content> contentResults = await dbClient.Contents.FindContentsAsync(findContentSettings);
 			await contentResults.MoveNextAsync();

@@ -15,17 +15,20 @@ namespace VirtualHole.DB.Contents
 			get {
 				BsonDocument bson = new BsonDocument();
 
+				BsonArray typeAndExpr = new BsonArray();
 				if(SocialType != null && SocialType.Count > 0) {
-					bson.Add(
+					typeAndExpr.Add(new BsonDocument(
 						nameof(Content.SocialType).ToCamelCase(),
-						new BsonDocument("$in", new BsonArray(SocialType)));
+						new BsonDocument("$in", new BsonArray(SocialType))));
 				}
 
 				if(ContentType != null && ContentType.Count > 0) {
-					bson.Add(
+					typeAndExpr.Add(new BsonDocument(
 						nameof(Content.ContentType).ToCamelCase(),
-						new BsonDocument("$in", new BsonArray(ContentType)));
+						new BsonDocument("$in", new BsonArray(ContentType))));
 				}
+
+				bson.Add("$and", typeAndExpr);
 
 				return bson;
 			}

@@ -20,18 +20,18 @@ namespace VirtualHole.DB.Creators
 				BsonDocument bson = base.FilterDocument;
 
 				if(SearchQueries.Count > 0) {
-					BsonArray orArray = new BsonArray();
+					BsonArray orExpr = new BsonArray();
 					foreach(string searchQuery in SearchQueries) {
 						if(IsCheckName) {
-							orArray.Add(new BsonDocument(nameof(Creator.Name).ToCamelCase(), CreateRegexQuery(searchQuery)));
+							orExpr.Add(new BsonDocument(nameof(Creator.Name).ToCamelCase(), CreateRegexQuery(searchQuery)));
 						}
 
 						if(IsCheckId) {
-							orArray.Add(new BsonDocument(nameof(Creator.Id).ToCamelCase(), CreateRegexQuery(searchQuery)));
+							orExpr.Add(new BsonDocument(nameof(Creator.Id).ToCamelCase(), CreateRegexQuery(searchQuery)));
 						}
 
 						if(IsCheckSocialName) {
-							orArray.Add(
+							orExpr.Add(
 								new BsonDocument($"{nameof(Creator.Socials).ToCamelCase()}.{nameof(CreatorSocial.Name).ToCamelCase()}",
 									CreateRegexQuery(searchQuery)));
 						}
@@ -49,7 +49,7 @@ namespace VirtualHole.DB.Creators
 						//}
 					}
 
-					bson.Add("$or", orArray);
+					bson.Add("$or", orExpr);
 				}
 
 				return bson;
