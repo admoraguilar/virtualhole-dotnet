@@ -2,22 +2,45 @@
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Globalization;
+using Swashbuckle.Swagger.Annotations;
 using Humanizer;
 using VirtualHole.DB;
 using VirtualHole.DB.Contents;
+using VirtualHole.API.Models;
 using VirtualHole.API.Services;
 
 namespace VirtualHole.API.Controllers
 {
-	public class VideosController : ApiController
+	public class ContentController : ApiController
     {
-		//private VideoClient videoClient => dbService.Client.Contents.Videos;
-		//private VirtualHoleDBService dbService = null;
+		private ContentClient contentClient => dbService.Client.Contents;
+		private VirtualHoleDBService dbService = null;
 
-		//public VideosController()
-		//{
-		//	dbService = new VirtualHoleDBService();
-		//}
+		public ContentController()
+		{
+			dbService = new VirtualHoleDBService();
+		}
+
+		[Route("api/v1/content")]
+		[SwaggerResponse(System.Net.HttpStatusCode.OK, Type = typeof(List<YouTubeVideo>))]
+		[SwaggerResponse(System.Net.HttpStatusCode.OK, Type = typeof(List<YouTubeBroadcast>))]
+		[HttpGet]
+		public async Task<IHttpActionResult> GetContent([FromUri] ContentQuery query)
+		{
+			return Ok(await InternalListContents(query, new FindContentSettings { }));
+		}
+
+		private async Task<List<Content>> InternalListContents<T>(PaginatedQuery query, T request)
+			where T : FindContentSettings
+		{
+			List<Content> results = new List<Content>();
+
+			FindResults<Content> findResults = await contentClient.FindContentsAsync(request.SetPage(query));
+			await findResults.MoveNextAsync();
+			results.AddRange(findResults.Current);
+
+			return results;
+		}
 
 		//[Route("api/Videos/ListCreatorRelatedVideos")]
 		//[HttpPost]
@@ -61,7 +84,7 @@ namespace VirtualHole.API.Controllers
 		//		if(result is Video video) {
 		//			video.CreationDateDisplay = video.CreationDate.Humanize(request.Timestamp, new CultureInfo(request.Locale));
 		//		}
-				
+
 		//		if(result is Broadcast broadcast) {
 		//			broadcast.ScheduleDateDisplay = broadcast.ScheduleDate.Humanize(request.Timestamp, new CultureInfo(request.Locale));
 		//		}

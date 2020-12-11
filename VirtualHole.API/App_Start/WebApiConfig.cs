@@ -1,7 +1,6 @@
 ﻿using System.Web.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using Midnight;
 
 namespace VirtualHole.API
 {
@@ -20,6 +19,12 @@ namespace VirtualHole.API
 
 			config.Formatters.JsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
 			config.Formatters.JsonFormatter.UseDataContractJsonSerializer = false;
+
+			// Source: https://stackoverflow.com/a/26068063
+			//config.Formatters.JsonFormatter.MediaTypeMappings.Add(
+			//	new RequestHeaderMapping("Accept",
+			//		"text/html", StringComparison.InvariantCultureIgnoreCase,
+			//		true, "application/json"));
 
 			// Web API routes
 			config.MapHttpAttributeRoutes();

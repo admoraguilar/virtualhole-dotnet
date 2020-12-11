@@ -28,7 +28,9 @@ namespace VirtualHole.DB.Contents
 						new BsonDocument("$in", new BsonArray(ContentType))));
 				}
 
-				bson.Add("$and", typeAndExpr);
+				if(typeAndExpr.Count > 0) {
+					bson.Add("$and", typeAndExpr);
+				}
 
 				return bson;
 			}
