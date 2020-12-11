@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace VirtualHole.DB.Common.Utilities
+namespace VirtualHole.DB
 {
 	/// <summary>
 	/// Source: https://stackoverflow.com/questions/19307752/deserializing-polymorphic-json-classes-without-type-information-using-json-net

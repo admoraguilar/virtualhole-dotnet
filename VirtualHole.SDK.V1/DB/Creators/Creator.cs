@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Text;
 
 namespace VirtualHole.DB.Creators
 {
@@ -8,20 +7,20 @@ namespace VirtualHole.DB.Creators
 		/// <summary>
 		/// Unique set of strings and numbers to identify a creator.
 		/// </summary>
-		public string Id { get; set; }
+		public string Id { get; set; } = string.Empty;
 
 		/// <summary>
 		/// Default name.
 		/// </summary>
-		public string Name { get; set; }
+		public string Name { get; set; } = string.Empty;
 
-		public string AvatarUrl { get; set; }
-		public bool IsHidden { get; set; }
+		public string AvatarUrl { get; set; } = string.Empty;
+		public bool IsHidden { get; set; } = false;
 
-		public bool IsGroup { get; set; }
-		public int Depth { get; set; }
-		public List<string> Affiliations { get; set; }
+		public bool IsGroup { get; set; } = false;
+		public int Depth { get; set; } = 0;
+		public List<string> Affiliations { get; set; } = new List<string>();
 
-		public List<CreatorSocial> Socials { get; set; }
+		public List<CreatorSocial> Socials { get; set; } = new List<CreatorSocial>();
 	}
 }

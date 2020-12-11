@@ -5,6 +5,6 @@ namespace VirtualHole.DB.Creators
 	{
 		public override string SocialType => SocialTypes.Twitter;
 
-		public int FollowersCount { get; set; }
+		public int FollowersCount { get; set; } = 0;
 	}
 }

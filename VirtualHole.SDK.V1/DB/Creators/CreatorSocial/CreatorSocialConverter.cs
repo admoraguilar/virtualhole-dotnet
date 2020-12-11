@@ -1,7 +1,6 @@
 ﻿using System;
-using Midnight;
 using Newtonsoft.Json.Linq;
-using VirtualHole.DB.Common.Utilities;
+using Midnight;
 
 namespace VirtualHole.DB.Creators
 {

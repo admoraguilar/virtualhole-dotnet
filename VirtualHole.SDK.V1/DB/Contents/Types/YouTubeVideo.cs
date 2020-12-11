@@ -7,11 +7,11 @@ namespace VirtualHole.DB.Contents
 		public override string SocialType => SocialTypes.YouTube;
 		public override string ContentType => ContentTypes.Video;
 
-		public string ThumbnailUrl { get; set; }
-		public string Description { get; set; }
-		public TimeSpan Duration { get; set; }
-		public int ViewsCount { get; set; }
-		public int LikesCount { get; set; }
-		public int DislikesCount { get; set; }
+		public string ThumbnailUrl { get; set; } = string.Empty;
+		public string Description { get; set; } = string.Empty;
+		public TimeSpan Duration { get; set; } = TimeSpan.MinValue;
+		public int ViewsCount { get; set; } = 0;
+		public int LikesCount { get; set; } = 0;
+		public int DislikesCount { get; set; } = 0;
 	}
 }

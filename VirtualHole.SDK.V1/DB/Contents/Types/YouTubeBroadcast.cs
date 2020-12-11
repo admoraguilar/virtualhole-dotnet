@@ -6,8 +6,8 @@ namespace VirtualHole.DB.Contents
 	{
 		public override string ContentType => ContentTypes.Broadcast;
 
-		public bool IsLive { get; set; }
-		public long ViewerCount { get; set; }
-		public DateTimeOffset ScheduleDate { get; set; }
+		public bool IsLive { get; set; } = false;
+		public long ViewerCount { get; set; } = 0;
+		public DateTimeOffset ScheduleDate { get; set; } = DateTimeOffset.MinValue;
 	}
 }

@@ -5,9 +5,9 @@ namespace VirtualHole.DB.Creators
 	{
 		public abstract string SocialType { get; }
 
-		public string Id { get; set; }
-		public string Name { get; set; }
-		public string Url { get; set; }
-		public string AvatarUrl { get; set; }
+		public string Id { get; set; } = string.Empty;
+		public string Name { get; set; } = string.Empty;
+		public string Url { get; set; } = string.Empty;
+		public string AvatarUrl { get; set; } = string.Empty;
 	}
 }
