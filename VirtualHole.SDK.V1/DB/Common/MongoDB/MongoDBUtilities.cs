@@ -20,10 +20,10 @@ namespace VirtualHole.DB
 			return await collection.FindAsync(
 				settings.FilterDocument,
 				new FindOptions<T, T> {
-					BatchSize = settings.BatchSize,
-					Limit = settings.ResultsLimit,
 					Sort = settings.SortDocument,
-					Skip = settings.Skip
+					BatchSize = settings.GetBatchSize(),
+					Limit = settings.GetResultsLimit(),
+					Skip = settings.GetSkip()
 				},
 				cancellationToken);
 		}

@@ -8,6 +8,7 @@ namespace VirtualHole.DB.Creators
 	{
 		public bool IsHidden { get; set; } = false;
 
+		public bool IsCheckForIsGroup { get; set; } = true;
 		public bool IsGroup { get; set; } = false;
 
 		public bool IsCheckForDepth { get; set; } = false;
@@ -27,7 +28,9 @@ namespace VirtualHole.DB.Creators
 					bson.Add(nameof(Creator.Affiliations).ToCamelCase(), new BsonDocument("$all", new BsonArray(Affiliations)));
 				}
 
-				bson.Add(nameof(Creator.IsGroup).ToCamelCase(), IsGroup);
+				if(IsCheckForIsGroup) {
+					bson.Add(nameof(Creator.IsGroup).ToCamelCase(), IsGroup);
+				}
 
 				if(IsCheckForDepth) { bson.Add(nameof(Creator.Depth).ToCamelCase(), 0); }
 
