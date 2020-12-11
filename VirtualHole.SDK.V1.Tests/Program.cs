@@ -276,6 +276,13 @@ namespace VirtualHole.SDK.V1.Tests
 			MLog.Log(creators.Count);
 		}
 
+		private static async Task FindJsonTest()
+		{
+			await Task.CompletedTask;
+			string json = JsonConvert.SerializeObject(new FindCreatorContentSettings(), Formatting.Indented);
+			Console.WriteLine(json);
+		}
+
 		async static Task Main(string[] args)
 		{
 			//CreatorTest();
@@ -283,8 +290,9 @@ namespace VirtualHole.SDK.V1.Tests
 
 			MLog.Log(MLogLevel.Warning, "Start Program");
 			//await DBUpsertTest();
-			await DBFindTest();
+			//await DBFindTest();
 			//await DBConvertCreatorsV1();
+			await FindJsonTest();
 			MLog.Log(MLogLevel.Warning, "End Program");
 
 			Console.ReadLine();

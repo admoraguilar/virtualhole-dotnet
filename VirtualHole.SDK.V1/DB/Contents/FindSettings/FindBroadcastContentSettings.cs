@@ -6,7 +6,7 @@ namespace VirtualHole.DB.Contents
 {
 	public class FindBroadcastContentSettings : FindContentSettings
 	{
-		public bool IsSortAscendingBySchedule = false;
+		public bool IsSortAscendingBySchedule { get; set; } = false;
 
 		internal override BsonDocument FilterDocument
 		{

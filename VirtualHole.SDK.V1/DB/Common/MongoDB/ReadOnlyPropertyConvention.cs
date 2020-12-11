@@ -11,7 +11,7 @@ namespace VirtualHole.DB
 	/// </summary>
 	public class ReadOnlyPropertyConvention : ConventionBase, IClassMapConvention
 	{
-		private readonly BindingFlags _bindingFlags;
+		private readonly BindingFlags _bindingFlags = default;
 
 		public ReadOnlyPropertyConvention()
 				: this(BindingFlags.Instance | BindingFlags.Public)

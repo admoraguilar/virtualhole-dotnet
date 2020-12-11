@@ -12,29 +12,29 @@ namespace VirtualHole.DB.Creators
 	{
 		internal const string CreatorsCollectionName = "creators";
 
-		private IMongoDatabase _database = null;
-		private IMongoCollection<Creator> _creatorCollection = null;
-		private IMongoCollection<BsonDocument> _creatorBsonCollection = null;
+		private IMongoDatabase database = null;
+		private IMongoCollection<Creator> creatorCollection = null;
+		private IMongoCollection<BsonDocument> creatorBsonCollection = null;
 
 		internal CreatorClient(IMongoDatabase database)
 		{
-			_database = database;
-			_creatorCollection = _database.GetCollection<Creator>(CreatorsCollectionName);
-			_creatorBsonCollection = _database.GetCollection<BsonDocument>(CreatorsCollectionName);
+			this.database = database;
+			creatorCollection = this.database.GetCollection<Creator>(CreatorsCollectionName);
+			creatorBsonCollection = this.database.GetCollection<BsonDocument>(CreatorsCollectionName);
 		}
 
 		public async Task<FindResults<Creator>> FindCreatorsAsync(
 			FindSettings<Creator> settings = default, CancellationToken cancellationToken = default)
 		{
 			return new FindResults<Creator>(
-				await MongoDBUtilities.FindAsync(_creatorCollection, settings, cancellationToken));
+				await MongoDBUtilities.FindAsync(creatorCollection, settings, cancellationToken));
 		}
 
 		public async Task UpsertCreatorAsync(
 			Creator creator, CancellationToken cancellationToken = default)
 		{
 			await MongoDBUtilities.UpsertAsync(
-				_creatorCollection,
+				creatorCollection,
 				new BsonDocument(nameof(Creator.Id).ToCamelCase(), creator.Id),
 				creator, cancellationToken);
 		}
@@ -43,7 +43,7 @@ namespace VirtualHole.DB.Creators
 			IEnumerable<Creator> creators, CancellationToken cancellationToken = default)
 		{
 			await MongoDBUtilities.UpsertManyAndDeleteDanglingAsync(
-				_creatorBsonCollection,
+				creatorBsonCollection,
 				(Creator creator) => new BsonDocument(nameof(Creator.Id).ToCamelCase(), creator.Id),
 				creators, DateTimeOffset.UtcNow.DateTime, cancellationToken);
 		}
@@ -52,7 +52,7 @@ namespace VirtualHole.DB.Creators
 			IEnumerable<Creator> creators, CancellationToken cancellationToken = default)
 		{
 			await MongoDBUtilities.UpsertManyAsync(
-				_creatorBsonCollection,
+				creatorBsonCollection,
 				(Creator creator) => new BsonDocument(nameof(Creator.Id).ToCamelCase(), creator.Id),
 				creators, DateTimeOffset.UtcNow.DateTime, cancellationToken);
 		}	

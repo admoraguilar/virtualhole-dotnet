@@ -5,8 +5,8 @@ namespace VirtualHole.DB
 {
 	public class FindSettingsComposition<T> : FindSettings<T>
 	{
-		public IEnumerable<FindSettings<T>> Filters = null;
-		public IEnumerable<FindSettings<T>> Sorts = null;
+		public IEnumerable<FindSettings<T>> Filters { get; set; } = null;
+		public IEnumerable<FindSettings<T>> Sorts { get; set; } = null;
 
 		internal override BsonDocument FilterDocument 
 		{

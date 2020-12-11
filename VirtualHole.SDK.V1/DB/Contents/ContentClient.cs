@@ -12,29 +12,29 @@ namespace VirtualHole.DB.Contents
 	{
 		internal const string ContentCollectionName = "content";
 
-		private IMongoDatabase _database = null;
-		private IMongoCollection<Content> _contentCollection = null;
-		private IMongoCollection<BsonDocument> _contentBsonCollection = null;
+		private IMongoDatabase database = null;
+		private IMongoCollection<Content> contentCollection = null;
+		private IMongoCollection<BsonDocument> contentBsonCollection = null;
 
 		internal ContentClient(IMongoDatabase database)
 		{
-			_database = database;
-			_contentCollection = _database.GetCollection<Content>(ContentCollectionName);
-			_contentBsonCollection = _database.GetCollection<BsonDocument>(ContentCollectionName);
+			this.database = database;
+			contentCollection = this.database.GetCollection<Content>(ContentCollectionName);
+			contentBsonCollection = this.database.GetCollection<BsonDocument>(ContentCollectionName);
 		}
 
 		public async Task<FindResults<Content>> FindContentsAsync(
 			FindSettings<Content> settings = default, CancellationToken cancellationToken = default)
 		{
 			return new FindResults<Content>(
-				await MongoDBUtilities.FindAsync(_contentCollection, settings, cancellationToken));
+				await MongoDBUtilities.FindAsync(contentCollection, settings, cancellationToken));
 		}
 
 		public async Task UpsertContentAsync(
 			Content content, CancellationToken cancellationToken = default)
 		{
 			await MongoDBUtilities.UpsertAsync(
-				_contentCollection,
+				contentCollection,
 				new BsonDocument {
 					{ nameof(Content.Id).ToCamelCase(), content.Id },
 					{ nameof(Content.SocialType).ToCamelCase(), content.SocialType }
@@ -46,7 +46,7 @@ namespace VirtualHole.DB.Contents
 			IEnumerable<Content> contents, CancellationToken cancellationToken = default)
 		{
 			await MongoDBUtilities.UpsertManyAndDeleteDanglingAsync(
-				_contentBsonCollection,
+				contentBsonCollection,
 				(Content content) => new BsonDocument(nameof(Content.Id).ToCamelCase(), content.Id),
 				contents, DateTimeOffset.UtcNow.DateTime, cancellationToken);
 		}
@@ -55,7 +55,7 @@ namespace VirtualHole.DB.Contents
 			IEnumerable<Content> contents, CancellationToken cancellationToken = default)
 		{
 			await MongoDBUtilities.UpsertManyAsync(
-				_contentBsonCollection,
+				contentBsonCollection,
 				(Content content) => new BsonDocument(nameof(Content.Id).ToCamelCase(), content.Id),
 				contents, DateTimeOffset.UtcNow.DateTime, cancellationToken);
 		}
