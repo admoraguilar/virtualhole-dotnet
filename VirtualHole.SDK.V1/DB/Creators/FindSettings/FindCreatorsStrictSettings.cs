@@ -14,7 +14,6 @@ namespace VirtualHole.DB.Creators
 			get {
 				BsonDocument bson = base.FilterDocument;
 
-
 				if(Id != null && Id.Count > 0) {
 					bson.Add(
 						nameof(Creator.Id).ToCamelCase(),

@@ -7,14 +7,14 @@ namespace VirtualHole.DB
 	{
 		public int PageSize 
 		{
-			get => pageSize; 
+			get => pageSize;
 			set { pageSize = Math.Max(0, value); }
 		}
 		private int pageSize = 20;
 
 		public int MaxPages 
 		{
-			get => maxPages; 
+			get => maxPages;
 			set { maxPages = Math.Max(0, value); }
 		}
 		private int maxPages = 30;

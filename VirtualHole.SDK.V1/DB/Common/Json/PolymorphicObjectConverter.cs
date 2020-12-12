@@ -8,7 +8,7 @@ namespace VirtualHole.DB
 	/// <summary>
 	/// Source: https://stackoverflow.com/questions/19307752/deserializing-polymorphic-json-classes-without-type-information-using-json-net
 	/// </summary>
-	public abstract class PolymorphicObjectConverter<T> : JsonConverter
+	internal abstract class PolymorphicObjectConverter<T> : JsonConverter
 	{
 		public override bool CanConvert(Type objectType)
 		{

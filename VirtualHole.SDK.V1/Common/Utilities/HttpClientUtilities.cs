@@ -2,7 +2,7 @@
 
 namespace VirtualHole
 {
-	public static class HttpClientUtilities
+	internal static class HttpClientUtilities
 	{
 		private static HttpClient httpClient = null;
 

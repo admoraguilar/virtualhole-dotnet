@@ -9,7 +9,7 @@ namespace VirtualHole.DB
 	/// <summary>
 	/// Inspired from source: https://stackoverflow.com/a/39613579
 	/// </summary>
-	public class ReadOnlyPropertyConvention : ConventionBase, IClassMapConvention
+	internal class ReadOnlyPropertyConvention : ConventionBase, IClassMapConvention
 	{
 		private readonly BindingFlags _bindingFlags = default;
 

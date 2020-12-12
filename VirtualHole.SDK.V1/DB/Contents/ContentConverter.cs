@@ -4,7 +4,7 @@ using Midnight;
 
 namespace VirtualHole.DB.Contents
 {
-	public class ContentConverter : PolymorphicObjectConverter<Content>
+	internal class ContentConverter : PolymorphicObjectConverter<Content>
 	{
 		public override Content ProcessJObject(JObject jObj)
 		{

@@ -1,4 +1,5 @@
-﻿namespace VirtualHole.DB.Contents
+﻿
+namespace VirtualHole.DB.Contents
 {
 	public static class ContentTypes
 	{

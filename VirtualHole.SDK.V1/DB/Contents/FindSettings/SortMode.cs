@@ -7,5 +7,4 @@ namespace VirtualHole.DB.Contents
 		ByCreationDate,
 		BySchedule
 	};
-
 }

@@ -9,7 +9,6 @@ namespace VirtualHole.DB
 	public class FindResults<T> : IDisposable
 	{
 		public IEnumerable<T> Current => cursor.Current;
-
 		private IAsyncCursor<T> cursor = null;
 
 		internal FindResults(IAsyncCursor<T> cursor)

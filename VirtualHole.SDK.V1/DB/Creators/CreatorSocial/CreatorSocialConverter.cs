@@ -4,7 +4,7 @@ using Midnight;
 
 namespace VirtualHole.DB.Creators
 {
-	public class CreatorSocialConverter : PolymorphicObjectConverter<CreatorSocial>
+	internal class CreatorSocialConverter : PolymorphicObjectConverter<CreatorSocial>
 	{
 		public override CreatorSocial ProcessJObject(JObject jObj)
 		{
