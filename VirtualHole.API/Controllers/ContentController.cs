@@ -1,4 +1,6 @@
-﻿using System.Web.Http;
+﻿using System;
+using System.Linq;
+using System.Web.Http;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Globalization;
@@ -6,11 +8,9 @@ using Swashbuckle.Swagger.Annotations;
 using Humanizer;
 using VirtualHole.DB;
 using VirtualHole.DB.Contents;
+using VirtualHole.DB.Creators;
 using VirtualHole.API.Models;
 using VirtualHole.API.Services;
-using VirtualHole.DB.Creators;
-using System.Linq;
-using System;
 
 namespace VirtualHole.API.Controllers
 {
@@ -72,20 +72,17 @@ namespace VirtualHole.API.Controllers
 			where T : FindContentSettings
 		{
 			List<ContentDTO> results = new List<ContentDTO>();
+			if(query == null) { return results; }
 
 			FindResults<Content> contentFindResults = await contentClient.FindContentsAsync(request.SetPage(query));
 			await contentFindResults.MoveNextAsync();
 
-			Dictionary<string, Creator> creators = new Dictionary<string, Creator>();
-			foreach(Content findResult in contentFindResults.Current) {
-				creators[findResult.CreatorId] = null;
-			}
-
 			FindResults<Creator> creatorFindResults = await creatorClient.FindCreatorsAsync(new FindCreatorsStrictSettings {
-				Id = new List<string>(creators.Keys)
+				Id = new List<string>(contentFindResults.Current.Select(c => c.CreatorId))
 			});
 			await creatorFindResults.MoveNextAsync();
 
+			Dictionary<string, Creator> creators = new Dictionary<string, Creator>();
 			foreach(Creator creatorFindResult in creatorFindResults.Current) {
 				creators[creatorFindResult.Id] = creatorFindResult;
 			}
@@ -114,29 +111,5 @@ namespace VirtualHole.API.Controllers
 
 			return results;
 		}
-
-
-		//private async Task<List<TVideo>> InternalListVideos<TVideo, TFind>(TFind request)
-		//	where TVideo : Video
-		//	where TFind : FindVideosSettings<TVideo>
-		//{
-		//	List<TVideo> results = new List<TVideo>();
-
-		//	FindResults<TVideo> findResults = await videoClient.FindVideosAsync(request);
-		//	await findResults.MoveNextAsync();
-		//	results.AddRange(findResults.Current);
-
-		//	foreach(TVideo result in results) {
-		//		if(result is Video video) {
-		//			video.CreationDateDisplay = video.CreationDate.Humanize(request.Timestamp, new CultureInfo(request.Locale));
-		//		}
-
-		//		if(result is Broadcast broadcast) {
-		//			broadcast.ScheduleDateDisplay = broadcast.ScheduleDate.Humanize(request.Timestamp, new CultureInfo(request.Locale));
-		//		}
-		//	}
-
-		//	return results;
-		//}
 	}
 }

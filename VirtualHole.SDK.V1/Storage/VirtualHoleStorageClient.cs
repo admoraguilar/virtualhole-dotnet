@@ -25,7 +25,7 @@ namespace VirtualHole.Storage
 			string fullObjectPath = BuildObjectUri(relativeObjectPath).AbsoluteUri;
 
 			string result = string.Empty;
-			HttpClient client = HttpClientUtilities.GetClient();
+			HttpClient client = HttpClientFactory.GetClient();
 			using(HttpResponseMessage response = await client.GetAsync(fullObjectPath, cancellationToken)) {
 				result = await response.Content.ReadAsStringAsync();
 			}

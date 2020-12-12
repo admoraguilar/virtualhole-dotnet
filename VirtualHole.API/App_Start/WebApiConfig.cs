@@ -1,4 +1,7 @@
-﻿using System.Web.Http;
+﻿using System.Linq;
+using System.Net.Http.Formatting;
+using System.Web.Http;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
@@ -18,7 +21,19 @@ namespace VirtualHole.API
 			config.Formatters.JsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
 			config.Formatters.JsonFormatter.UseDataContractJsonSerializer = false;
 
-			// Source: https://stackoverflow.com/a/26068063
+			// Source: https://weblog.west-wind.com/posts/2012/mar/09/removing-the-xml-formatter-from-aspnet-web-api-applications
+			// remove default Xml handler
+			List<MediaTypeFormatter> matches = config.Formatters
+				.Where(f => f.SupportedMediaTypes
+				.Where(m => 
+					m.MediaType.ToString() == "application/xml" 
+					|| m.MediaType.ToString() == "text/xml")
+				.Count() > 0)
+				.ToList();
+			foreach(var match in matches)
+				config.Formatters.Remove(match);
+
+			//// Source: https://stackoverflow.com/a/26068063
 			//config.Formatters.JsonFormatter.MediaTypeMappings.Add(
 			//	new RequestHeaderMapping("Accept",
 			//		"text/html", StringComparison.InvariantCultureIgnoreCase,
