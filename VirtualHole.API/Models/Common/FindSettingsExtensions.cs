@@ -4,7 +4,7 @@ namespace VirtualHole.API.Models
 {
 	public static class FindSettingsExtensions 
 	{
-		public static T SetPage<T>(this T settings, PaginatedQuery query)
+		public static T SetPage<T>(this T settings, APIQuery query)
 			where T : FindSettings
 		{
 			settings.Page = query.Page;

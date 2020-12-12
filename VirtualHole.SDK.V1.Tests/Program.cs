@@ -213,7 +213,7 @@ namespace VirtualHole.SDK.V1.Tests
 				"holoverse-editor",
 				"RBqYN3ugVTb2stqD");
 
-			FindResults<Creator> creatorResults = await dbClient.Creators.FindCreatorsAsync(new FindCreatorsStrictSettings { IsAll = true });
+			FindResults<Creator> creatorResults = await dbClient.Creators.FindCreatorsAsync(new FindCreatorsStrictSettings { });
 			await creatorResults.MoveNextAsync();
 
 			FindSettings<Content> findContentSettings = new FindContentSettings {

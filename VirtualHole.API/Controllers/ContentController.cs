@@ -8,11 +8,15 @@ using VirtualHole.DB;
 using VirtualHole.DB.Contents;
 using VirtualHole.API.Models;
 using VirtualHole.API.Services;
+using VirtualHole.DB.Creators;
+using System.Linq;
+using System;
 
 namespace VirtualHole.API.Controllers
 {
 	public class ContentController : ApiController
     {
+		private CreatorClient creatorClient => dbService.Client.Creators;
 		private ContentClient contentClient => dbService.Client.Contents;
 		private VirtualHoleDBService dbService = null;
 
@@ -22,8 +26,7 @@ namespace VirtualHole.API.Controllers
 		}
 
 		[Route("api/v1/content")]
-		[SwaggerResponse(System.Net.HttpStatusCode.OK, Type = typeof(List<YouTubeVideo>))]
-		[SwaggerResponse(System.Net.HttpStatusCode.OK, Type = typeof(List<YouTubeBroadcast>))]
+		[SwaggerResponse(System.Net.HttpStatusCode.OK, Type = typeof(List<ContentDTO>))]
 		[HttpGet]
 		public async Task<IHttpActionResult> GetContent([FromUri] ContentQuery query)
 		{
@@ -48,6 +51,8 @@ namespace VirtualHole.API.Controllers
 						CreatorIds = query.CreatorIds
 					};
 				}
+			} else {
+				settings = new FindContentSettings() { };
 			}
 
 			if(query.SocialType != null && query.SocialType.Count > 0) {
@@ -63,45 +68,53 @@ namespace VirtualHole.API.Controllers
 			return Ok(await InternalListContents(query, settings));
 		}
 
-		private async Task<List<Content>> InternalListContents<T>(PaginatedQuery query, T request)
+		private async Task<List<ContentDTO>> InternalListContents<T>(APIQuery query, T request)
 			where T : FindContentSettings
 		{
-			List<Content> results = new List<Content>();
+			List<ContentDTO> results = new List<ContentDTO>();
 
-			FindResults<Content> findResults = await contentClient.FindContentsAsync(request.SetPage(query));
-			await findResults.MoveNextAsync();
-			results.AddRange(findResults.Current);
+			FindResults<Content> contentFindResults = await contentClient.FindContentsAsync(request.SetPage(query));
+			await contentFindResults.MoveNextAsync();
+
+			Dictionary<string, Creator> creators = new Dictionary<string, Creator>();
+			foreach(Content findResult in contentFindResults.Current) {
+				creators[findResult.CreatorId] = null;
+			}
+
+			FindResults<Creator> creatorFindResults = await creatorClient.FindCreatorsAsync(new FindCreatorsStrictSettings {
+				Id = new List<string>(creators.Keys)
+			});
+			await creatorFindResults.MoveNextAsync();
+
+			foreach(Creator creatorFindResult in creatorFindResults.Current) {
+				creators[creatorFindResult.Id] = creatorFindResult;
+			}
+
+			foreach(Content findResult in contentFindResults.Current) {
+				Creator creator = creators[findResult.CreatorId];
+				CreatorSocial creatorSocial = creator.Socials.FirstOrDefault(s => s.SocialType == findResult.SocialType);
+
+				ContentDTO contentDTO = new ContentDTO {
+					Content = findResult,
+					CreatorSocialId = creatorSocial.Id,
+					CreatorSocialName = creatorSocial.Name,
+					CreatorAvatarUrl = creator.AvatarUrl
+				};
+
+				if(query.Timestamp != DateTimeOffset.MinValue && !string.IsNullOrEmpty(query.Locale)) {
+					contentDTO.CreationDateDisplay = findResult.CreationDate.Humanize(query.Timestamp, new CultureInfo(query.Locale));
+
+					if(findResult is YouTubeBroadcast youTubeBroadcast) {
+						contentDTO.ScheduleDateDisplay = youTubeBroadcast.ScheduleDate.Humanize(query.Timestamp, new CultureInfo(query.Locale));
+					}
+				}
+
+				results.Add(contentDTO);			
+			}
 
 			return results;
 		}
 
-		//[Route("api/Videos/ListCreatorRelatedVideos")]
-		//[HttpPost]
-		//public async Task<List<Video>> ListCreatorRelatedVideosAsync([FromBody] FindCreatorRelatedVideosSettings<Video> request)
-		//{
-		//	return await InternalListVideos<Video, FindCreatorRelatedVideosSettings<Video>>(request);
-		//}
-
-		//[Route("api/Videos/ListCreatorVideos")]
-		//[HttpPost]
-		//public async Task<List<Video>> ListCreatorVideosAsync([FromBody] FindCreatorVideosSettings<Video> request)
-		//{
-		//	return await InternalListVideos<Video, FindCreatorVideosSettings<Video>>(request);
-		//}
-
-		//[Route("api/Broadcasts/ListCreatorRelatedBroadcasts")]
-		//[HttpPost]
-		//public async Task<List<Broadcast>> ListCreatorRelatedBroadcastsAsync([FromBody] FindCreatorRelatedVideosSettings<Broadcast> request)
-		//{
-		//	return await InternalListVideos<Broadcast, FindCreatorRelatedVideosSettings<Broadcast>>(request);
-		//}
-
-		//[Route("api/Broadcasts/ListCreatorBroadcasts")]
-		//[HttpPost]
-		//public async Task<List<Broadcast>> ListCreatorBroadcastsAsync([FromBody] FindCreatorVideosSettings<Broadcast> request)
-		//{
-		//	return await InternalListVideos<Broadcast, FindCreatorVideosSettings<Broadcast>>(request);
-		//}
 
 		//private async Task<List<TVideo>> InternalListVideos<TVideo, TFind>(TFind request)
 		//	where TVideo : Video

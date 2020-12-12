@@ -33,8 +33,7 @@ namespace VirtualHole.API.Controllers
 			}
 
 			if(string.IsNullOrEmpty(query.Search)) {
-				settings = new FindCreatorsStrictSettings() {
-					IsAll = true,
+				settings = new FindCreatorsStrictSettings() {	
 					IsCheckForIsGroup = false,
 				};
 			} else {
@@ -46,7 +45,7 @@ namespace VirtualHole.API.Controllers
 			return Ok(await InternalListCreators(query, settings));
 		}
 
-		private async Task<List<Creator>> InternalListCreators<T>(PaginatedQuery query, T request)
+		private async Task<List<Creator>> InternalListCreators<T>(APIQuery query, T request)
 			where T : FindCreatorsSettings
 		{
 			List<Creator> results = new List<Creator>();
