@@ -15,7 +15,7 @@ namespace VirtualHole.API.Controllers
 		[HttpGet]
         public async Task<HttpResponseMessage> Get([FromUri] ResourcesQuery query)
         {
-			HttpClient httpClient = HttpClientFactory.GetClient();
+			HttpClient httpClient = HttpClientFactory.HttpClient;
 
 			if(query == null || string.IsNullOrEmpty(query.Path)) {
 				return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "Query is invalid.");

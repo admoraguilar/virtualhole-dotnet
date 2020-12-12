@@ -8,33 +8,22 @@ namespace VirtualHole.Storage
 {
 	public class VirtualHoleStorageClient
 	{
-		public string Endpoint { get; private set; } = string.Empty;
+		public string Root { get; private set; } = string.Empty;
 
-		public VirtualHoleStorageClient(string endpoint)
+		public VirtualHoleStorageClient(string root)
 		{
-			Endpoint = endpoint;
+			Root = root;
 		}
 
-		public async Task<string> GetAsync(string relativeObjectPath, CancellationToken cancellationToken = default)
+		public async Task<HttpResponseMessage> GetAsync(
+			string relativeObjectPath, CancellationToken cancellationToken = default)
 		{
 			if(string.IsNullOrEmpty(relativeObjectPath)) {
 				throw new InvalidOperationException("Object path mustn't be empty.");
 			}
 
-			relativeObjectPath = relativeObjectPath.Replace(Endpoint, "");
-			string fullObjectPath = BuildObjectUri(relativeObjectPath).AbsoluteUri;
-
-			string result = string.Empty;
-			HttpClient client = HttpClientFactory.GetClient();
-			using(HttpResponseMessage response = await client.GetAsync(fullObjectPath, cancellationToken)) {
-				result = await response.Content.ReadAsStringAsync();
-			}
-			return result;
-		}
-
-		public Uri BuildObjectUri(string relativeObjectPath)
-		{
-			return UriUtilities.CombineUri(Endpoint, relativeObjectPath);
+			HttpClient httpClient = HttpClientFactory.HttpClient;
+			return await httpClient.GetAsync(UriUtilities.CombineUri(Root, relativeObjectPath));
 		}
 	}
 }

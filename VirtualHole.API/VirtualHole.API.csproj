@@ -217,7 +217,8 @@
     <Compile Include="Models\Query\APIQuery.cs" />
     <Compile Include="Models\Query\ResourcesQuery.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\HTTP\HttpClientUtilities.cs" />
+    <Compile Include="Services\HTTP\HttpClientFactory.cs" />
+    <Compile Include="Services\VirtualHoleSDK\VirtualHoleStorageClient.cs" />
     <Compile Include="Services\VirtualHoleSDK\VirtualHoleDBService.cs" />
   </ItemGroup>
   <ItemGroup>
