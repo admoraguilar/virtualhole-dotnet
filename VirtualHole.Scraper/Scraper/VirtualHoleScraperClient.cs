@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using Midnight.Logs;
 using Midnight.Tasks;
 using VirtualHole.DB;
@@ -10,80 +9,68 @@ namespace VirtualHole.Scraper
 {
 	public class VirtualHoleScraperClient
 	{
-		private ContentClient contentClient = null;
+		public bool IsStartIncremental { get; private set; } = false;
+		public int IterationGapAmount { get; private set; } = 300;
 
-		private Queue<Action> actionQueue = new Queue<Action>();
-		private DateTime lastFullRun = DateTime.MinValue;
-		private DateTime lastRun = DateTime.MinValue;
+		public bool IsRunning { get; private set; } = false;
+		public int RunCount { get; private set; } = 0;
+		public DateTime LastFullRun { get; private set; } = DateTime.MinValue;
+		public DateTime LastRun { get; private set; } = DateTime.MinValue;
 
-		private int iterationGapAmount = 300;
-		private bool isStartIncremental = false;
-
-		private bool isRunning = false;
-		private int runCounter = 0;
+		private DBClient contentClient = null;
 
 		public VirtualHoleScraperClient(VirtualHoleScraperSettings settings)
 		{
-			ScraperClient scraperClient = new ScraperClient(settings.ProxyPool);
-			VirtualHoleDBClient dbClient = new VirtualHoleDBClient(
-				settings.ConnectionString, settings.UserName, 
-				settings.Password);
-
-			contentClient = new ContentClient(scraperClient, dbClient);
-
-			iterationGapAmount = settings.IterationGapAmount;
-			isStartIncremental = settings.IsStartIncremental;
+			IsStartIncremental = settings.IsStartIncremental;
+			IterationGapAmount = settings.IterationGapAmount;
+			
+			contentClient = new DBClient(
+				new ScraperClient(settings.ProxyPool),
+				new VirtualHoleDBClient(
+					settings.ConnectionString, settings.UserName,
+					settings.Password));
 		}
 
 		public async Task RunAsync(CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 
-			if(isRunning) { return; }
-			isRunning = true;
+			if(IsRunning) { return; }
+			IsRunning = true;
 
 			MLog.Clear();
-
-			lastFullRun = DateTime.Now;
+			LastFullRun = DateTime.Now;
 
 			using(StopwatchScope stopwatch = new StopwatchScope(
-				nameof(ContentClient),
+				nameof(DBClient),
 				"Start run..",
-				$"Success! Taking a break before next iteration. Break for {iterationGapAmount}s")) {
+				$"Success! Taking a break before next iteration. Next run {DateTime.Now.AddSeconds(IterationGapAmount)}")) {
 				await TaskExt.RetryAsync(
 					() => contentClient.WriteToVideosDBUsingCreatorsDBAsync(
-						isStartIncremental, cancellationToken),
-						TimeSpan.FromSeconds(3), 3, cancellationToken
+						IsStartIncremental, cancellationToken),
+						TimeSpan.FromSeconds(3), int.MaxValue, cancellationToken
 				);
 			}
 
-			if(DateTime.Now.Subtract(lastFullRun).Days > 0) {
-				lastFullRun = DateTime.Now;
-
-				actionQueue.Enqueue(() => {
-					isStartIncremental = false;
-					Task.Run(() => RunAsync(cancellationToken));
-				});
-			} else {
-				actionQueue.Enqueue(() => {
-					Task.Run(() => RunAsync(cancellationToken));
-				});
-			}
-
-			runCounter++;
-			lastRun = DateTime.Now;
-			isRunning = false;
+			RunCount++;
+			LastRun = DateTime.Now;
+			IsRunning = false;
 
 			MLog.Log(
 				nameof(VirtualHoleScraperClient), 
 				$"Run details: {Environment.NewLine}" +
-				$"Run count: {runCounter} | Last Run: {lastRun} {Environment.NewLine}" +
-				$"Last Full Run: {lastFullRun}");
+				$"Run count: {RunCount} | Last Run: {LastRun} {Environment.NewLine}" +
+				$"Last Full Run: {LastFullRun}");
 
-			await Task.Delay(TimeSpan.FromSeconds(iterationGapAmount));
+			await Task.Delay(TimeSpan.FromSeconds(IterationGapAmount));
 
-			Action nextTask = actionQueue.Dequeue();
-			nextTask();
+			if(DateTime.Now.Subtract(LastFullRun).Days > 0) {
+				LastFullRun = DateTime.Now;
+				IsStartIncremental = false;
+				_ = Task.Run(() => RunAsync(cancellationToken));
+			} else {
+				_ = Task.Run(() => RunAsync(cancellationToken));
+			}
 		}
 	}
 }

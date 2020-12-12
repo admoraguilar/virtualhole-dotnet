@@ -40,7 +40,7 @@ namespace VirtualHole.Scraper
 		private T FromCacheGetOrSet(string id, Func<T> factory)
 		{
 			if(!cache.TryGetValue(id, out T instance)) {
-				cache[id] = instance = factory();
+				cache[id] = instance = factory();	
 			}
 			return instance;
 		}
@@ -65,7 +65,9 @@ namespace VirtualHole.Scraper
 		public ScraperFactory(ProxyPool proxyPool)
 		{
 			this.proxyPool = proxyPool;
-			if(this.proxyPool == null) { IsUseProxy = false; }
+			if(this.proxyPool == null) { 
+				IsUseProxy = false; 
+			}
 		}
 	}
 }

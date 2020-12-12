@@ -1,10 +1,10 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>VirtualHole.SDK</AssemblyName>
     <RootNamespace>VirtualHole</RootNamespace>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <Authors>midnight-cigarettes</Authors>
     <Product>VirtualHole</Product>
     <Description>VirtualHole SDK for .NET.</Description>
@@ -12,11 +12,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="DB\" />
+    <PackageReference Include="Midnight" Version="0.0.1.10" />
+    <PackageReference Include="MongoDB.Driver" Version="2.11.5" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="shortid" Version="3.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Midnight" Version="0.0.1.9" />
+    <Folder Include="..\..\..\..\%2528S%2529Water\%2528S%2529Work - IM\virtualhole-dotnet\VirtualHole.SDK.V1\DB\Contents\Creators\" />
   </ItemGroup>
 
 </Project>

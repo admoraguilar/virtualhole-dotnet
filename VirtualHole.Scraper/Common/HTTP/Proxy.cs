@@ -36,8 +36,8 @@ namespace VirtualHole.Scraper
 			return result;
 		}
 
-		public string Host;
-		public int Port;
+		public string Host { get; private set; }
+		public int Port { get; private set; }
 
 		public Proxy(string host, int port)
 		{
@@ -45,6 +45,10 @@ namespace VirtualHole.Scraper
 			this.Port = port;
 		}
 
-		public override string ToString() => $"{Host}:{Port}";
+		public override string ToString()
+		{
+			if(string.IsNullOrEmpty(Host) && Port == 0) { return string.Empty; }
+			return $"{Host}:{Port}";
+		}
 	}
 }
