@@ -9,24 +9,27 @@ namespace VirtualHole.Scraper
 {
 	internal class Program
 	{
-		private static void Main(string[] args)
+		private static VirtualHoleScraperSettings GetSettings()
 		{
-			// We do this as we're dealing with camel case convention JSON files
-			// which is not aligned with C#'s naming convention
-			JsonConvert.DefaultSettings = () => JsonUtilities.SerializerSettings.DefaultCamelCase;
-
-			MLog.Log("Running scraper...");
+			string settingsPath = Path.Combine(PathUtilities.GetApplicationPath(), "data/settings.json");
+			string settingsTxt = File.ReadAllText(settingsPath);
 
 			string proxyListPath = Path.Combine(PathUtilities.GetApplicationPath(), "data/proxy-list.txt");
 			string proxyList = File.ReadAllText(proxyListPath);
 
-			string settingsPath = Path.Combine(PathUtilities.GetApplicationPath(), "data/settings.json");
-			string settingsTxt = File.ReadAllText(settingsPath);
+			VirtualHoleScraperSettings settings = JsonConvert.DeserializeObject<VirtualHoleScraperSettings>(settingsTxt);
+			settings.ProxyPool = new ProxyPool(proxyList);
 
-			VirtualHoleScraperSettings scraperSettings = JsonConvert.DeserializeObject<VirtualHoleScraperSettings>(settingsTxt);
-			scraperSettings.ProxyPool = new ProxyPool(proxyList);
+			return settings;
+		}
 
-			VirtualHoleScraperClient runner = new VirtualHoleScraperClient(scraperSettings);
+		private static void Main(string[] args)
+		{
+			JsonConfig.Initialize();
+
+			MLog.Log("Running scraper...");
+
+			VirtualHoleScraperClient runner = new VirtualHoleScraperClient(GetSettings());
 			Task.Run(() => runner.RunAsync());
 
 			Console.ReadLine();

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
 using Midnight;
 
@@ -9,7 +10,7 @@ namespace VirtualHole.Scraper
 	{
 		public ICollection<Proxy> Proxies => proxyList;
 		private List<Proxy> proxyList = new List<Proxy>();
-		private Queue<Proxy> proxyQueue = new Queue<Proxy>();
+		private ConcurrentQueue<Proxy> proxyQueue = new ConcurrentQueue<Proxy>();
 
 		private Random random = new Random();
 
@@ -23,11 +24,12 @@ namespace VirtualHole.Scraper
 
 		public Proxy Get()
 		{
-			if(proxyQueue.Count <= 0) {
+			if(proxyQueue.Count <= 0 || !proxyQueue.TryDequeue(out Proxy result)) {
 				proxyList = proxyList.OrderBy(p => random.Next()).ToList();
-				proxyQueue = new Queue<Proxy>(proxyList);
+				proxyQueue = new ConcurrentQueue<Proxy>(proxyList);
+				proxyQueue.TryDequeue(out result);
 			}
-			return proxyQueue.Dequeue();
+			return result;
 		}
 
 		public void Set(string source)

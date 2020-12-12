@@ -87,11 +87,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\Json\JsonConfig.cs" />
     <Compile Include="Common\Scrapers\ScraperClient.cs" />
     <Compile Include="Common\HTTP\HttpClientFactory.cs" />
-    <Compile Include="Scraper\Contents\ScraperRootClient.cs" />
-    <Compile Include="Scraper\Contents\CreatorClient.cs" />
-    <Compile Include="Scraper\Contents\ContentClient.cs" />
+    <Compile Include="Scraper\DB\DBClient.cs" />
+    <Compile Include="Scraper\DB\Contents\CreatorClient.cs" />
+    <Compile Include="Scraper\DB\Contents\ContentClient.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Common\HTTP\Proxy.cs" />

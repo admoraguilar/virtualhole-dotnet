@@ -4,7 +4,7 @@ using System.Collections.Concurrent;
 
 namespace VirtualHole.Scraper
 {
-	public class HttpClientFactory
+	internal class HttpClientFactory
 	{
 		private static ConcurrentDictionary<string, HttpClient> lookup = new ConcurrentDictionary<string, HttpClient>();
 

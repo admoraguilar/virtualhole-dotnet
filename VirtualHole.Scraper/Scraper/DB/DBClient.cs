@@ -12,12 +12,12 @@ using ScraperCreatorClient = VirtualHole.Scraper.Creators.CreatorClient;
 
 namespace VirtualHole.Scraper
 {
-	public class ScraperRootClient
+	public class DBClient
 	{
 		public ScraperContentClient Contents { get; private set; } = null;
 		public ScraperCreatorClient Creators { get; private set; } = null;
 
-		public ScraperRootClient(ScraperClient scraperClient, VirtualHoleDBClient dbClient)
+		public DBClient(ScraperClient scraperClient, VirtualHoleDBClient dbClient)
 		{
 			Contents = new ScraperContentClient(scraperClient, dbClient);
 			Creators = new ScraperCreatorClient(scraperClient, dbClient);
@@ -28,13 +28,13 @@ namespace VirtualHole.Scraper
 		{
 			IEnumerable<Creator> creators = await Creators.GetAllFromDBAsync(cancellationToken);
 
-			MLog.Log(nameof(ScraperRootClient), $"Found {creators.Count()} creators on the database...");
+			MLog.Log(nameof(DBClient), $"Found {creators.Count()} creators on the database...");
 
 			List<Content> contents = new List<Content>();
 			contents.AddRange(await Contents.ScrapeAsync(creators, incremental, cancellationToken));
 			if(contents.Count > 0) { await Contents.WriteToDBAsync(contents, incremental, cancellationToken); }
 
-			MLog.Log(nameof(ScraperRootClient), $"Wrote a total of {contents.Count} content to database, during this iteration!");
+			MLog.Log(nameof(DBClient), $"Wrote a total of {contents.Count} content to database, during this iteration!");
 		}
 	}
 }

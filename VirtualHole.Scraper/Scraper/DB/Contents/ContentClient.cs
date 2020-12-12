@@ -32,10 +32,7 @@ namespace VirtualHole.Scraper.Contents
 
 			async Task ProcessCreator(Creator creator)
 			{
-				if(creator.IsGroup) {
-					await Task.CompletedTask;
-					return;
-				}
+				if(creator.IsGroup) { return; }
 
 				YoutubeScraper.GetChannelVideoSettings channelVideoSettings = null;
 				if(incremental) {
@@ -72,14 +69,14 @@ namespace VirtualHole.Scraper.Contents
 						nameof(ContentClient),
 						$"Processing [{social.SocialType} - {social.Name} - {socialPageName}]...",
 						$"Finished processing [{social.SocialType} - {social.Name} - {socialPageName}]!")) {
-						return await TaskExt.RetryAsync(() => task(social), TimeSpan.FromSeconds(1), 99, cancellationToken);
+						return await TaskExt.RetryAsync(() => task(social), TimeSpan.FromSeconds(1), int.MaxValue, cancellationToken);
 					}
 				}
 			}
 		}
 
 		public async Task WriteToDBAsync(
-			IEnumerable<Content> contents, bool incremental = false,
+			IEnumerable<Content> contents, bool isIncremental = false,
 			CancellationToken cancellationToken = default)
 		{
 			using(StopwatchScope s = new StopwatchScope(
@@ -88,13 +85,13 @@ namespace VirtualHole.Scraper.Contents
 				"Finished writing to content collection!")) {
 				await TaskExt.RetryAsync(
 					() => WriteAsync(),
-					TimeSpan.FromSeconds(1), 3,
+					TimeSpan.FromSeconds(3), int.MaxValue,
 					cancellationToken);
 			}
 
 			Task WriteAsync()
 			{
-				if(incremental) { return dbClient.Contents.UpsertManyContentsAsync(contents, cancellationToken); } 
+				if(isIncremental) { return dbClient.Contents.UpsertManyContentsAsync(contents, cancellationToken); } 
 				else { return dbClient.Contents.UpsertManyContentsAndDeleteDanglingAsync(contents, cancellationToken); }
 			}
 		}

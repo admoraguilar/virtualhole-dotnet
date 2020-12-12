@@ -10,9 +10,7 @@ namespace VirtualHole.API
 		{
 			// Web API configuration and services
 			JsonConvert.DefaultSettings = () => new JsonSerializerSettings {
-				ContractResolver = new DefaultContractResolver {
-					NamingStrategy = new CamelCaseNamingStrategy()
-				},
+				ContractResolver = new CamelCasePropertyNamesContractResolver(),
 				ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
 				DateParseHandling = DateParseHandling.None,
 			};

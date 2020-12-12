@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Midnight.Logs;
 using VirtualHole.DB;
 using VirtualHole.DB.Creators;
+using System;
 
 namespace VirtualHole.Scraper.Creators
 {
@@ -24,8 +25,8 @@ namespace VirtualHole.Scraper.Creators
 
 			using(StopwatchScope stopwatch = new StopwatchScope(
 				nameof(CreatorClient),
-				"Start getting all creators from DB",
-				"Finished getting all creators from DB")) {
+				"Start getting all creators from DB.",
+				"Finished getting all creators from DB.")) {
 				FindCreatorsStrictSettings findSettings = new FindCreatorsStrictSettings { };
 				FindResults<Creator> findResults = await dbClient.Creators.FindCreatorsAsync(findSettings, cancellationToken);
 				while(await findResults.MoveNextAsync(cancellationToken)) {
@@ -40,8 +41,8 @@ namespace VirtualHole.Scraper.Creators
 		{
 			using(StopwatchScope stopwatchScope = new StopwatchScope(
 				nameof(CreatorClient),
-				"Start writing creators to DB",
-				"Finished writing creators to DB")) {
+				"Start writing creators to DB.",
+				"Finished writing creators to DB.")) {
 				await dbClient.Creators.UpsertManyCreatorsAndDeleteDanglingAsync(creators, cancellationToken);
 			}
 		}
