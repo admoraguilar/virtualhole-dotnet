@@ -16,7 +16,7 @@ namespace VirtualHole.DB.Contents
 		internal override BsonDocument FilterDocument
 		{
 			get {
-				BsonDocument bson = base.FilterDocument;
+				BsonDocument bson = new BsonDocument();
 
 				BsonArray andExpressions = new BsonArray();
 				andExpressions.Add(
@@ -28,7 +28,7 @@ namespace VirtualHole.DB.Contents
 						new BsonDocument("$search", Join(Concat(CreatorNames, CreatorSocialIds, CreatorSocialUrls)))));
 
 				bson.AddRange(new BsonDocument("$and", andExpressions));
-				return bson;
+				return bson.Merge(base.FilterDocument);
 
 				string Join(IEnumerable<string> values) =>
 					string.Join(" ", values);

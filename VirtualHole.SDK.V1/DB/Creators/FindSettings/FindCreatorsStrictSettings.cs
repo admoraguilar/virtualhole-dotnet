@@ -12,7 +12,7 @@ namespace VirtualHole.DB.Creators
 		internal override BsonDocument FilterDocument
 		{
 			get {
-				BsonDocument bson = base.FilterDocument;
+				BsonDocument bson = new BsonDocument();
 
 				if(Id != null && Id.Count > 0) {
 					bson.Add(
@@ -26,7 +26,7 @@ namespace VirtualHole.DB.Creators
 						new BsonDocument("$in", new BsonArray(Name)));
 				}
 
-				return bson;
+				return bson.Merge(bson);
 			}
 		}
 	}

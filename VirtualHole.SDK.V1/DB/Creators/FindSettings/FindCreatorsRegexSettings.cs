@@ -17,7 +17,7 @@ namespace VirtualHole.DB.Creators
 		internal override BsonDocument FilterDocument
 		{
 			get {
-				BsonDocument bson = base.FilterDocument;
+				BsonDocument bson = new BsonDocument();
 
 				if(SearchQueries.Count > 0) {
 					BsonArray orExpr = new BsonArray();
@@ -52,7 +52,7 @@ namespace VirtualHole.DB.Creators
 					bson.Add("$or", orExpr);
 				}
 
-				return bson;
+				return bson.Merge(bson);
 			}
 		}
 
