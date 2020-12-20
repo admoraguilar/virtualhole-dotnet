@@ -45,12 +45,13 @@ namespace VirtualHole.API.Controllers
 			return Ok(await InternalListCreators(query, settings));
 		}
 
-		private async Task<List<Creator>> InternalListCreators<T>(APIQuery query, T request)
+		private async Task<List<Creator>> InternalListCreators<T>(PagedQuery query, T request)
 			where T : FindCreatorsSettings
 		{
 			List<Creator> results = new List<Creator>();
-			
-			FindResults<Creator> findResults = await creatorClient.FindCreatorsAsync(request.SetPage(query));
+			if(query != null) { request.SetPage(query); }
+
+			FindResults<Creator> findResults = await creatorClient.FindCreatorsAsync(request);
 			await findResults.MoveNextAsync();
 			results.AddRange(findResults.Current);
 

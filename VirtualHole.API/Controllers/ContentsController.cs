@@ -14,18 +14,18 @@ using VirtualHole.API.Services;
 
 namespace VirtualHole.API.Controllers
 {
-	public class ContentController : ApiController
+	public class ContentsController : ApiController
     {
 		private CreatorClient creatorClient => dbService.Client.Creators;
 		private ContentClient contentClient => dbService.Client.Contents;
 		private VirtualHoleDBService dbService = null;
 
-		public ContentController()
+		public ContentsController()
 		{
 			dbService = new VirtualHoleDBService();
 		}
 
-		[Route("api/v1/content")]
+		[Route("api/v1/contents")]
 		[SwaggerResponse(System.Net.HttpStatusCode.OK, Type = typeof(List<ContentDTO>))]
 		[HttpGet]
 		public async Task<IHttpActionResult> GetContent([FromUri] ContentQuery query)
@@ -68,13 +68,14 @@ namespace VirtualHole.API.Controllers
 			return Ok(await InternalListContents(query, settings));
 		}
 
-		private async Task<List<ContentDTO>> InternalListContents<T>(APIQuery query, T request)
+		private async Task<List<ContentDTO>> InternalListContents<T>(PagedQuery query, T request)
 			where T : FindContentSettings
 		{
 			List<ContentDTO> results = new List<ContentDTO>();
 			if(query == null) { return results; }
+			else { request.SetPage(query); }
 
-			FindResults<Content> contentFindResults = await contentClient.FindContentsAsync(request.SetPage(query));
+			FindResults<Content> contentFindResults = await contentClient.FindContentsAsync(request);
 			await contentFindResults.MoveNextAsync();
 
 			FindResults<Creator> creatorFindResults = await creatorClient.FindCreatorsAsync(new FindCreatorsStrictSettings {

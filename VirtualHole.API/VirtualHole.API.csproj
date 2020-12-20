@@ -206,7 +206,7 @@
     <Compile Include="Controllers\CreatorsController.cs" />
     <Compile Include="Controllers\ResourcesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\ContentController.cs" />
+    <Compile Include="Controllers\ContentsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -215,6 +215,7 @@
     <Compile Include="Models\Query\CreatorQuery.cs" />
     <Compile Include="Models\Common\FindSettingsExtensions.cs" />
     <Compile Include="Models\Query\APIQuery.cs" />
+    <Compile Include="Models\Query\PagedQuery.cs" />
     <Compile Include="Models\Query\ResourcesQuery.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\HTTP\HttpClientFactory.cs" />
