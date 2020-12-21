@@ -14,6 +14,8 @@ namespace VirtualHole.DB.Contents
 		public List<string> ContentType { get; set; } = new List<string>();
 
 		public bool IsCheckForAffiliations { get; set; } = false;
+		public bool IsAffiliationsAll { get; set; } = false;
+		public bool IsAffiliationsInclude { get; set; } = true;
 		public List<string> Affiliations { get; set; } = new List<string>();
 
 		internal override BsonDocument Document
@@ -35,9 +37,14 @@ namespace VirtualHole.DB.Contents
 				}
 
 				if(IsCheckForAffiliations) {
+					string queryOperator = string.Empty;
+
+					if(IsAffiliationsAll) {  queryOperator = "$all"; } 
+					else { queryOperator = IsAffiliationsInclude ? "$in" : "$nin"; }
+
 					typeAndExpr.Add(new BsonDocument(
 						$"{nameof(Content.Creator).ToCamelCase()}.{nameof(CreatorSimple.Affiliations).ToCamelCase()}", 
-						new BsonDocument("$all", new BsonArray(Affiliations))));
+						new BsonDocument(queryOperator, new BsonArray(Affiliations))));
 				}
 
 				if(typeAndExpr.Count > 0) {

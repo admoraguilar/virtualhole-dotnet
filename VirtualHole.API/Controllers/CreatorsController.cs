@@ -26,32 +26,37 @@ namespace VirtualHole.API.Controllers
 		[HttpGet]
 		public async Task<IHttpActionResult> GetCreators([FromUri] CreatorQuery query)
 		{
-			CreatorsFilter settings = null;
+			FindSettings find = new FindSettings();
 			if(query == null) {
-				settings = new CreatorsFilter() { };
-				return Ok(await InternalListCreators(query, settings));
+				find.Filters.Add(new CreatorsFilter() { });
+				return Ok(await ProcessQuery(query, find));
 			}
 
 			if(string.IsNullOrEmpty(query.Search)) {
-				settings = new CreatorsStrictFilter() {	
+				find.Filters.Add(new CreatorsFilter() {	
 					IsCheckForIsGroup = false,
-				};
+				});
 			} else {
-				settings = new CreatorsRegexFilter() {
+				find.Filters.Add(new CreatorsRegexFilter() {
 					SearchQueries = new List<string>() { query.Search }
-				};
+				});
 			}
 
-			return Ok(await InternalListCreators(query, settings));
+			return Ok(await ProcessQuery(query, find));
 		}
 
-		private async Task<List<Creator>> InternalListCreators<T>(PagedQuery query, T request)
-			where T : CreatorsFilter
+		private async Task<List<Creator>> ProcessQuery<T>(CreatorQuery query, T find)
+			where T : FindSettings
 		{
 			List<Creator> results = new List<Creator>();
-			if(query != null) { request.SetPage(query); }
+			if(query == null) { return results; }
+			else {
+				find.Page = query.Page;
+				find.PageSize = query.PageSize;
+				find.MaxPages = query.MaxPages;
+			}
 
-			FindResults<Creator> findResults = await creatorClient.FindCreatorsAsync(request);
+			FindResults<Creator> findResults = await creatorClient.FindCreatorsAsync(find);
 			await findResults.MoveNextAsync();
 			results.AddRange(findResults.Current);
 

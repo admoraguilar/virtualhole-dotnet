@@ -4,7 +4,6 @@ using System.Web.Http;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Globalization;
-using Swashbuckle.Swagger.Annotations;
 using Humanizer;
 using VirtualHole.DB;
 using VirtualHole.DB.Contents;
@@ -16,6 +15,8 @@ namespace VirtualHole.API.Controllers
 {
 	public class ContentsController : ApiController
     {
+		private string affiliationCommunity => "Community";
+
 		private CreatorClient creatorClient => dbService.Client.Creators;
 		private ContentClient contentClient => dbService.Client.Contents;
 		private VirtualHoleDBService dbService = null;
@@ -26,31 +27,109 @@ namespace VirtualHole.API.Controllers
 		}
 
 		[Route("api/v1/contents/discover")]
+		[HttpGet]
 		public async Task<IHttpActionResult> GetDiscover([FromUri] ContentQuery query)
 		{
-			return Ok(await ProcessRequest(query, new FindSettings(), DefaultContentDTOFactory));
+			FindSettings find = new FindSettings();
+
+			find.Sorts.Add(new ContentsSort {
+				SortMode = SortMode.ByCreationDate,
+				IsSortAscending = query.IsSortAscending
+			});
+
+			if(query != null) {
+				query.IsCheckCreatorAffiliations = true;
+				query.IsAffiliationsAll = false;
+				query.IsAffiliationsInclude = false;
+
+				if(query.CreatorAffiliations != null) {
+					query.CreatorAffiliations.Add(affiliationCommunity);
+				} else {
+					query.CreatorAffiliations = new List<string>() { affiliationCommunity };
+				}
+			}
+		
+			return await GetContent(find, query, VideoContentDTOFactory);
 		}
 
 		[Route("api/v1/contents/community")]
+		[HttpGet]
 		public async Task<IHttpActionResult> GetCommunity([FromUri] ContentQuery query)
 		{
+			FindSettings find = new FindSettings();
 
+			find.Sorts.Add(new ContentsSort {
+				SortMode = SortMode.ByCreationDate,
+				IsSortAscending = query.IsSortAscending
+			});
+
+			if(query != null) {
+				query.IsCheckCreatorAffiliations = true;
+				query.IsAffiliationsAll = true;
+
+				if(query.CreatorAffiliations != null) {
+					query.CreatorAffiliations.Add(affiliationCommunity);
+				} else {
+					query.CreatorAffiliations = new List<string>() { affiliationCommunity };
+				}
+			}
+
+			return await GetContent(find, query, VideoContentDTOFactory);
 		}
 
 		[Route("api/v1/contents/live")]
+		[HttpGet]
 		public async Task<IHttpActionResult> GetLive([FromUri] ContentQuery query)
 		{
+			FindSettings find = new FindSettings();
 
+			find.Sorts.Add(new ContentsSort {
+				SortMode = SortMode.ByCreationDate,
+				IsSortAscending = query.IsSortAscending
+			});
+
+			if(query != null) {
+				query.IsCheckCreatorAffiliations = true;
+				query.IsAffiliationsAll = false;
+				query.IsAffiliationsInclude = false;
+
+				if(query.CreatorAffiliations != null) {
+					query.CreatorAffiliations.Add(affiliationCommunity);
+				} else {
+					query.CreatorAffiliations = new List<string>() { affiliationCommunity };
+				}
+			}
+
+			return await GetContent(find, query, VideoContentDTOFactory);
 		}
 
 		[Route("api/v1/contents/scheduled")]
+		[HttpGet]
 		public async Task<IHttpActionResult> GetScheduled([FromUri] ContentQuery query)
 		{
+			FindSettings find = new FindSettings();
 
+			find.Sorts.Add(new ContentsSort {
+				SortMode = SortMode.BySchedule,
+				IsSortAscending = query.IsSortAscending
+			});
+
+			if(query != null) {
+				query.IsCheckCreatorAffiliations = true;
+				query.IsAffiliationsAll = false;
+				query.IsAffiliationsInclude = false;
+
+				if(query.CreatorAffiliations != null) {
+					query.CreatorAffiliations.Add(affiliationCommunity);
+				} else {
+					query.CreatorAffiliations = new List<string>() { affiliationCommunity };
+				}
+			}
+
+			return await GetContent(find, query, BroadcastContentDTOFactory);
 		}
 
 		[Route("api/v1/contents")]
-		[SwaggerResponse(System.Net.HttpStatusCode.OK, Type = typeof(List<ContentDTO>))]
 		[HttpGet]
 		public async Task<IHttpActionResult> GetContent([FromUri] ContentQuery query)
 		{
@@ -61,11 +140,18 @@ namespace VirtualHole.API.Controllers
 				IsSortAscending = query.IsSortAscending
 			});
 
+			return await GetContent(find, query, VideoContentDTOFactory);
+		}
+
+		private async Task<IHttpActionResult> GetContent(
+			FindSettings find, ContentQuery query,
+			Func<ContentQuery, Content, object> contentFactory)
+		{
 			if(query == null) {
 				find.Filters.Add(new ContentsFilter() { });
-				return Ok(await ProcessRequest(
+				return Ok(await ProcessQuery(
 					query, find,
-					DefaultContentDTOFactory));
+					VideoContentDTOFactory));
 			}
 
 			if(query.CreatorIds != null && query.CreatorIds.Count > 0) {
@@ -98,22 +184,39 @@ namespace VirtualHole.API.Controllers
 			}
 
 			contentsFilter.IsCheckForAffiliations = query.IsCheckCreatorAffiliations;
+			contentsFilter.IsAffiliationsAll = query.IsAffiliationsAll;
+			contentsFilter.IsAffiliationsInclude = query.IsAffiliationsInclude;
 			contentsFilter.Affiliations = query.CreatorAffiliations;
 
 			find.Filters.Add(contentsFilter);
 
-			return Ok(await ProcessRequest(
-				query, find,
-				DefaultContentDTOFactory));
+			return Ok(await ProcessQuery(query, find, contentFactory));
 		}
 
-		private object DefaultContentDTOFactory(ContentQuery query, Content content)
+		private object VideoContentDTOFactory(ContentQuery query, Content content)
+		{
+			string creationDateDisplay = string.Empty;
+
+			if(query.Timestamp != DateTimeOffset.MinValue && !string.IsNullOrEmpty(query.Locale)) {
+				creationDateDisplay = content.CreationDate.Humanize(query.Timestamp, new CultureInfo(query.Locale));
+			}
+
+			return new {
+				content,
+				creationDateDisplay
+			};
+		}
+
+		private object BroadcastContentDTOFactory(ContentQuery query, Content content)
 		{
 			string creationDateDisplay = string.Empty;
 			string scheduleDateDisplay = string.Empty;
 
 			if(query.Timestamp != DateTimeOffset.MinValue && !string.IsNullOrEmpty(query.Locale)) {
 				creationDateDisplay = content.CreationDate.Humanize(query.Timestamp, new CultureInfo(query.Locale));
+				if(content is YouTubeBroadcast youTubeBroadcast) {
+					scheduleDateDisplay = youTubeBroadcast.ScheduleDate.Humanize(query.Timestamp, new CultureInfo(query.Locale));
+				}
 			}
 
 			return new {
@@ -123,7 +226,7 @@ namespace VirtualHole.API.Controllers
 			};
 		}
 
-		private async Task<List<object>> ProcessRequest<T>(
+		private async Task<List<object>> ProcessQuery<T>(
 			ContentQuery query, T find,
 			Func<ContentQuery, Content, object> contentFactory)
 			where T : FindSettings

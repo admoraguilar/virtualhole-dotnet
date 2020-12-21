@@ -15,6 +15,8 @@ namespace VirtualHole.DB.Creators
 		public int Depth { get; set; } = 0;
 
 		public bool IsCheckForAffiliations { get; set; } = false;
+		public bool IsAffiliationsAll { get; set; } = false;
+		public bool IsAffiliationsInclude { get; set; } = true;
 		public List<string> Affiliations { get; set; } = new List<string>();
 
 		internal override BsonDocument Document 
@@ -25,7 +27,12 @@ namespace VirtualHole.DB.Creators
 				bson.Add(nameof(Creator.IsHidden).ToCamelCase(), IsHidden);
 
 				if(IsCheckForAffiliations) {
-					bson.Add(nameof(Creator.Affiliations).ToCamelCase(), new BsonDocument("$all", new BsonArray(Affiliations)));
+					string queryOperator = string.Empty;
+
+					if(IsAffiliationsAll) {  queryOperator = "$all"; } 
+					else { queryOperator = IsAffiliationsInclude ? "$in" : "$nin"; }
+					
+					bson.Add(nameof(Creator.Affiliations).ToCamelCase(), new BsonDocument(queryOperator, new BsonArray(Affiliations)));
 				}
 
 				if(IsCheckForIsGroup) {
