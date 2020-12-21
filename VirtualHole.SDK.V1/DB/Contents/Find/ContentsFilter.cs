@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using MongoDB.Bson;
 using Midnight;
+using VirtualHole.DB.Creators;
 
 namespace VirtualHole.DB.Contents
 {
@@ -11,6 +12,9 @@ namespace VirtualHole.DB.Contents
 
 		public bool IsContentTypeInclude { get; set; } = true;
 		public List<string> ContentType { get; set; } = new List<string>();
+
+		public bool IsCheckForAffiliations { get; set; } = false;
+		public List<string> Affiliations { get; set; } = new List<string>();
 
 		internal override BsonDocument Document
 		{
@@ -28,6 +32,12 @@ namespace VirtualHole.DB.Contents
 					typeAndExpr.Add(new BsonDocument(
 						nameof(Content.ContentType).ToCamelCase(),
 						new BsonDocument(IsContentTypeInclude ? "$in" : "$nin", new BsonArray(ContentType))));
+				}
+
+				if(IsCheckForAffiliations) {
+					typeAndExpr.Add(new BsonDocument(
+						$"{nameof(Content.Creator).ToCamelCase()}.{nameof(Creator.Affiliations).ToCamelCase()}", 
+						new BsonDocument("$all", new BsonArray(Affiliations))));
 				}
 
 				if(typeAndExpr.Count > 0) {

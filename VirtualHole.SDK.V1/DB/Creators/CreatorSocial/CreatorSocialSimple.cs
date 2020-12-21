@@ -5,7 +5,6 @@ namespace VirtualHole.DB.Creators
 {
 	public class CreatorSocialSimple
 	{
-		public string SocialType { get; set; } = string.Empty;
 		public string Id { get; set; } = string.Empty;
 		public string Name { get; set; } = string.Empty;
 		public string Url { get; set; } = string.Empty;
@@ -19,7 +18,6 @@ namespace VirtualHole.DB.Creators
 				throw new NullReferenceException(); 
 			}
 
-			SocialType = creatorSocial.SocialType;
 			Id = creatorSocial.Id;
 			Name = creatorSocial.Name;
 			Url = creatorSocial.Url;

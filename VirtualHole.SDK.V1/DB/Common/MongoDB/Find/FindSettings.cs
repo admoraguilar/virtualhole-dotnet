@@ -44,13 +44,13 @@ namespace VirtualHole.DB
 			BsonDocument bson = new BsonDocument();
 			if(definitions != null) {
 				foreach(FindDefinition definition in definitions) {
-					IEnumerable<Type> allConflicting = definitions.SelectMany(d => { 
-						if(d != definition){ return d.ConflictingTypes; }
-						else { return new Type[0]; }
-					});
+					List<Type> allConflicting = new List<Type>();
+					allConflicting.AddRange(definition.ConflictingTypes);
+					allConflicting.Add(definition.GetType());
 
-					IEnumerable<Type> intersectConflicting = definition
-						.ConflictingTypes.Intersect(allConflicting);
+					IEnumerable<Type> intersectConflicting = allConflicting.Intersect(
+							definitions.Where(d => d != definition)
+								.Select(d => d.GetType()));
 
 					if(intersectConflicting.Count() > 0) {
 						string errorMessage = $"[FindSettings] [{definition.GetType().Name}] definition has conflicts with [.";
