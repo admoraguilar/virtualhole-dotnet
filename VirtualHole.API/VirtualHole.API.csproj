@@ -210,7 +210,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\DTO\ContentDTO.cs" />
     <Compile Include="Models\Query\ContentQuery.cs" />
     <Compile Include="Models\Query\CreatorQuery.cs" />
     <Compile Include="Models\Query\APIQuery.cs" />
