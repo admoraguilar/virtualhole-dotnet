@@ -26,18 +26,18 @@ namespace VirtualHole.API.Controllers
 		[HttpGet]
 		public async Task<IHttpActionResult> GetCreators([FromUri] CreatorQuery query)
 		{
-			FindCreatorsSettings settings = null;
+			CreatorsFilter settings = null;
 			if(query == null) {
-				settings = new FindCreatorsSettings() { };
+				settings = new CreatorsFilter() { };
 				return Ok(await InternalListCreators(query, settings));
 			}
 
 			if(string.IsNullOrEmpty(query.Search)) {
-				settings = new FindCreatorsStrictSettings() {	
+				settings = new CreatorsStrictFilter() {	
 					IsCheckForIsGroup = false,
 				};
 			} else {
-				settings = new FindCreatorsRegexSettings() {
+				settings = new CreatorsRegexFilter() {
 					SearchQueries = new List<string>() { query.Search }
 				};
 			}
@@ -46,7 +46,7 @@ namespace VirtualHole.API.Controllers
 		}
 
 		private async Task<List<Creator>> InternalListCreators<T>(PagedQuery query, T request)
-			where T : FindCreatorsSettings
+			where T : CreatorsFilter
 		{
 			List<Creator> results = new List<Creator>();
 			if(query != null) { request.SetPage(query); }

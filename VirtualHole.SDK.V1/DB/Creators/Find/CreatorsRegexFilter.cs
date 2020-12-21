@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using MongoDB.Bson;
 using Midnight;
 
 namespace VirtualHole.DB.Creators
 {
-	public class FindCreatorsRegexSettings : FindCreatorsSettings
+	public class CreatorsRegexFilter : FindFilter
 	{
 		public List<string> SearchQueries { get; set; } = new List<string>();
 
@@ -14,7 +15,11 @@ namespace VirtualHole.DB.Creators
 		//public bool IsCheckSocialCustomKeywords { get; set; } = true;
 		//public bool IsCheckCustomKeywords { get; set; } = true;
 
-		internal override BsonDocument FilterDocument
+		internal override IEnumerable<Type> ConflictingTypes => new Type[] { 
+			typeof(CreatorsStrictFilter) 
+		};
+
+		internal override BsonDocument Document
 		{
 			get {
 				BsonDocument bson = new BsonDocument();
@@ -52,7 +57,7 @@ namespace VirtualHole.DB.Creators
 					bson.Add("$or", orExpr);
 				}
 
-				return bson.Merge(bson);
+				return bson;
 			}
 		}
 

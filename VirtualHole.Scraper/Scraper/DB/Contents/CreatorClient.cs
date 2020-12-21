@@ -27,7 +27,7 @@ namespace VirtualHole.Scraper.Creators
 				nameof(CreatorClient),
 				"Start getting all creators from DB.",
 				"Finished getting all creators from DB.")) {
-				FindCreatorsStrictSettings findSettings = new FindCreatorsStrictSettings { };
+				CreatorsStrictFilter findSettings = new CreatorsStrictFilter { };
 				FindResults<Creator> findResults = await dbClient.Creators.FindCreatorsAsync(findSettings, cancellationToken);
 				while(await findResults.MoveNextAsync(cancellationToken)) {
 					results.AddRange(findResults.Current);

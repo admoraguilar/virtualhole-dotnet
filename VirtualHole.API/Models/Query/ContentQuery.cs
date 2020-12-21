@@ -18,6 +18,9 @@ namespace VirtualHole.API.Models
 		public List<string> CreatorSocialIds { get; set; } = new List<string>();
 		public List<string> CreatorSocialUrls { get; set; } = new List<string>();
 
+		public bool IsCheckCreatorAffiliations { get; set; } = false;
+		public List<string> CreatorAffiliations { get; set; } = new List<string>();
+
 		public bool IsSortAscending { get; set; } = false;
 	}
 }

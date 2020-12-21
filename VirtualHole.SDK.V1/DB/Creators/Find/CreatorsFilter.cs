@@ -4,7 +4,7 @@ using Midnight;
 
 namespace VirtualHole.DB.Creators
 {
-	public class FindCreatorsSettings : FindSettings
+	public class CreatorsFilter : FindFilter
 	{
 		public bool IsHidden { get; set; } = false;
 
@@ -17,7 +17,7 @@ namespace VirtualHole.DB.Creators
 		public bool IsCheckForAffiliations { get; set; } = false;
 		public List<string> Affiliations { get; set; } = new List<string>();
 
-		internal override BsonDocument FilterDocument
+		internal override BsonDocument Document 
 		{
 			get {
 				BsonDocument bson = new BsonDocument();
@@ -37,7 +37,5 @@ namespace VirtualHole.DB.Creators
 				return bson;
 			}
 		}
-
-		internal override BsonDocument SortDocument => null;
 	}
 }

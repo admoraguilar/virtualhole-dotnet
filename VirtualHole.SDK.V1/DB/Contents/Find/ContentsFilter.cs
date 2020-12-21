@@ -4,7 +4,7 @@ using Midnight;
 
 namespace VirtualHole.DB.Contents
 {
-	public class FindContentSettings : FindSettings
+	public class ContentsFilter : FindFilter
 	{
 		public bool IsSocialTypeInclude { get; set; } = true;
 		public List<string> SocialType { get; set; } = new List<string>();
@@ -12,9 +12,7 @@ namespace VirtualHole.DB.Contents
 		public bool IsContentTypeInclude { get; set; } = true;
 		public List<string> ContentType { get; set; } = new List<string>();
 
-		public bool IsSortAscending { get; set; } = false;
-
-		internal override BsonDocument FilterDocument
+		internal override BsonDocument Document
 		{
 			get {
 				BsonDocument bson = new BsonDocument();
@@ -39,8 +37,5 @@ namespace VirtualHole.DB.Contents
 				return bson;
 			}
 		}
-
-		internal override BsonDocument SortDocument =>
-			new BsonDocument() { { nameof(Content.CreationDate).ToCamelCase(), IsSortAscending ? 1 : -1 } };
 	}
 }

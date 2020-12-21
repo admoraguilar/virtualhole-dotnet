@@ -30,15 +30,15 @@ namespace VirtualHole.API.Controllers
 		[HttpGet]
 		public async Task<IHttpActionResult> GetContent([FromUri] ContentQuery query)
 		{
-			FindContentSettings settings = null;
+			ContentsFilter settings = null;
 			if(query == null) {
-				settings = new FindContentSettings() { };
+				settings = new ContentsFilter() { };
 				return Ok(await InternalListContents(query, settings));
 			}
 
 			if(query.CreatorIds != null && query.CreatorIds.Count > 0) {
 				if(query.IsCreatorRelated) {
-					settings = new FindCreatorRelatedContentSettings() {
+					settings = new CreatorRelatedContentsFilter() {
 						IsCreatorsInclude = query.IsCreatorsInclude,
 						CreatorIds = query.CreatorIds,
 						CreatorNames = query.CreatorNames,
@@ -46,13 +46,13 @@ namespace VirtualHole.API.Controllers
 						CreatorSocialUrls = query.CreatorSocialUrls
 					};
 				} else {
-					settings = new FindCreatorContentSettings() {
+					settings = new CreatorContentsFilter() {
 						IsCreatorsInclude = query.IsCreatorsInclude,
 						CreatorIds = query.CreatorIds
 					};
 				}
 			} else {
-				settings = new FindContentSettings() { };
+				settings = new ContentsFilter() { };
 			}
 
 			if(query.SocialType != null && query.SocialType.Count > 0) {
@@ -69,7 +69,7 @@ namespace VirtualHole.API.Controllers
 		}
 
 		private async Task<List<ContentDTO>> InternalListContents<T>(PagedQuery query, T request)
-			where T : FindContentSettings
+			where T : ContentsFilter
 		{
 			List<ContentDTO> results = new List<ContentDTO>();
 			if(query == null) { return results; }
@@ -78,7 +78,7 @@ namespace VirtualHole.API.Controllers
 			FindResults<Content> contentFindResults = await contentClient.FindContentsAsync(request);
 			await contentFindResults.MoveNextAsync();
 
-			FindResults<Creator> creatorFindResults = await creatorClient.FindCreatorsAsync(new FindCreatorsStrictSettings {
+			FindResults<Creator> creatorFindResults = await creatorClient.FindCreatorsAsync(new CreatorsStrictFilter {
 				Id = new List<string>(contentFindResults.Current.Select(c => c.CreatorId))
 			});
 			await creatorFindResults.MoveNextAsync();

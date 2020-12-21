@@ -1,15 +1,20 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using MongoDB.Bson;
 using Midnight;
 
 namespace VirtualHole.DB.Contents
 {
-	public class FindCreatorContentSettings : FindContentSettings
+	public class CreatorContentsFilter : FindFilter
 	{
 		public bool IsCreatorsInclude { get; set; } = true;
 		public List<string> CreatorIds { get; set; } = new List<string>();
 
-		internal override BsonDocument FilterDocument
+		internal override IEnumerable<Type> ConflictingTypes => new Type[] {
+			typeof(CreatorRelatedContentsFilter)
+		};
+
+		internal override BsonDocument Document
 		{
 			get {
 				BsonDocument bson = new BsonDocument();
@@ -20,7 +25,7 @@ namespace VirtualHole.DB.Contents
 						new BsonDocument(IsCreatorsInclude ? "$in" : "$nin", new BsonArray(CreatorIds)));
 				}
 
-				return bson.Merge(base.FilterDocument);
+				return bson;
 			}
 		}
 	}
