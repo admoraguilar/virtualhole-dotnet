@@ -36,7 +36,7 @@ namespace VirtualHole.DB.Contents
 
 				if(IsCheckForAffiliations) {
 					typeAndExpr.Add(new BsonDocument(
-						$"{nameof(Content.Creator).ToCamelCase()}.{nameof(Creator.Affiliations).ToCamelCase()}", 
+						$"{nameof(Content.Creator).ToCamelCase()}.{nameof(CreatorSimple.Affiliations).ToCamelCase()}", 
 						new BsonDocument("$all", new BsonArray(Affiliations))));
 				}
 

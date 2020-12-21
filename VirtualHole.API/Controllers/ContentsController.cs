@@ -28,7 +28,7 @@ namespace VirtualHole.API.Controllers
 		[Route("api/v1/contents/discover")]
 		public async Task<IHttpActionResult> GetDiscover([FromUri] ContentQuery query)
 		{
-
+			return Ok(await ProcessRequest(query, new FindSettings(), DefaultContentDTOFactory));
 		}
 
 		[Route("api/v1/contents/community")]
@@ -54,25 +54,23 @@ namespace VirtualHole.API.Controllers
 		[HttpGet]
 		public async Task<IHttpActionResult> GetContent([FromUri] ContentQuery query)
 		{
-			//return this.Json(new {
-			//	string Test = "",
-			//});
+			FindSettings find = new FindSettings();
 
-			FindSettings settings = new FindSettings();
-
-			settings.Sorts.Add(new ContentsSort {
+			find.Sorts.Add(new ContentsSort {
 				SortMode = SortMode.ByCreationDate,
 				IsSortAscending = query.IsSortAscending
 			});
 
 			if(query == null) {
-				settings.Filters.Add(new ContentsFilter() { });
-				return Ok(await ProcessRequest(query, settings));
+				find.Filters.Add(new ContentsFilter() { });
+				return Ok(await ProcessRequest(
+					query, find,
+					DefaultContentDTOFactory));
 			}
 
 			if(query.CreatorIds != null && query.CreatorIds.Count > 0) {
 				if(query.IsCreatorRelated) {
-					settings.Filters.Add(new CreatorRelatedContentsFilter() {
+					find.Filters.Add(new CreatorRelatedContentsFilter() {
 						IsCreatorsInclude = query.IsCreatorsInclude,
 						CreatorIds = query.CreatorIds,
 						CreatorNames = query.CreatorNames,
@@ -80,7 +78,7 @@ namespace VirtualHole.API.Controllers
 						CreatorSocialUrls = query.CreatorSocialUrls
 					});
 				} else {
-					settings.Filters.Add(new CreatorContentsFilter() {
+					find.Filters.Add(new CreatorContentsFilter() {
 						IsCreatorsInclude = query.IsCreatorsInclude,
 						CreatorIds = query.CreatorIds
 					});
@@ -99,80 +97,52 @@ namespace VirtualHole.API.Controllers
 				contentsFilter.ContentType = query.ContentType;
 			}
 
-			settings.Filters.Add(contentsFilter);
+			contentsFilter.IsCheckForAffiliations = query.IsCheckCreatorAffiliations;
+			contentsFilter.Affiliations = query.CreatorAffiliations;
 
-			return Ok(await ProcessRequest(query, settings));
+			find.Filters.Add(contentsFilter);
+
+			return Ok(await ProcessRequest(
+				query, find,
+				DefaultContentDTOFactory));
 		}
 
-		private async Task<CreatorContentsFilter> CreateCreatorContentsFilter(ContentQuery query)
+		private object DefaultContentDTOFactory(ContentQuery query, Content content)
 		{
-			CreatorContentsFilter filter = new CreatorContentsFilter();
-			if(query.IsCheckCreatorAffiliations) {
-				FindResults<Creator> creatorFindResults = await creatorClient.FindCreatorsAsync(new FindSettings {
-					Filters = new List<FindFilter>() {
-						new CreatorsFilter {
-							IsCheckForAffiliations = true,
-							Affiliations = new List<string>(query.CreatorAffiliations)
-						}
-					}
-				});
-				await creatorFindResults.MoveNextAsync();
-			} else {
-				filter.IsCreatorsInclude = query.IsCreatorsInclude;
-				filter.CreatorIds = query.CreatorIds;
+			string creationDateDisplay = string.Empty;
+			string scheduleDateDisplay = string.Empty;
+
+			if(query.Timestamp != DateTimeOffset.MinValue && !string.IsNullOrEmpty(query.Locale)) {
+				creationDateDisplay = content.CreationDate.Humanize(query.Timestamp, new CultureInfo(query.Locale));
 			}
 
-			return filter;
+			return new {
+				content,
+				creationDateDisplay,
+				scheduleDateDisplay
+			};
 		}
 
-		private async Task<List<ContentDTO>> ProcessRequest<T>(ContentQuery query, T request)
+		private async Task<List<object>> ProcessRequest<T>(
+			ContentQuery query, T find,
+			Func<ContentQuery, Content, object> contentFactory)
 			where T : FindSettings
 		{
-			List<ContentDTO> results = new List<ContentDTO>();
+			if(contentFactory != null) { throw new NullReferenceException(); }
+
+			List<object> results = new List<object>();
 			if(query == null) { return results; }
 			else {
-				request.Page = query.Page;
-				request.PageSize = query.PageSize;
-				request.MaxPages = query.MaxPages;
+				find.Page = query.Page;
+				find.PageSize = query.PageSize;
+				find.MaxPages = query.MaxPages;
 			}
 
-			FindResults<Content> contentFindResults = await contentClient.FindContentsAsync(request);
+			FindResults<Content> contentFindResults = await contentClient.FindContentsAsync(find);
 			await contentFindResults.MoveNextAsync();
 
-			FindResults<Creator> creatorFindResults = await creatorClient.FindCreatorsAsync(new FindSettings {
-				Filters = new List<FindFilter>() {
-					new CreatorsStrictFilter {
-						Id = new List<string>(contentFindResults.Current.Select(c => c.CreatorId))
-					}
-				}
-			});
-			await creatorFindResults.MoveNextAsync();
-
-			Dictionary<string, Creator> creators = new Dictionary<string, Creator>();
-			foreach(Creator creatorFindResult in creatorFindResults.Current) {
-				creators[creatorFindResult.Id] = creatorFindResult;
-			}
-
-			foreach(Content findResult in contentFindResults.Current) {
-				Creator creator = creators[findResult.CreatorId];
-				CreatorSocial creatorSocial = creator.Socials.FirstOrDefault(s => s.SocialType == findResult.SocialType);
-
-				ContentDTO contentDTO = new ContentDTO {
-					Content = findResult,
-					CreatorSocialId = creatorSocial.Id,
-					CreatorSocialName = creatorSocial.Name,
-					CreatorAvatarUrl = creator.AvatarUrl
-				};
-
-				if(query.Timestamp != DateTimeOffset.MinValue && !string.IsNullOrEmpty(query.Locale)) {
-					contentDTO.CreationDateDisplay = findResult.CreationDate.Humanize(query.Timestamp, new CultureInfo(query.Locale));
-
-					if(findResult is YouTubeBroadcast youTubeBroadcast) {
-						contentDTO.ScheduleDateDisplay = youTubeBroadcast.ScheduleDate.Humanize(query.Timestamp, new CultureInfo(query.Locale));
-					}
-				}
-
-				results.Add(contentDTO);			
+			foreach(Content content in contentFindResults.Current) {
+				results.Add(contentFactory(query, content));
 			}
 
 			return results;
