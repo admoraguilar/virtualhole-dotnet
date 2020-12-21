@@ -32,7 +32,9 @@ namespace VirtualHole.DB.Creators
 					bson.Add(nameof(Creator.IsGroup).ToCamelCase(), IsGroup);
 				}
 
-				if(IsCheckForDepth) { bson.Add(nameof(Creator.Depth).ToCamelCase(), 0); }
+				if(IsCheckForDepth) { 
+					bson.Add(nameof(Creator.Depth).ToCamelCase(), 0); 
+				}
 
 				return bson;
 			}

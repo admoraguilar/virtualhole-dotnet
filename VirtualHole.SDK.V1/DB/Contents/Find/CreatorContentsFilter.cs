@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using MongoDB.Bson;
 using Midnight;
+using VirtualHole.DB.Creators;
 
 namespace VirtualHole.DB.Contents
 {
@@ -21,8 +22,8 @@ namespace VirtualHole.DB.Contents
 
 				if(CreatorIds != null) {
 					bson.Add(
-						nameof(Content.CreatorId).ToCamelCase(),
-						new BsonDocument(IsCreatorsInclude ? "$in" : "$nin", new BsonArray(CreatorIds)));
+						$"{nameof(Content.Creator).ToCamelCase()}.{nameof(CreatorSimple.Id).ToCamelCase()}",
+						new BsonDocument(IsCreatorsInclude ? "$in" : "$nin", new BsonArray(CreatorIds)));;
 				}
 
 				return bson;

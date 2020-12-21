@@ -213,7 +213,6 @@
     <Compile Include="Models\DTO\ContentDTO.cs" />
     <Compile Include="Models\Query\ContentQuery.cs" />
     <Compile Include="Models\Query\CreatorQuery.cs" />
-    <Compile Include="Models\Common\FindSettingsExtensions.cs" />
     <Compile Include="Models\Query\APIQuery.cs" />
     <Compile Include="Models\Query\PagedQuery.cs" />
     <Compile Include="Models\Query\ResourcesQuery.cs" />

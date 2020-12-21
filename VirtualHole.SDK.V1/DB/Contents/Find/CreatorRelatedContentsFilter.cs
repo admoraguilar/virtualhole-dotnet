@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using MongoDB.Bson;
 using Midnight;
+using VirtualHole.DB.Creators;
 
 namespace VirtualHole.DB.Contents
 {
@@ -26,7 +27,7 @@ namespace VirtualHole.DB.Contents
 				BsonArray andExpressions = new BsonArray();
 				andExpressions.Add(
 					new BsonDocument(
-						nameof(Content.CreatorId).ToCamelCase(),
+						$"{nameof(Content.Creator).ToCamelCase()}.{nameof(CreatorSimple.Id).ToCamelCase()}",
 						new BsonDocument("$not", new BsonDocument(IsCreatorsInclude ? "$in" : "$nin", new BsonArray(CreatorIds)))));
 				andExpressions.Add(
 					new BsonDocument("$text",

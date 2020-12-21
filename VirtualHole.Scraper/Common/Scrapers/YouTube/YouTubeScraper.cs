@@ -43,12 +43,12 @@ namespace VirtualHole.Scraper
 		}
 
 		public async Task<List<YouTubeVideo>> GetChannelVideosAsync(
-			Creator creator, string channelUrl,
+			Creator creator, CreatorSocial creatorSocial,
 			GetChannelVideoSettings settings = null)
 		{
 			List<YouTubeVideo> results = new List<YouTubeVideo>();
 
-			IReadOnlyList<Video> videos = await client.Channels.GetUploadsAsync(channelUrl);
+			IReadOnlyList<Video> videos = await client.Channels.GetUploadsAsync(creatorSocial.Url);
 			DateTimeOffset uploadDateAnchor = default;
 			foreach(Video video in videos) {
 				// We process the video date because sometimes
@@ -84,7 +84,7 @@ namespace VirtualHole.Scraper
 					Title = video.Title,
 					Id = video.Id,
 					Url = video.Url,
-					CreatorId = creator.Id,
+					Creator = new CreatorSimple(creator, creatorSocial),
 					CreationDate = uploadDateAnchor,
 					Tags = video.Keywords.ToList(),
 					ThumbnailUrl = video.Thumbnails.MediumResUrl,
@@ -99,29 +99,29 @@ namespace VirtualHole.Scraper
 			return results;
 		}
 
-		public async Task<List<YouTubeBroadcast>> GetChannelLiveBroadcastsAsync(Creator creator, string channelUrl)
+		public async Task<List<YouTubeBroadcast>> GetChannelLiveBroadcastsAsync(Creator creator, CreatorSocial creatorSocial)
 		{
-			return await GetChannelBroadcastsAsync(creator, channelUrl, BroadcastType.Now);
+			return await GetChannelBroadcastsAsync(creator, creatorSocial, BroadcastType.Now);
 		}
 
-		public async Task<List<YouTubeBroadcast>> GetChannelUpcomingBroadcastsAsync(Creator creator, string channelUrl)
+		public async Task<List<YouTubeBroadcast>> GetChannelUpcomingBroadcastsAsync(Creator creator, CreatorSocial creatorSocial)
 		{
-			return await GetChannelBroadcastsAsync(creator, channelUrl, BroadcastType.Upcoming);
+			return await GetChannelBroadcastsAsync(creator, creatorSocial, BroadcastType.Upcoming);
 		}
 
 		private async Task<List<YouTubeBroadcast>> GetChannelBroadcastsAsync(
-			Creator creator, string channelUrl,
+			Creator creator, CreatorSocial creatorSocial,
 			BroadcastType type)
 		{
 			List<YouTubeBroadcast> results = new List<YouTubeBroadcast>();
 
-			IReadOnlyList<Video> broadcasts = await client.Channels.GetBroadcastsAsync(channelUrl, type);
+			IReadOnlyList<Video> broadcasts = await client.Channels.GetBroadcastsAsync(creatorSocial.Url, type);
 			foreach(Broadcast broadcast in broadcasts.Select(v => v as Broadcast)) {
 				results.Add(new YouTubeBroadcast() {
 					Title = broadcast.Title,
 					Id = broadcast.Id,
 					Url = broadcast.Url,
-					CreatorId = creator.Id,
+					Creator = new CreatorSimple(creator, creatorSocial),
 					CreationDate = broadcast.UploadDate,
 					Tags = broadcast.Keywords.ToList(),
 					ThumbnailUrl = broadcast.Thumbnails.MediumResUrl,

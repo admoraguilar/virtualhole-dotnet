@@ -5,7 +5,7 @@ using MongoDB.Bson;
 
 namespace VirtualHole.DB
 {
-	public abstract class FindSettings
+	public class FindSettings
 	{
 		public List<FindFilter> Filters { get; set; } = new List<FindFilter>();
 		public List<FindSort> Sorts { get; set; } = new List<FindSort>();

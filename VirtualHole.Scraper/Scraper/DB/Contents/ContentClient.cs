@@ -48,17 +48,17 @@ namespace VirtualHole.Scraper.Contents
 						Task.Run(async () => {
 							contents.AddRange(await ProcessSocialVideo(
 							   youtube, "Videos",
-							   (CreatorSocial yt) => scraperClient.Youtube.Get().GetChannelVideosAsync(creator, yt.Url, channelVideoSettings)));
+							   (CreatorSocial yt) => scraperClient.Youtube.Get().GetChannelVideosAsync(creator, yt, channelVideoSettings)));
 						}),
 						Task.Run(async () => {
 							contents.AddRange(await ProcessSocialVideo(
 							   youtube, "Scheduled",
-							   (CreatorSocial yt) => scraperClient.Youtube.Get().GetChannelUpcomingBroadcastsAsync(creator, yt.Url)));
+							   (CreatorSocial yt) => scraperClient.Youtube.Get().GetChannelUpcomingBroadcastsAsync(creator, yt)));
 						}),
 						Task.Run(async () => {
 							contents.AddRange(await ProcessSocialVideo(
 								youtube, "Live",
-								(CreatorSocial yt) => scraperClient.Youtube.Get().GetChannelLiveBroadcastsAsync(creator, yt.Url)));
+								(CreatorSocial yt) => scraperClient.Youtube.Get().GetChannelLiveBroadcastsAsync(creator, yt)));
 						})
 					);
 				}
