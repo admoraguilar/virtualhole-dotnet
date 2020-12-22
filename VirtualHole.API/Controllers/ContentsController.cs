@@ -34,7 +34,7 @@ namespace VirtualHole.API.Controllers
 
 			find.Sorts.Add(new ContentsSort {
 				SortMode = SortMode.ByCreationDate,
-				IsSortAscending = query.IsSortAscending
+				IsSortAscending = query != null ? query.IsSortAscending : false
 			});
 
 			if(query != null) {
@@ -60,7 +60,7 @@ namespace VirtualHole.API.Controllers
 
 			find.Sorts.Add(new ContentsSort {
 				SortMode = SortMode.ByCreationDate,
-				IsSortAscending = query.IsSortAscending
+				IsSortAscending = query != null ? query.IsSortAscending : false
 			});
 
 			if(query != null) {
@@ -85,10 +85,17 @@ namespace VirtualHole.API.Controllers
 
 			find.Sorts.Add(new ContentsSort {
 				SortMode = SortMode.ByCreationDate,
-				IsSortAscending = query.IsSortAscending
+				IsSortAscending = query != null ? query.IsSortAscending : false
+			});
+
+			find.Filters.Add(new BroadcastContentsFilter() {
+				IsLive = true
 			});
 
 			if(query != null) {
+				query.IsContentTypeInclude = true;
+				query.ContentType = new List<string>() { "broadcast" };
+
 				query.IsCheckCreatorAffiliations = true;
 				query.IsAffiliationsAll = false;
 				query.IsAffiliationsInclude = false;
@@ -111,10 +118,17 @@ namespace VirtualHole.API.Controllers
 
 			find.Sorts.Add(new ContentsSort {
 				SortMode = SortMode.BySchedule,
-				IsSortAscending = query.IsSortAscending
+				IsSortAscending = query != null ? query.IsSortAscending : false
+			});
+
+			find.Filters.Add(new BroadcastContentsFilter() {
+				IsLive = false
 			});
 
 			if(query != null) {
+				query.IsContentTypeInclude = true;
+				query.ContentType = new List<string>() { "broadcast" };
+
 				query.IsCheckCreatorAffiliations = true;
 				query.IsAffiliationsAll = false;
 				query.IsAffiliationsInclude = false;
@@ -137,7 +151,7 @@ namespace VirtualHole.API.Controllers
 
 			find.Sorts.Add(new ContentsSort {
 				SortMode = SortMode.ByCreationDate,
-				IsSortAscending = query.IsSortAscending
+				IsSortAscending = query != null ? query.IsSortAscending : false
 			});
 
 			return await GetContent(find, query, VideoContentDTOFactory);
@@ -231,7 +245,7 @@ namespace VirtualHole.API.Controllers
 			Func<ContentQuery, Content, object> contentFactory)
 			where T : FindSettings
 		{
-			if(contentFactory != null) { throw new NullReferenceException(); }
+			if(contentFactory == null) { throw new NullReferenceException(); }
 
 			List<object> results = new List<object>();
 			if(query == null) { return results; }
