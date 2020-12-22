@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Web.Http;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using VirtualHole.API.Services;
 
 namespace VirtualHole.API.Controllers
 {
-	public class CreatorsController : ApiController
+	public partial class CreatorsController : ApiController
     {
 		private CreatorClient creatorClient => dbService.Client.Creators;
 		private VirtualHoleDBService dbService = null;
@@ -29,7 +30,10 @@ namespace VirtualHole.API.Controllers
 			FindSettings find = new FindSettings();
 			if(query == null) {
 				find.Filters.Add(new CreatorsFilter() { });
-				return Ok(await ProcessQuery(query, find));
+				return Ok(await ControllerUtilities.ProcessPagedQuery(
+					query, find,
+					() => creatorClient.FindCreatorsAsync(find),
+					CreatorFactory));
 			}
 
 			if(string.IsNullOrEmpty(query.Search)) {
@@ -42,25 +46,15 @@ namespace VirtualHole.API.Controllers
 				});
 			}
 
-			return Ok(await ProcessQuery(query, find));
-		}
-
-		private async Task<List<Creator>> ProcessQuery<T>(CreatorQuery query, T find)
-			where T : FindSettings
-		{
-			List<Creator> results = new List<Creator>();
-			if(query == null) { return results; }
-			else {
-				find.Page = query.Page;
-				find.PageSize = query.PageSize;
-				find.MaxPages = query.MaxPages;
-			}
-
-			FindResults<Creator> findResults = await creatorClient.FindCreatorsAsync(find);
-			await findResults.MoveNextAsync();
-			results.AddRange(findResults.Current);
-
-			return results;
+			return Ok(await ControllerUtilities.ProcessPagedQuery(
+				query, find,
+				() => creatorClient.FindCreatorsAsync(find),
+				CreatorFactory));
 		}
     }
+
+	public partial class CreatorsController
+	{
+		private static object CreatorFactory(CreatorQuery query, Creator creator) => creator;
+	}
 }

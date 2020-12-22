@@ -13,12 +13,12 @@ using VirtualHole.API.Services;
 
 namespace VirtualHole.API.Controllers
 {
-	public class ContentsController : ApiController
+	public partial class ContentsController : ApiController
     {
 		private string affiliationCommunity => "Community";
 
-		private CreatorClient creatorClient => dbService.Client.Creators;
-		private ContentClient contentClient => dbService.Client.Contents;
+		private CreatorClient creatorsClient => dbService.Client.Creators;
+		private ContentClient contentsClient => dbService.Client.Contents;
 		private VirtualHoleDBService dbService = null;
 
 		public ContentsController()
@@ -49,7 +49,7 @@ namespace VirtualHole.API.Controllers
 				}
 			}
 		
-			return await GetContent(find, query, VideoContentDTOFactory);
+			return await GetContent(find, query, ContentDTOFactory);
 		}
 
 		[Route("api/v1/contents/community")]
@@ -74,7 +74,7 @@ namespace VirtualHole.API.Controllers
 				}
 			}
 
-			return await GetContent(find, query, VideoContentDTOFactory);
+			return await GetContent(find, query, ContentDTOFactory);
 		}
 
 		[Route("api/v1/contents/live")]
@@ -107,7 +107,7 @@ namespace VirtualHole.API.Controllers
 				}
 			}
 
-			return await GetContent(find, query, VideoContentDTOFactory);
+			return await GetContent(find, query, ContentDTOFactory);
 		}
 
 		[Route("api/v1/contents/scheduled")]
@@ -140,7 +140,7 @@ namespace VirtualHole.API.Controllers
 				}
 			}
 
-			return await GetContent(find, query, BroadcastContentDTOFactory);
+			return await GetContent(find, query, ContentDTOFactory);
 		}
 
 		[Route("api/v1/contents")]
@@ -154,7 +154,7 @@ namespace VirtualHole.API.Controllers
 				IsSortAscending = query != null ? query.IsSortAscending : false
 			});
 
-			return await GetContent(find, query, VideoContentDTOFactory);
+			return await GetContent(find, query, ContentDTOFactory);
 		}
 
 		private async Task<IHttpActionResult> GetContent(
@@ -163,9 +163,10 @@ namespace VirtualHole.API.Controllers
 		{
 			if(query == null) {
 				find.Filters.Add(new ContentsFilter() { });
-				return Ok(await ProcessQuery(
+				return Ok(await ControllerUtilities.ProcessPagedQuery(
 					query, find,
-					VideoContentDTOFactory));
+					() => contentsClient.FindContentsAsync(find),
+					ContentDTOFactory));
 			}
 
 			if(query.CreatorIds != null && query.CreatorIds.Count > 0) {
@@ -204,65 +205,43 @@ namespace VirtualHole.API.Controllers
 
 			find.Filters.Add(contentsFilter);
 
-			return Ok(await ProcessQuery(query, find, contentFactory));
+			return Ok(await ControllerUtilities.ProcessPagedQuery(
+				query, find, 
+				() => contentsClient.FindContentsAsync(find),
+				contentFactory
+			));
 		}
+	}
 
-		private object VideoContentDTOFactory(ContentQuery query, Content content)
-		{
-			string creationDateDisplay = string.Empty;
-
-			if(query.Timestamp != DateTimeOffset.MinValue && !string.IsNullOrEmpty(query.Locale)) {
-				creationDateDisplay = content.CreationDate.Humanize(query.Timestamp, new CultureInfo(query.Locale));
-			}
-
-			return new {
-				content,
-				creationDateDisplay
-			};
-		}
-
-		private object BroadcastContentDTOFactory(ContentQuery query, Content content)
+	public partial class ContentsController
+	{
+		private static object ContentDTOFactory(ContentQuery query, Content content)
 		{
 			string creationDateDisplay = string.Empty;
 			string scheduleDateDisplay = string.Empty;
 
+			bool isBroadcast = false;
+
 			if(query.Timestamp != DateTimeOffset.MinValue && !string.IsNullOrEmpty(query.Locale)) {
 				creationDateDisplay = content.CreationDate.Humanize(query.Timestamp, new CultureInfo(query.Locale));
 				if(content is YouTubeBroadcast youTubeBroadcast) {
+					isBroadcast = true;
 					scheduleDateDisplay = youTubeBroadcast.ScheduleDate.Humanize(query.Timestamp, new CultureInfo(query.Locale));
 				}
 			}
 
-			return new {
-				content,
-				creationDateDisplay,
-				scheduleDateDisplay
-			};
-		}
-
-		private async Task<List<object>> ProcessQuery<T>(
-			ContentQuery query, T find,
-			Func<ContentQuery, Content, object> contentFactory)
-			where T : FindSettings
-		{
-			if(contentFactory == null) { throw new NullReferenceException(); }
-
-			List<object> results = new List<object>();
-			if(query == null) { return results; }
-			else {
-				find.Page = query.Page;
-				find.PageSize = query.PageSize;
-				find.MaxPages = query.MaxPages;
+			if(isBroadcast) {
+				return new {
+					content,
+					creationDateDisplay,
+					scheduleDateDisplay
+				};
+			} else {
+				return new {
+					content,
+					creationDateDisplay,
+				};
 			}
-
-			FindResults<Content> contentFindResults = await contentClient.FindContentsAsync(find);
-			await contentFindResults.MoveNextAsync();
-
-			foreach(Content content in contentFindResults.Current) {
-				results.Add(contentFactory(query, content));
-			}
-
-			return results;
 		}
 	}
 }
