@@ -8,7 +8,7 @@ using Midnight;
 
 namespace VirtualHole.DB.Contents
 {
-	public class ContentClient
+	public class ContentsClient
 	{
 		internal const string ContentCollectionName = "content";
 
@@ -16,7 +16,7 @@ namespace VirtualHole.DB.Contents
 		private IMongoCollection<Content> contentCollection = null;
 		private IMongoCollection<BsonDocument> contentBsonCollection = null;
 
-		internal ContentClient(IMongoDatabase database)
+		internal ContentsClient(IMongoDatabase database)
 		{
 			this.database = database;
 			contentCollection = this.database.GetCollection<Content>(ContentCollectionName);

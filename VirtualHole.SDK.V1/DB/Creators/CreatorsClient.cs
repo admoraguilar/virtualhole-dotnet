@@ -8,7 +8,7 @@ using Midnight;
 
 namespace VirtualHole.DB.Creators
 {
-	public class CreatorClient
+	public class CreatorsClient
 	{
 		internal const string CreatorsCollectionName = "creators";
 
@@ -16,7 +16,7 @@ namespace VirtualHole.DB.Creators
 		private IMongoCollection<Creator> creatorCollection = null;
 		private IMongoCollection<BsonDocument> creatorBsonCollection = null;
 
-		internal CreatorClient(IMongoDatabase database)
+		internal CreatorsClient(IMongoDatabase database)
 		{
 			this.database = database;
 			creatorCollection = this.database.GetCollection<Creator>(CreatorsCollectionName);

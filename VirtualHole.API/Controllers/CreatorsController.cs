@@ -13,7 +13,7 @@ namespace VirtualHole.API.Controllers
 {
 	public partial class CreatorsController : ApiController
     {
-		private CreatorClient creatorClient => dbService.Client.Creators;
+		private CreatorsClient creatorClient => dbService.Client.Creators;
 		private VirtualHoleDBService dbService = null;
 
 		public CreatorsController()

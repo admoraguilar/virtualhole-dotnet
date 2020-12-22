@@ -6,8 +6,8 @@ namespace VirtualHole.DB
 {
 	public class VirtualHoleDBClient
 	{
-		public ContentClient Contents { get; private set; } = null;
-		public CreatorClient Creators { get; private set; } = null;
+		public ContentsClient Contents { get; private set; } = null;
+		public CreatorsClient Creators { get; private set; } = null;
 
 		private IMongoClient _client = null;
 		private IMongoDatabase _rootDatabase = null;
@@ -33,8 +33,8 @@ namespace VirtualHole.DB
 			_client = ClientFactory.GetMongoClient(connection);
 			_rootDatabase = _client.GetDatabase(rootDatabaseName);
 
-			Contents = new ContentClient(_rootDatabase);
-			Creators = new CreatorClient(_rootDatabase);
+			Contents = new ContentsClient(_rootDatabase);
+			Creators = new CreatorsClient(_rootDatabase);
 		}
 	}
 }

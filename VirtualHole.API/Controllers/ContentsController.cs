@@ -7,7 +7,6 @@ using System.Globalization;
 using Humanizer;
 using VirtualHole.DB;
 using VirtualHole.DB.Contents;
-using VirtualHole.DB.Creators;
 using VirtualHole.API.Models;
 using VirtualHole.API.Services;
 
@@ -17,8 +16,7 @@ namespace VirtualHole.API.Controllers
     {
 		private string affiliationCommunity => "Community";
 
-		private CreatorClient creatorsClient => dbService.Client.Creators;
-		private ContentClient contentsClient => dbService.Client.Contents;
+		private ContentsClient contentsClient => dbService.Client.Contents;
 		private VirtualHoleDBService dbService = null;
 
 		public ContentsController()
