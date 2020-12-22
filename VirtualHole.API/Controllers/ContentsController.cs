@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Web.Http;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -35,19 +34,24 @@ namespace VirtualHole.API.Controllers
 				IsSortAscending = query != null ? query.IsSortAscending : false
 			});
 
-			if(query != null) {
-				query.IsCheckCreatorAffiliations = true;
-				query.IsAffiliationsAll = false;
-				query.IsAffiliationsInclude = false;
-
-				if(query.CreatorAffiliations != null) {
-					query.CreatorAffiliations.Add(affiliationCommunity);
-				} else {
-					query.CreatorAffiliations = new List<string>() { affiliationCommunity };
-				}
+			if(query == null) {
+				query = new ContentQuery();
 			}
-		
-			return await GetContent(find, query, ContentDTOFactory);
+
+			query.IsContentTypeInclude = true;
+			query.ContentType = new List<string>() { "video" };
+
+			query.IsCheckCreatorAffiliations = true;
+			query.IsAffiliationsAll = false;
+			query.IsAffiliationsInclude = false;
+
+			if(query.CreatorAffiliations != null) {
+				query.CreatorAffiliations.Add(affiliationCommunity);
+			} else {
+				query.CreatorAffiliations = new List<string>() { affiliationCommunity };
+			}
+
+			return await GetContent(find, query);
 		}
 
 		[Route("api/v1/contents/community")]
@@ -61,18 +65,23 @@ namespace VirtualHole.API.Controllers
 				IsSortAscending = query != null ? query.IsSortAscending : false
 			});
 
-			if(query != null) {
-				query.IsCheckCreatorAffiliations = true;
-				query.IsAffiliationsAll = true;
-
-				if(query.CreatorAffiliations != null) {
-					query.CreatorAffiliations.Add(affiliationCommunity);
-				} else {
-					query.CreatorAffiliations = new List<string>() { affiliationCommunity };
-				}
+			if(query == null) {
+				query = new ContentQuery();
 			}
 
-			return await GetContent(find, query, ContentDTOFactory);
+			query.IsContentTypeInclude = true;
+			query.ContentType = new List<string>() { "video" };
+
+			query.IsCheckCreatorAffiliations = true;
+			query.IsAffiliationsAll = true;
+
+			if(query.CreatorAffiliations != null) {
+				query.CreatorAffiliations.Add(affiliationCommunity);
+			} else {
+				query.CreatorAffiliations = new List<string>() { affiliationCommunity };
+			}
+
+			return await GetContent(find, query);
 		}
 
 		[Route("api/v1/contents/live")]
@@ -90,22 +99,24 @@ namespace VirtualHole.API.Controllers
 				IsLive = true
 			});
 
-			if(query != null) {
-				query.IsContentTypeInclude = true;
-				query.ContentType = new List<string>() { "broadcast" };
-
-				query.IsCheckCreatorAffiliations = true;
-				query.IsAffiliationsAll = false;
-				query.IsAffiliationsInclude = false;
-
-				if(query.CreatorAffiliations != null) {
-					query.CreatorAffiliations.Add(affiliationCommunity);
-				} else {
-					query.CreatorAffiliations = new List<string>() { affiliationCommunity };
-				}
+			if(query == null) {
+				query = new ContentQuery();
 			}
 
-			return await GetContent(find, query, ContentDTOFactory);
+			query.IsContentTypeInclude = true;
+			query.ContentType = new List<string>() { "broadcast" };
+
+			query.IsCheckCreatorAffiliations = true;
+			query.IsAffiliationsAll = false;
+			query.IsAffiliationsInclude = false;
+
+			if(query.CreatorAffiliations != null) {
+				query.CreatorAffiliations.Add(affiliationCommunity);
+			} else {
+				query.CreatorAffiliations = new List<string>() { affiliationCommunity };
+			}
+
+			return await GetContent(find, query);
 		}
 
 		[Route("api/v1/contents/scheduled")]
@@ -123,22 +134,24 @@ namespace VirtualHole.API.Controllers
 				IsLive = false
 			});
 
-			if(query != null) {
-				query.IsContentTypeInclude = true;
-				query.ContentType = new List<string>() { "broadcast" };
-
-				query.IsCheckCreatorAffiliations = true;
-				query.IsAffiliationsAll = false;
-				query.IsAffiliationsInclude = false;
-
-				if(query.CreatorAffiliations != null) {
-					query.CreatorAffiliations.Add(affiliationCommunity);
-				} else {
-					query.CreatorAffiliations = new List<string>() { affiliationCommunity };
-				}
+			if(query == null) {
+				query = new ContentQuery();
 			}
 
-			return await GetContent(find, query, ContentDTOFactory);
+			query.IsContentTypeInclude = true;
+			query.ContentType = new List<string>() { "broadcast" };
+
+			query.IsCheckCreatorAffiliations = true;
+			query.IsAffiliationsAll = false;
+			query.IsAffiliationsInclude = false;
+
+			if(query.CreatorAffiliations != null) {
+				query.CreatorAffiliations.Add(affiliationCommunity);
+			} else {
+				query.CreatorAffiliations = new List<string>() { affiliationCommunity };
+			}
+
+			return await GetContent(find, query);
 		}
 
 		[Route("api/v1/contents")]
@@ -152,21 +165,15 @@ namespace VirtualHole.API.Controllers
 				IsSortAscending = query != null ? query.IsSortAscending : false
 			});
 
-			return await GetContent(find, query, ContentDTOFactory);
-		}
-
-		private async Task<IHttpActionResult> GetContent(
-			FindSettings find, ContentQuery query,
-			Func<ContentQuery, Content, object> contentFactory)
-		{
 			if(query == null) {
-				find.Filters.Add(new ContentsFilter() { });
-				return Ok(await ControllerUtilities.ProcessPagedQuery(
-					query, find,
-					() => contentsClient.FindContentsAsync(find),
-					ContentDTOFactory));
+				query = new ContentQuery();
 			}
 
+			return await GetContent(find, query);
+		}
+
+		private async Task<IHttpActionResult> GetContent(FindSettings find, ContentQuery query)
+		{
 			if(query.CreatorIds != null && query.CreatorIds.Count > 0) {
 				if(query.IsCreatorRelated) {
 					find.Filters.Add(new CreatorRelatedContentsFilter() {
@@ -206,7 +213,7 @@ namespace VirtualHole.API.Controllers
 			return Ok(await ControllerUtilities.ProcessPagedQuery(
 				query, find, 
 				() => contentsClient.FindContentsAsync(find),
-				contentFactory
+				ContentDTOFactory
 			));
 		}
 	}
