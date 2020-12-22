@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using System.Web.Http;
 using System.Threading.Tasks;
 using System.Collections.Generic;
