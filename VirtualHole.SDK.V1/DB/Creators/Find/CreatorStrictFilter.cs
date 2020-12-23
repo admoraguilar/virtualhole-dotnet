@@ -5,13 +5,13 @@ using Midnight;
 
 namespace VirtualHole.DB.Creators
 {
-	public class CreatorsStrictFilter : FindFilter
+	public class CreatorStrictFilter : FindFilter
 	{
 		public List<string> Id { get; set; } = new List<string>();
 		public List<string> Name { get; set; } = new List<string>();
 
 		internal override IEnumerable<Type> ConflictingTypes => new Type[] {
-			typeof(CreatorsRegexFilter)
+			typeof(CreatorRegexFilter)
 		};
 
 		internal override BsonDocument Document 

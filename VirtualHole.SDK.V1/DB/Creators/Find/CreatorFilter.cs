@@ -4,7 +4,7 @@ using Midnight;
 
 namespace VirtualHole.DB.Creators
 {
-	public class CreatorsFilter : FindFilter
+	public class CreatorFilter : FindFilter
 	{
 		public bool IsHidden { get; set; } = false;
 

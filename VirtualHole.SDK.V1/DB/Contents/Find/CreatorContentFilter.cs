@@ -6,13 +6,13 @@ using VirtualHole.DB.Creators;
 
 namespace VirtualHole.DB.Contents
 {
-	public class CreatorContentsFilter : FindFilter
+	public class CreatorContentFilter : FindFilter
 	{
 		public bool IsCreatorsInclude { get; set; } = true;
 		public List<string> CreatorIds { get; set; } = new List<string>();
 
 		internal override IEnumerable<Type> ConflictingTypes => new Type[] {
-			typeof(CreatorRelatedContentsFilter)
+			typeof(CreatorRelatedContentFilter)
 		};
 
 		internal override BsonDocument Document

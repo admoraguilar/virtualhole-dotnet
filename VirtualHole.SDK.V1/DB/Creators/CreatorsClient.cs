@@ -13,28 +13,28 @@ namespace VirtualHole.DB.Creators
 		internal const string CreatorsCollectionName = "creators";
 
 		private IMongoDatabase database = null;
-		private IMongoCollection<Creator> creatorCollection = null;
-		private IMongoCollection<BsonDocument> creatorBsonCollection = null;
+		private IMongoCollection<Creator> creatorsCollection = null;
+		private IMongoCollection<BsonDocument> creatorsBsonCollection = null;
 
 		internal CreatorsClient(IMongoDatabase database)
 		{
 			this.database = database;
-			creatorCollection = this.database.GetCollection<Creator>(CreatorsCollectionName);
-			creatorBsonCollection = this.database.GetCollection<BsonDocument>(CreatorsCollectionName);
+			creatorsCollection = this.database.GetCollection<Creator>(CreatorsCollectionName);
+			creatorsBsonCollection = this.database.GetCollection<BsonDocument>(CreatorsCollectionName);
 		}
 
 		public async Task<FindResults<Creator>> FindCreatorsAsync(
 			FindSettings settings = default, CancellationToken cancellationToken = default)
 		{
 			return new FindResults<Creator>(
-				await MongoDBUtilities.FindAsync(creatorCollection, settings, cancellationToken));
+				await MongoDBUtilities.FindAsync(creatorsCollection, settings, cancellationToken));
 		}
 
 		public async Task UpsertCreatorAsync(
 			Creator creator, CancellationToken cancellationToken = default)
 		{
 			await MongoDBUtilities.UpsertAsync(
-				creatorCollection,
+				creatorsCollection,
 				new BsonDocument(nameof(Creator.Id).ToCamelCase(), creator.Id),
 				creator, cancellationToken);
 		}
@@ -43,7 +43,7 @@ namespace VirtualHole.DB.Creators
 			IEnumerable<Creator> creators, CancellationToken cancellationToken = default)
 		{
 			await MongoDBUtilities.UpsertManyAndDeleteDanglingAsync(
-				creatorBsonCollection,
+				creatorsBsonCollection,
 				(Creator creator) => new BsonDocument(nameof(Creator.Id).ToCamelCase(), creator.Id),
 				creators, DateTimeOffset.UtcNow.DateTime, cancellationToken);
 		}
@@ -52,7 +52,7 @@ namespace VirtualHole.DB.Creators
 			IEnumerable<Creator> creators, CancellationToken cancellationToken = default)
 		{
 			await MongoDBUtilities.UpsertManyAsync(
-				creatorBsonCollection,
+				creatorsBsonCollection,
 				(Creator creator) => new BsonDocument(nameof(Creator.Id).ToCamelCase(), creator.Id),
 				creators, DateTimeOffset.UtcNow.DateTime, cancellationToken);
 		}	

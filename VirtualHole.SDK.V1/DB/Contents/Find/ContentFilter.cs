@@ -5,7 +5,7 @@ using VirtualHole.DB.Creators;
 
 namespace VirtualHole.DB.Contents
 {
-	public class ContentsFilter : FindFilter
+	public class ContentFilter : FindFilter
 	{
 		public bool IsSocialTypeInclude { get; set; } = true;
 		public List<string> SocialType { get; set; } = new List<string>();

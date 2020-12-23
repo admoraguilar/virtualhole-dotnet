@@ -5,7 +5,7 @@ using MongoDB.Bson;
 
 namespace VirtualHole.DB.Contents
 {
-	public class BroadcastContentsFilter : FindFilter
+	public class BroadcastContentFilter : FindFilter
 	{
 		public bool IsLive { get; set; } = true;
 

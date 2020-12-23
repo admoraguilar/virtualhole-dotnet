@@ -25,48 +25,47 @@ namespace VirtualHole.API.Controllers
 
 		[Route("api/v1/contents/discover")]
 		[HttpGet]
-		public async Task<IHttpActionResult> GetDiscover([FromUri] ContentQuery query)
+		public async Task<IHttpActionResult> GetDiscover([FromUri] ContentsQuery query)
 		{
-			FindSettings find = new FindSettings();
-
-			find.Sorts.Add(new ContentsSort {
-				SortMode = SortMode.ByCreationDate,
-				IsSortAscending = query != null ? query.IsSortAscending : false
-			});
-
 			if(query == null) {
-				query = new ContentQuery();
+				query = new ContentsQuery();
 			}
 
 			query.IsContentTypeInclude = true;
-			query.ContentType = new List<string>() { "video" };
+			query.ContentType = new List<string>() { ContentTypes.Video };
 
 			query.IsCheckCreatorAffiliations = true;
 			query.IsAffiliationsAll = false;
 			query.IsAffiliationsInclude = false;
 
 			if(query.CreatorAffiliations != null) {
-				query.CreatorAffiliations.Add(affiliationCommunity);
+				query.CreatorAffiliations.Add(ContentUtilities.AffiliationCommunity);
 			} else {
-				query.CreatorAffiliations = new List<string>() { affiliationCommunity };
+				query.CreatorAffiliations = new List<string>() { ContentUtilities.AffiliationCommunity };
 			}
 
-			return await GetContent(find, query);
+			FindResultsPipeline<ContentsQuery, Content> pipeline = new FindResultsPipeline<ContentsQuery, Content>();
+			pipeline.Query = query;
+			pipeline.Steps.Add(new ContentSortFindStep());
+			pipeline.Steps.Add(new ContentFilterFindStep());
+			pipeline.FindProvider = (FindSettings find) => contentsClient.FindContentsAsync(find);
+			pipeline.ResultFactory = ContentUtilities.ContentDTOFactory;
+			return Ok(await pipeline.ExecuteAsync());
 		}
 
 		[Route("api/v1/contents/community")]
 		[HttpGet]
-		public async Task<IHttpActionResult> GetCommunity([FromUri] ContentQuery query)
+		public async Task<IHttpActionResult> GetCommunity([FromUri] ContentsQuery query)
 		{
 			FindSettings find = new FindSettings();
 
-			find.Sorts.Add(new ContentsSort {
+			find.Sorts.Add(new ContentSort {
 				SortMode = SortMode.ByCreationDate,
 				IsSortAscending = query != null ? query.IsSortAscending : false
 			});
 
 			if(query == null) {
-				query = new ContentQuery();
+				query = new ContentsQuery();
 			}
 
 			query.IsContentTypeInclude = true;
@@ -86,21 +85,21 @@ namespace VirtualHole.API.Controllers
 
 		[Route("api/v1/contents/live")]
 		[HttpGet]
-		public async Task<IHttpActionResult> GetLive([FromUri] ContentQuery query)
+		public async Task<IHttpActionResult> GetLive([FromUri] ContentsQuery query)
 		{
 			FindSettings find = new FindSettings();
 
-			find.Sorts.Add(new ContentsSort {
+			find.Sorts.Add(new ContentSort {
 				SortMode = SortMode.ByCreationDate,
 				IsSortAscending = query != null ? query.IsSortAscending : false
 			});
 
-			find.Filters.Add(new BroadcastContentsFilter() {
+			find.Filters.Add(new BroadcastContentFilter() {
 				IsLive = true
 			});
 
 			if(query == null) {
-				query = new ContentQuery();
+				query = new ContentsQuery();
 			}
 
 			query.IsContentTypeInclude = true;
@@ -121,21 +120,21 @@ namespace VirtualHole.API.Controllers
 
 		[Route("api/v1/contents/scheduled")]
 		[HttpGet]
-		public async Task<IHttpActionResult> GetScheduled([FromUri] ContentQuery query)
+		public async Task<IHttpActionResult> GetScheduled([FromUri] ContentsQuery query)
 		{
 			FindSettings find = new FindSettings();
 
-			find.Sorts.Add(new ContentsSort {
+			find.Sorts.Add(new ContentSort {
 				SortMode = SortMode.BySchedule,
 				IsSortAscending = query != null ? query.IsSortAscending : false
 			});
 
-			find.Filters.Add(new BroadcastContentsFilter() {
+			find.Filters.Add(new BroadcastContentFilter() {
 				IsLive = false
 			});
 
 			if(query == null) {
-				query = new ContentQuery();
+				query = new ContentsQuery();
 			}
 
 			query.IsContentTypeInclude = true;
@@ -156,27 +155,27 @@ namespace VirtualHole.API.Controllers
 
 		[Route("api/v1/contents")]
 		[HttpGet]
-		public async Task<IHttpActionResult> GetContent([FromUri] ContentQuery query)
+		public async Task<IHttpActionResult> GetContent([FromUri] ContentsQuery query)
 		{
 			FindSettings find = new FindSettings();
 
-			find.Sorts.Add(new ContentsSort {
+			find.Sorts.Add(new ContentSort {
 				SortMode = SortMode.ByCreationDate,
 				IsSortAscending = query != null ? query.IsSortAscending : false
 			});
 
 			if(query == null) {
-				query = new ContentQuery();
+				query = new ContentsQuery();
 			}
 
 			return await GetContent(find, query);
 		}
 
-		private async Task<IHttpActionResult> GetContent(FindSettings find, ContentQuery query)
+		private async Task<IHttpActionResult> GetContent(FindSettings find, ContentsQuery query)
 		{
 			if(query.CreatorIds != null && query.CreatorIds.Count > 0) {
 				if(query.IsCreatorRelated) {
-					find.Filters.Add(new CreatorRelatedContentsFilter() {
+					find.Filters.Add(new CreatorRelatedContentFilter() {
 						IsCreatorsInclude = query.IsCreatorsInclude,
 						CreatorIds = query.CreatorIds,
 						CreatorNames = query.CreatorNames,
@@ -184,14 +183,14 @@ namespace VirtualHole.API.Controllers
 						CreatorSocialUrls = query.CreatorSocialUrls
 					});
 				} else {
-					find.Filters.Add(new CreatorContentsFilter() {
+					find.Filters.Add(new CreatorContentFilter() {
 						IsCreatorsInclude = query.IsCreatorsInclude,
 						CreatorIds = query.CreatorIds
 					});
 				}
 			}
 
-			ContentsFilter contentsFilter = new ContentsFilter();
+			ContentFilter contentsFilter = new ContentFilter();
 
 			if(query.SocialType != null && query.SocialType.Count > 0) {
 				contentsFilter.IsSocialTypeInclude = query.IsSocialTypeInclude;
@@ -220,7 +219,7 @@ namespace VirtualHole.API.Controllers
 
 	public partial class ContentsController
 	{
-		private static object ContentDTOFactory(ContentQuery query, Content content)
+		private static object ContentDTOFactory(ContentsQuery query, Content content)
 		{
 			string creationDateDisplay = string.Empty;
 			string scheduleDateDisplay = string.Empty;

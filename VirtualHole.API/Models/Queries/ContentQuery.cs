@@ -2,7 +2,7 @@
 
 namespace VirtualHole.API.Models
 {
-	public class ContentQuery : PagedQuery
+	public class ContentsQuery : PagedQuery
 	{
 		public bool IsSocialTypeInclude { get; set; } = true;
 		public List<string> SocialType { get; set; } = new List<string>();

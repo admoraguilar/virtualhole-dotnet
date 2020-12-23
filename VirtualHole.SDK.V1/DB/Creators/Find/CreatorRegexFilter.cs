@@ -5,7 +5,7 @@ using Midnight;
 
 namespace VirtualHole.DB.Creators
 {
-	public class CreatorsRegexFilter : FindFilter
+	public class CreatorRegexFilter : FindFilter
 	{
 		public List<string> SearchQueries { get; set; } = new List<string>();
 
@@ -16,7 +16,7 @@ namespace VirtualHole.DB.Creators
 		//public bool IsCheckCustomKeywords { get; set; } = true;
 
 		internal override IEnumerable<Type> ConflictingTypes => new Type[] { 
-			typeof(CreatorsStrictFilter) 
+			typeof(CreatorStrictFilter) 
 		};
 
 		internal override BsonDocument Document

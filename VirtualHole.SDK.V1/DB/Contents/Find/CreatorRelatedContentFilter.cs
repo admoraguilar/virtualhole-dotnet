@@ -7,7 +7,7 @@ using VirtualHole.DB.Creators;
 
 namespace VirtualHole.DB.Contents
 {
-	public class CreatorRelatedContentsFilter : FindFilter
+	public class CreatorRelatedContentFilter : FindFilter
 	{
 		public bool IsCreatorsInclude { get; set; } = true;
 		public List<string> CreatorIds { get; set; } = new List<string>();
@@ -16,7 +16,7 @@ namespace VirtualHole.DB.Contents
 		public List<string> CreatorSocialUrls { get; set; } = new List<string>();
 
 		internal override IEnumerable<Type> ConflictingTypes => new Type[] {
-			typeof(CreatorContentsFilter)
+			typeof(CreatorContentFilter)
 		};
 
 		internal override BsonDocument Document

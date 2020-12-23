@@ -3,7 +3,7 @@ using Midnight;
 
 namespace VirtualHole.DB.Contents
 {
-	public class ContentsSort : FindSort
+	public class ContentSort : FindSort
 	{
 		public SortMode SortMode { get; set; } = SortMode.ByCreationDate;
 		public bool IsSortAscending { get; set; } = false;

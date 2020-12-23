@@ -27,24 +27,21 @@ namespace VirtualHole.API.Controllers
 		public async Task<IHttpActionResult> GetCreators([FromUri] CreatorQuery query)
 		{
 			FindSettings find = new FindSettings();
-			if(query == null) {
-				find.Filters.Add(new CreatorsFilter() { });
-				return Ok(await ControllerUtilities.ProcessPagedQuery(
-					query, find,
-					() => creatorClient.FindCreatorsAsync(find),
-					CreatorFactory));
-			}
 
-			if(string.IsNullOrEmpty(query.Search)) {
-				find.Filters.Add(new CreatorsFilter() {	
-					IsCheckForIsGroup = false,
-				});
+			if(query != null) {
+				if(string.IsNullOrEmpty(query.Search)) {
+					find.Filters.Add(new CreatorFilter() {
+						IsCheckForIsGroup = false,
+					});
+				} else {
+					find.Filters.Add(new CreatorRegexFilter() {
+						SearchQueries = new List<string>() { query.Search }
+					});
+				}
 			} else {
-				find.Filters.Add(new CreatorsRegexFilter() {
-					SearchQueries = new List<string>() { query.Search }
-				});
+				find.Filters.Add(new CreatorFilter() { });
 			}
-
+			
 			return Ok(await ControllerUtilities.ProcessPagedQuery(
 				query, find,
 				() => creatorClient.FindCreatorsAsync(find),
