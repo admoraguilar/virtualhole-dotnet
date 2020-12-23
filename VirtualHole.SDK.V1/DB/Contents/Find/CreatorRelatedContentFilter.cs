@@ -1,11 +1,13 @@
 ﻿using System.Linq;
+using System;
 using System.Collections.Generic;
 using MongoDB.Bson;
 using Midnight;
+using VirtualHole.DB.Creators;
 
 namespace VirtualHole.DB.Contents
 {
-	public class FindCreatorRelatedContentSettings : FindContentSettings
+	public class CreatorRelatedContentFilter : FindFilter
 	{
 		public bool IsCreatorsInclude { get; set; } = true;
 		public List<string> CreatorIds { get; set; } = new List<string>();
@@ -13,7 +15,11 @@ namespace VirtualHole.DB.Contents
 		public List<string> CreatorSocialIds { get; set; } = new List<string>();
 		public List<string> CreatorSocialUrls { get; set; } = new List<string>();
 
-		internal override BsonDocument FilterDocument
+		internal override IEnumerable<Type> ConflictingTypes => new Type[] {
+			typeof(CreatorContentFilter)
+		};
+
+		internal override BsonDocument Document
 		{
 			get {
 				BsonDocument bson = new BsonDocument();
@@ -21,14 +27,15 @@ namespace VirtualHole.DB.Contents
 				BsonArray andExpressions = new BsonArray();
 				andExpressions.Add(
 					new BsonDocument(
-						nameof(Content.CreatorId).ToCamelCase(),
+						$"{nameof(Content.Creator).ToCamelCase()}.{nameof(CreatorSimple.Id).ToCamelCase()}",
 						new BsonDocument("$not", new BsonDocument(IsCreatorsInclude ? "$in" : "$nin", new BsonArray(CreatorIds)))));
 				andExpressions.Add(
 					new BsonDocument("$text",
 						new BsonDocument("$search", Join(Concat(CreatorNames, CreatorSocialIds, CreatorSocialUrls)))));
 
 				bson.AddRange(new BsonDocument("$and", andExpressions));
-				return bson.Merge(base.FilterDocument);
+
+				return bson;
 
 				string Join(IEnumerable<string> values) =>
 					string.Join(" ", values);

@@ -4,7 +4,7 @@ using Midnight;
 
 namespace VirtualHole.DB.Creators
 {
-	public class FindCreatorsSettings : FindSettings
+	public class CreatorFilter : FindFilter
 	{
 		public bool IsHidden { get; set; } = false;
 
@@ -15,9 +15,11 @@ namespace VirtualHole.DB.Creators
 		public int Depth { get; set; } = 0;
 
 		public bool IsCheckForAffiliations { get; set; } = false;
+		public bool IsAffiliationsAll { get; set; } = false;
+		public bool IsAffiliationsInclude { get; set; } = true;
 		public List<string> Affiliations { get; set; } = new List<string>();
 
-		internal override BsonDocument FilterDocument
+		internal override BsonDocument Document 
 		{
 			get {
 				BsonDocument bson = new BsonDocument();
@@ -25,19 +27,24 @@ namespace VirtualHole.DB.Creators
 				bson.Add(nameof(Creator.IsHidden).ToCamelCase(), IsHidden);
 
 				if(IsCheckForAffiliations) {
-					bson.Add(nameof(Creator.Affiliations).ToCamelCase(), new BsonDocument("$all", new BsonArray(Affiliations)));
+					string queryOperator = string.Empty;
+
+					if(IsAffiliationsAll) {  queryOperator = "$all"; } 
+					else { queryOperator = IsAffiliationsInclude ? "$in" : "$nin"; }
+					
+					bson.Add(nameof(Creator.Affiliations).ToCamelCase(), new BsonDocument(queryOperator, new BsonArray(Affiliations)));
 				}
 
 				if(IsCheckForIsGroup) {
 					bson.Add(nameof(Creator.IsGroup).ToCamelCase(), IsGroup);
 				}
 
-				if(IsCheckForDepth) { bson.Add(nameof(Creator.Depth).ToCamelCase(), 0); }
+				if(IsCheckForDepth) { 
+					bson.Add(nameof(Creator.Depth).ToCamelCase(), 0); 
+				}
 
 				return bson;
 			}
 		}
-
-		internal override BsonDocument SortDocument => null;
 	}
 }

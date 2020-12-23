@@ -22,7 +22,7 @@ namespace VirtualHole.API
 			config.Formatters.JsonFormatter.UseDataContractJsonSerializer = false;
 
 			// Source: https://weblog.west-wind.com/posts/2012/mar/09/removing-the-xml-formatter-from-aspnet-web-api-applications
-			// remove default Xml handler
+			// Remove default Xml handler
 			List<MediaTypeFormatter> matches = config.Formatters
 				.Where(f => f.SupportedMediaTypes
 				.Where(m => 

@@ -10,9 +10,9 @@ using VirtualHole.API.Services;
 
 namespace VirtualHole.API.Controllers
 {
-	public class CreatorsController : ApiController
+	public partial class CreatorsController : ApiController
     {
-		private CreatorClient creatorClient => dbService.Client.Creators;
+		private CreatorsClient creatorClient => dbService.Client.Creators;
 		private VirtualHoleDBService dbService = null;
 
 		public CreatorsController()
@@ -26,36 +26,31 @@ namespace VirtualHole.API.Controllers
 		[HttpGet]
 		public async Task<IHttpActionResult> GetCreators([FromUri] CreatorQuery query)
 		{
-			FindCreatorsSettings settings = null;
-			if(query == null) {
-				settings = new FindCreatorsSettings() { };
-				return Ok(await InternalListCreators(query, settings));
-			}
+			FindSettings find = new FindSettings();
 
-			if(string.IsNullOrEmpty(query.Search)) {
-				settings = new FindCreatorsStrictSettings() {	
-					IsCheckForIsGroup = false,
-				};
+			if(query != null) {
+				if(string.IsNullOrEmpty(query.Search)) {
+					find.Filters.Add(new CreatorFilter() {
+						IsCheckForIsGroup = false,
+					});
+				} else {
+					find.Filters.Add(new CreatorRegexFilter() {
+						SearchQueries = new List<string>() { query.Search }
+					});
+				}
 			} else {
-				settings = new FindCreatorsRegexSettings() {
-					SearchQueries = new List<string>() { query.Search }
-				};
+				find.Filters.Add(new CreatorFilter() { });
 			}
-
-			return Ok(await InternalListCreators(query, settings));
-		}
-
-		private async Task<List<Creator>> InternalListCreators<T>(PagedQuery query, T request)
-			where T : FindCreatorsSettings
-		{
-			List<Creator> results = new List<Creator>();
-			if(query != null) { request.SetPage(query); }
-
-			FindResults<Creator> findResults = await creatorClient.FindCreatorsAsync(request);
-			await findResults.MoveNextAsync();
-			results.AddRange(findResults.Current);
-
-			return results;
+			
+			return Ok(await ControllerUtilities.ProcessPagedQuery(
+				query, find,
+				() => creatorClient.FindCreatorsAsync(find),
+				CreatorFactory));
 		}
     }
+
+	public partial class CreatorsController
+	{
+		private static object CreatorFactory(CreatorQuery query, Creator creator) => creator;
+	}
 }

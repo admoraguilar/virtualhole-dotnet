@@ -1,7 +1,10 @@
-﻿using System.Linq;
+﻿using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Newtonsoft.Json;
+using Midnight;
 using Midnight.Logs;
 using VirtualHole.DB;
 using VirtualHole.DB.Creators;
@@ -32,8 +35,13 @@ namespace VirtualHole.Scraper
 
 			List<Content> contents = new List<Content>();
 			contents.AddRange(await Contents.ScrapeAsync(creators, incremental, cancellationToken));
-			if(contents.Count > 0) { await Contents.WriteToDBAsync(contents, incremental, cancellationToken); }
+			MLog.Log(nameof(DBClient), $"Scraped a total of {contents.Count} contents.");
 
+			string contentsPath = Path.Combine(PathUtilities.GetApplicationPath(), "data/results/contents.json");
+			File.WriteAllText(contentsPath, JsonConvert.SerializeObject(contents));
+			MLog.Log(nameof(DBClient), $"Saved contents.json to {contentsPath}.");
+
+			if(contents.Count > 0) { await Contents.WriteToDBAsync(contents, incremental, cancellationToken); }
 			MLog.Log(nameof(DBClient), $"Wrote a total of {contents.Count} content to database, during this iteration!");
 		}
 	}

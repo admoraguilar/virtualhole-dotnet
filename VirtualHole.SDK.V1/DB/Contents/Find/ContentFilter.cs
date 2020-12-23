@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using MongoDB.Bson;
 using Midnight;
+using VirtualHole.DB.Creators;
 
 namespace VirtualHole.DB.Contents
 {
-	public class FindContentSettings : FindSettings
+	public class ContentFilter : FindFilter
 	{
 		public bool IsSocialTypeInclude { get; set; } = true;
 		public List<string> SocialType { get; set; } = new List<string>();
@@ -12,9 +13,12 @@ namespace VirtualHole.DB.Contents
 		public bool IsContentTypeInclude { get; set; } = true;
 		public List<string> ContentType { get; set; } = new List<string>();
 
-		public bool IsSortAscending { get; set; } = false;
+		public bool IsCheckForAffiliations { get; set; } = false;
+		public bool IsAffiliationsAll { get; set; } = false;
+		public bool IsAffiliationsInclude { get; set; } = true;
+		public List<string> Affiliations { get; set; } = new List<string>();
 
-		internal override BsonDocument FilterDocument
+		internal override BsonDocument Document
 		{
 			get {
 				BsonDocument bson = new BsonDocument();
@@ -32,6 +36,17 @@ namespace VirtualHole.DB.Contents
 						new BsonDocument(IsContentTypeInclude ? "$in" : "$nin", new BsonArray(ContentType))));
 				}
 
+				if(IsCheckForAffiliations) {
+					string queryOperator = string.Empty;
+
+					if(IsAffiliationsAll) {  queryOperator = "$all"; } 
+					else { queryOperator = IsAffiliationsInclude ? "$in" : "$nin"; }
+
+					typeAndExpr.Add(new BsonDocument(
+						$"{nameof(Content.Creator).ToCamelCase()}.{nameof(CreatorSimple.Affiliations).ToCamelCase()}", 
+						new BsonDocument(queryOperator, new BsonArray(Affiliations))));
+				}
+
 				if(typeAndExpr.Count > 0) {
 					bson.Add("$and", typeAndExpr);
 				}
@@ -39,8 +54,5 @@ namespace VirtualHole.DB.Contents
 				return bson;
 			}
 		}
-
-		internal override BsonDocument SortDocument =>
-			new BsonDocument() { { nameof(Content.CreationDate).ToCamelCase(), IsSortAscending ? 1 : -1 } };
 	}
 }

@@ -4,14 +4,7 @@ namespace VirtualHole.DB.Creators
 {
 	public class Creator
 	{
-		/// <summary>
-		/// Unique set of strings and numbers to identify a creator.
-		/// </summary>
 		public string Id { get; set; } = string.Empty;
-
-		/// <summary>
-		/// Default name.
-		/// </summary>
 		public string Name { get; set; } = string.Empty;
 
 		public string AvatarUrl { get; set; } = string.Empty;
