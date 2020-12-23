@@ -11,18 +11,6 @@ namespace VirtualHole.API.Controllers
 		{
 			await Task.CompletedTask;
 
-			SortMode sortMode = SortMode.ByCreationDate;
-
-			if(query.ContentType.Count == 1 &&
-			   query.ContentType.Contains(ContentTypes.Broadcast)) {
-				sortMode = SortMode.BySchedule;
-			}
-
-			find.Sorts.Add(new ContentSort {
-				SortMode = sortMode,
-				IsSortAscending = query.IsSortAscending
-			});
-
 			if(query.CreatorIds != null && query.CreatorIds.Count > 0) {
 				if(query.IsCreatorRelated) {
 					find.Filters.Add(new CreatorRelatedContentFilter() {

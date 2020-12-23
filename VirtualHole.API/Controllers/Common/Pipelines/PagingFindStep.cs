@@ -4,9 +4,10 @@ using VirtualHole.API.Models;
 
 namespace VirtualHole.API.Controllers
 {
-	public class PagingFindStep : FindResultsPipelineStep<PagedQuery>
+	public class PagingFindStep<TQuery> : FindResultsPipelineStep<TQuery>
+		where TQuery : PagedQuery
 	{
-		public override async Task ExecuteAsync(FindSettings find, PagedQuery query)
+		public override async Task ExecuteAsync(FindSettings find, TQuery query)
 		{
 			await Task.CompletedTask;
 
