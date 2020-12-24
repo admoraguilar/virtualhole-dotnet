@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Midnight.Tasks;
 using VirtualHole.DB;
 using VirtualHole.API.Models;
 
@@ -12,7 +13,7 @@ namespace VirtualHole.API.Controllers
 		public TQuery Query { get; set; } = null;
 		public List<FindResultsPipelineStep<TQuery>> Steps { get; set; } = new List<FindResultsPipelineStep<TQuery>>();
 		public Func<FindSettings, Task<FindResults<TResult>>> FindProvider { get; set; } = null;
-		public Func<TQuery, TResult, object> ResultFactory { get; set; } = null;
+		public Func<TQuery, TResult, Task<object>> ResultFactory { get; set; } = null;
 
 		public async Task<List<object>> ExecuteAsync()
 		{
@@ -35,9 +36,10 @@ namespace VirtualHole.API.Controllers
 			FindResults<TResult> findResults = await FindProvider(find);
 			await findResults.MoveNextAsync();
 
-			foreach(TResult findResult in findResults.Current) {
-				results.Add(ResultFactory(Query, findResult));
-			}
+			await Concurrent.ForEachAsync(findResults.Current, async (TResult findResult) => {
+				object result = await ResultFactory(Query, findResult);
+				if(result != null) { results.Add(result); }
+			});
 
 			return results;
 		}

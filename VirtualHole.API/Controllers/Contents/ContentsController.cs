@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http;
 using System.Web.Http;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -144,32 +145,51 @@ namespace VirtualHole.API.Controllers
 			return Ok(await pipeline.ExecuteAsync());
 		}
 
-		private object ContentDTOFactory(ContentsQuery query, Content content)
+		private async Task<object> ContentDTOFactory(ContentsQuery query, Content content)
 		{
+			HttpClient httpClient = HttpClientFactory.HttpClient;
+
 			string creationDateDisplay = string.Empty;
 			string scheduleDateDisplay = string.Empty;
 
+			bool isAvailable = true;
 			bool isBroadcast = content.ContentType == ContentTypes.Broadcast;
 
-			if(query.Timestamp != DateTimeOffset.MinValue && !string.IsNullOrEmpty(query.Locale)) {
+			if(HasTimestampAndLocale()) {
 				creationDateDisplay = content.CreationDate.Humanize(query.Timestamp, new CultureInfo(query.Locale));
+			}
+
+			if(content.SocialType == SocialTypes.YouTube) {
+				// Include a flag that tells if this video is not accessible for some reason.
+				// privated, deleted, etc...
+				if(content is YouTubeVideo youTubeVideo) {
+					HttpResponseMessage res = await httpClient.GetAsync(youTubeVideo.ThumbnailUrl);
+					isAvailable = res.IsSuccessStatusCode;
+				}
+
 				if(content is YouTubeBroadcast youTubeBroadcast) {
-					scheduleDateDisplay = youTubeBroadcast.ScheduleDate.Humanize(query.Timestamp, new CultureInfo(query.Locale));
+					if(HasTimestampAndLocale()) {
+						scheduleDateDisplay = youTubeBroadcast.ScheduleDate.Humanize(query.Timestamp, new CultureInfo(query.Locale));
+					}
 				}
 			}
 
 			if(isBroadcast) {
 				return new {
 					content,
+					isAvailable,
 					creationDateDisplay,
 					scheduleDateDisplay
 				};
 			} else {
 				return new {
 					content,
+					isAvailable,
 					creationDateDisplay,
 				};
 			}
+
+			bool HasTimestampAndLocale() => query.Timestamp != DateTimeOffset.MinValue && !string.IsNullOrEmpty(query.Locale);
 		}
 	}
 }
