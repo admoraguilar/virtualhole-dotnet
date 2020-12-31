@@ -163,7 +163,25 @@ namespace VirtualHole.API.Controllers
 				// Include a flag that tells if this video is not accessible for some reason.
 				// privated, deleted, etc...
 				if(content is YouTubeVideo youTubeVideo) {
-					HttpResponseMessage res = await httpClient.GetAsync(youTubeVideo.ThumbnailUrl);
+					// HACK: 
+					// * Check for high quality thumbnail
+					// * If there's none, switch to MQ.
+					// * If there's none, then it's either this video is privated or deleted. Hence mark
+					// as unavailable.
+					//
+					// SOLUTION FUTURE: Should find a better way to do this for better maintainance of the
+					// API.
+					string defaultThumbnailUrl = youTubeVideo.ThumbnailUrl;
+					string hiresThumbnailUrl = defaultThumbnailUrl.Replace("mqdefault", "hq720");
+
+					HttpResponseMessage res = await httpClient.GetAsync(hiresThumbnailUrl);
+					youTubeVideo.ThumbnailUrl = hiresThumbnailUrl;
+
+					if(!res.IsSuccessStatusCode) { 
+						res = await httpClient.GetAsync(defaultThumbnailUrl);
+						youTubeVideo.ThumbnailUrl = defaultThumbnailUrl;
+					}
+
 					isAvailable = res.IsSuccessStatusCode;
 				}
 
