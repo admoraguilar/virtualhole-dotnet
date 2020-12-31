@@ -13,12 +13,12 @@ namespace VirtualHole.API.Controllers
 		public TQuery Query { get; set; } = null;
 		public List<FindResultsPipelineStep<TQuery>> Steps { get; set; } = new List<FindResultsPipelineStep<TQuery>>();
 		public Func<FindSettings, Task<FindResults<TResult>>> FindProvider { get; set; } = null;
-		public Func<TQuery, TResult, Task<object>> ResultFactory { get; set; } = null;
+		public Func<TQuery, TResult, Task<object>> PostProcessFactory { get; set; } = null;
 
 		public async Task<List<object>> ExecuteAsync()
 		{
 			if(Query == null || Steps == null ||
-			   FindProvider == null || ResultFactory == null) {
+			   FindProvider == null) {
 				throw new NullReferenceException();
 			}
 
@@ -37,7 +37,8 @@ namespace VirtualHole.API.Controllers
 			await findResults.MoveNextAsync();
 
 			await Concurrent.ForEachAsync(findResults.Current, async (TResult findResult) => {
-				object result = await ResultFactory(Query, findResult);
+				object result = findResult;
+				if(PostProcessFactory != null) { result = await PostProcessFactory(Query, findResult); }
 				if(result != null) { results.Add(result); }
 			});
 

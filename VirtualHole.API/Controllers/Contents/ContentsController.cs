@@ -49,7 +49,7 @@ namespace VirtualHole.API.Controllers
 			pipeline.Steps.Add(new ContentFilterFindStep());
 			pipeline.Steps.Add(new ContentSortFindStep());
 			pipeline.FindProvider = (FindSettings find) => contentsClient.FindContentsAsync(find);
-			pipeline.ResultFactory = ContentDTOFactory;
+			pipeline.PostProcessFactory = ContentDTOFactory;
 
 			return Ok(await pipeline.ExecuteAsync());
 		}
@@ -78,7 +78,7 @@ namespace VirtualHole.API.Controllers
 			pipeline.Steps.Add(new ContentFilterFindStep());
 			pipeline.Steps.Add(new ContentSortFindStep());
 			pipeline.FindProvider = (FindSettings find) => contentsClient.FindContentsAsync(find);
-			pipeline.ResultFactory = ContentDTOFactory;
+			pipeline.PostProcessFactory = ContentDTOFactory;
 
 			return Ok(await pipeline.ExecuteAsync());
 		}
@@ -109,7 +109,7 @@ namespace VirtualHole.API.Controllers
 			pipeline.Steps.Add(new BroadcastLiveFilterFindStep() { IsLive = true });
 			pipeline.Steps.Add(new ContentSortFindStep());
 			pipeline.FindProvider = (FindSettings find) => contentsClient.FindContentsAsync(find);
-			pipeline.ResultFactory = ContentDTOFactory;
+			pipeline.PostProcessFactory = ContentDTOFactory;
 
 			return Ok(await pipeline.ExecuteAsync());
 		}
@@ -140,7 +140,7 @@ namespace VirtualHole.API.Controllers
 			pipeline.Steps.Add(new BroadcastLiveFilterFindStep() { IsLive = false });
 			pipeline.Steps.Add(new BroadcastSortFindStep());
 			pipeline.FindProvider = (FindSettings find) => contentsClient.FindContentsAsync(find);
-			pipeline.ResultFactory = ContentDTOFactory;
+			pipeline.PostProcessFactory = ContentDTOFactory;
 
 			return Ok(await pipeline.ExecuteAsync());
 		}

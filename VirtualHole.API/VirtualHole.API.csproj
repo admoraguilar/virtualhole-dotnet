@@ -210,15 +210,16 @@
     <Compile Include="Controllers\Contents\FindSteps\BroadcastSortFindStep.cs" />
     <Compile Include="Controllers\Contents\FindSteps\ContentFilterFindStep.cs" />
     <Compile Include="Controllers\Contents\FindSteps\ContentSortFindStep.cs" />
-    <Compile Include="Controllers\CreatorsController.cs" />
+    <Compile Include="Controllers\Creators\CreatorsController.cs" />
+    <Compile Include="Controllers\Creators\FindSteps\CreatorFilterFindStep.cs" />
     <Compile Include="Controllers\ResourcesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\Contents\ContentsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\Queries\ContentQuery.cs" />
-    <Compile Include="Models\Queries\CreatorQuery.cs" />
+    <Compile Include="Models\Queries\ContentsQuery.cs" />
+    <Compile Include="Models\Queries\CreatorsQuery.cs" />
     <Compile Include="Models\Queries\APIQuery.cs" />
     <Compile Include="Models\Queries\PagedQuery.cs" />
     <Compile Include="Models\Queries\ResourcesQuery.cs" />
