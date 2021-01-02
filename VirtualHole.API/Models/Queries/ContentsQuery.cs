@@ -11,12 +11,12 @@ namespace VirtualHole.API.Models
 		public List<string> ContentType { get; set; } = new List<string>();
 
 		public bool IsCreatorsInclude { get; set; } = true;
+		public bool IsCreatorRelated { get; set; } = false;
 		public List<string> CreatorIds { get; set; } = new List<string>();
 
-		public bool IsCreatorRelated { get; set; } = false;
-		public List<string> CreatorNames { get; set; } = new List<string>();
-		public List<string> CreatorSocialIds { get; set; } = new List<string>();
-		public List<string> CreatorSocialUrls { get; set; } = new List<string>();
+		//public List<string> CreatorNames { get; set; } = new List<string>();
+		//public List<string> CreatorSocialIds { get; set; } = new List<string>();
+		//public List<string> CreatorSocialUrls { get; set; } = new List<string>();
 
 		public bool IsCheckCreatorAffiliations { get; set; } = false;
 		public bool IsAffiliationsAll { get; set; } = false;

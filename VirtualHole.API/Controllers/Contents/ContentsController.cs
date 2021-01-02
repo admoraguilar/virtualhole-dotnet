@@ -7,6 +7,7 @@ using System.Globalization;
 using Humanizer;
 using VirtualHole.DB;
 using VirtualHole.DB.Contents;
+using VirtualHole.DB.Creators;
 using VirtualHole.API.Models;
 using VirtualHole.API.Services;
 
@@ -16,6 +17,7 @@ namespace VirtualHole.API.Controllers
 	{
 		private string affiliationCommunity => "Community";
 
+		private CreatorsClient creatorsClient => dbService.Client.Creators;
 		private ContentsClient contentsClient => dbService.Client.Contents;
 		private VirtualHoleDBService dbService = null;
 
@@ -46,7 +48,7 @@ namespace VirtualHole.API.Controllers
 			FindResultsPipeline<ContentsQuery, Content> pipeline = new FindResultsPipeline<ContentsQuery, Content>();
 			pipeline.Query = query;
 			pipeline.Steps.Add(new PagingFindStep<ContentsQuery>());
-			pipeline.Steps.Add(new ContentFilterFindStep());
+			pipeline.Steps.Add(new ContentFilterFindStep(creatorsClient));
 			pipeline.Steps.Add(new ContentSortFindStep());
 			pipeline.FindProvider = (FindSettings find) => contentsClient.FindContentsAsync(find);
 			pipeline.PostProcessFactory = ContentDTOFactory;
@@ -75,7 +77,7 @@ namespace VirtualHole.API.Controllers
 			FindResultsPipeline<ContentsQuery, Content> pipeline = new FindResultsPipeline<ContentsQuery, Content>();
 			pipeline.Query = query;
 			pipeline.Steps.Add(new PagingFindStep<ContentsQuery>());
-			pipeline.Steps.Add(new ContentFilterFindStep());
+			pipeline.Steps.Add(new ContentFilterFindStep(creatorsClient));
 			pipeline.Steps.Add(new ContentSortFindStep());
 			pipeline.FindProvider = (FindSettings find) => contentsClient.FindContentsAsync(find);
 			pipeline.PostProcessFactory = ContentDTOFactory;
@@ -105,7 +107,7 @@ namespace VirtualHole.API.Controllers
 			FindResultsPipeline<ContentsQuery, Content> pipeline = new FindResultsPipeline<ContentsQuery, Content>();
 			pipeline.Query = query;
 			pipeline.Steps.Add(new PagingFindStep<ContentsQuery>());
-			pipeline.Steps.Add(new ContentFilterFindStep());
+			pipeline.Steps.Add(new ContentFilterFindStep(creatorsClient));
 			pipeline.Steps.Add(new BroadcastLiveFilterFindStep() { IsLive = true });
 			pipeline.Steps.Add(new ContentSortFindStep());
 			pipeline.FindProvider = (FindSettings find) => contentsClient.FindContentsAsync(find);
@@ -136,7 +138,7 @@ namespace VirtualHole.API.Controllers
 			FindResultsPipeline<ContentsQuery, Content> pipeline = new FindResultsPipeline<ContentsQuery, Content>();
 			pipeline.Query = query;
 			pipeline.Steps.Add(new PagingFindStep<ContentsQuery>());
-			pipeline.Steps.Add(new ContentFilterFindStep());
+			pipeline.Steps.Add(new ContentFilterFindStep(creatorsClient));
 			pipeline.Steps.Add(new BroadcastLiveFilterFindStep() { IsLive = false });
 			pipeline.Steps.Add(new BroadcastSortFindStep());
 			pipeline.FindProvider = (FindSettings find) => contentsClient.FindContentsAsync(find);
