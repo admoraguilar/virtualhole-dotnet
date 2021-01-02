@@ -6,6 +6,7 @@ using System.Collections.Generic;
 namespace VirtualHole.API
 {
 	/// <summary>
+	/// Source: https://docs.microsoft.com/en-us/aspnet/web-api/overview/formats-and-model-binding/parameter-binding-in-aspnet-web-api
 	/// Converts string that's comma-separated into List<string>
 	/// </summary>
 	public class CSVToListStringTypeCoverter : TypeConverter
