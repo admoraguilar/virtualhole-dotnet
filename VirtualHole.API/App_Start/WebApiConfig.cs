@@ -1,7 +1,9 @@
-﻿using System.Linq;
+﻿using System;
 using System.Net.Http.Formatting;
 using System.Web.Http;
+using System.Linq;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
@@ -38,6 +40,15 @@ namespace VirtualHole.API
 			//	new RequestHeaderMapping("Accept",
 			//		"text/html", StringComparison.InvariantCultureIgnoreCase,
 			//		true, "application/json"));
+
+			// Global type converters
+			// Source: https://stackoverflow.com/questions/43378709/typeconverter-does-not-work-in-asp-net-core#comment90920849_50839232
+			TypeDescriptor.AddAttributes(
+				typeof(List<string>),
+				new Attribute[] {
+					new TypeConverterAttribute(typeof(CSVToListStringTypeCoverter))
+				}
+			);
 
 			// Web API routes
 			config.MapHttpAttributeRoutes();
