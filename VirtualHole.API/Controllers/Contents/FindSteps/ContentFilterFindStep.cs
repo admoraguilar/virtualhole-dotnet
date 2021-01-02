@@ -30,14 +30,12 @@ namespace VirtualHole.API.Controllers
 					//
 					// TODO: This could be optimized in the future though, as right now it always
 					// pulls fresh from the creator DB.
-
 					IEnumerable<Creator> creators = await GetCreatorsFromId(query.CreatorIds);
 					find.Filters.Add(new CreatorRelatedContentFilter() {
 						IsCreatorsInclude = query.IsCreatorsInclude,
 						CreatorIds = query.CreatorIds,
 						CreatorNames = creators.Select(c => c.Name).ToList(),
 						CreatorSocialIds = creators.SelectMany(c => c.Socials.Select(s => s.Id)).ToList(),
-						CreatorSocialUrls = creators.SelectMany(c => c.Socials.Select(s => s.Url)).ToList()
 					});
 				} else {
 					find.Filters.Add(new CreatorContentFilter() {

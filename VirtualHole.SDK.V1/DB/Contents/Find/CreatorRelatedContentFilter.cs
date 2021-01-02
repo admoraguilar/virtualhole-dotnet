@@ -13,7 +13,6 @@ namespace VirtualHole.DB.Contents
 		public List<string> CreatorIds { get; set; } = new List<string>();
 		public List<string> CreatorNames { get; set; } = new List<string>();
 		public List<string> CreatorSocialIds { get; set; } = new List<string>();
-		public List<string> CreatorSocialUrls { get; set; } = new List<string>();
 
 		internal override IEnumerable<Type> ConflictingTypes => new Type[] {
 			typeof(CreatorContentFilter)
@@ -31,7 +30,7 @@ namespace VirtualHole.DB.Contents
 						new BsonDocument("$not", new BsonDocument(IsCreatorsInclude ? "$in" : "$nin", new BsonArray(CreatorIds)))));
 				andExpressions.Add(
 					new BsonDocument("$text",
-						new BsonDocument("$search", Join(Concat(CreatorNames, CreatorSocialIds, CreatorSocialUrls)))));
+						new BsonDocument("$search", Join(Concat(CreatorNames, CreatorSocialIds)))));
 
 				bson.AddRange(new BsonDocument("$and", andExpressions));
 
