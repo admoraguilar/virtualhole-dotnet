@@ -79,20 +79,35 @@ namespace VirtualHole.Scraper.Contents
 			IEnumerable<Content> contents, bool isIncremental = false,
 			CancellationToken cancellationToken = default)
 		{
+			CancellationTokenSource writeCts = null;
+			CancellationTokenSourceExt.CancelAndCreate(ref writeCts);
+
 			using(StopwatchScope s = new StopwatchScope(
 				nameof(ContentClient),
 				"Writing to content collection...",
 				"Finished writing to content collection!")) {
-				await TaskExt.RetryAsync(
+				Task timeout = Task.Delay(TimeSpan.FromMinutes(30), cancellationToken);
+				Task write = TaskExt.RetryAsync(
 					() => WriteAsync(),
-					TimeSpan.FromSeconds(3), int.MaxValue,
-					cancellationToken);
+					TimeSpan.FromSeconds(5), int.MaxValue,
+					writeCts.Token
+				);
+
+				try {
+					Task done = await Task.WhenAny(write, timeout);
+					if(done == timeout) {
+						MLog.Log(MLogLevel.Warning, nameof(ContentClient), "Write operation timed out!");
+						CancellationTokenSourceExt.Cancel(ref writeCts);
+					}
+				} catch (OperationCanceledException c) {
+					CancellationTokenSourceExt.Cancel(ref writeCts);
+				}
 			}
 
 			Task WriteAsync()
 			{
-				if(isIncremental) { return dbClient.Contents.UpsertManyContentsAsync(contents, cancellationToken); } 
-				else { return dbClient.Contents.UpsertManyContentsAndDeleteDanglingAsync(contents, cancellationToken); }
+				if(isIncremental) { return dbClient.Contents.UpsertManyContentsAsync(contents, writeCts.Token); } 
+				else { return dbClient.Contents.UpsertManyContentsAndDeleteDanglingAsync(contents, writeCts.Token); }
 			}
 		}
 	}

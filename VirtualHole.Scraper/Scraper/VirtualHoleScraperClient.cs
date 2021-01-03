@@ -48,7 +48,7 @@ namespace VirtualHole.Scraper
 				await TaskExt.RetryAsync(
 					() => contentClient.WriteToVideosDBUsingCreatorsDBAsync(
 						IsStartIncremental, cancellationToken),
-						TimeSpan.FromSeconds(3), int.MaxValue, cancellationToken
+						TimeSpan.FromSeconds(5), int.MaxValue, cancellationToken
 				);
 			}
 

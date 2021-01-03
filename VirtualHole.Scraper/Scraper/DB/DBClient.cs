@@ -38,6 +38,8 @@ namespace VirtualHole.Scraper
 			MLog.Log(nameof(DBClient), $"Scraped a total of {contents.Count} contents.");
 
 			string contentsPath = Path.Combine(PathUtilities.GetApplicationPath(), "data/results/contents.json");
+			string contentsDirectory = Path.GetDirectoryName(contentsPath);
+			Directory.CreateDirectory(contentsDirectory);
 			File.WriteAllText(contentsPath, JsonConvert.SerializeObject(contents));
 			MLog.Log(nameof(DBClient), $"Saved contents.json to {contentsPath}.");
 
