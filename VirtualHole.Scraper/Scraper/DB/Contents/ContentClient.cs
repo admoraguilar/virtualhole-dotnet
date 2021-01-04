@@ -27,7 +27,7 @@ namespace VirtualHole.Scraper.Contents
 			CancellationToken cancellationToken = default)
 		{
 			List<Content> contents = new List<Content>();
-			await Concurrent.ForEachAsync(creators.ToList(), ProcessCreator, 5, cancellationToken);
+			await Concurrent.ForEachAsync(creators.ToList(), ProcessCreator, 99, cancellationToken);
 			return contents;
 
 			async Task ProcessCreator(Creator creator)
@@ -79,14 +79,14 @@ namespace VirtualHole.Scraper.Contents
 			IEnumerable<Content> contents, bool isIncremental = false,
 			CancellationToken cancellationToken = default)
 		{
-			CancellationTokenSource writeCts = null;
+			CancellationTokenSource writeCts = new CancellationTokenSource();
 			CancellationTokenSourceExt.CancelAndCreate(ref writeCts);
 
 			using(StopwatchScope s = new StopwatchScope(
 				nameof(ContentClient),
 				"Writing to content collection...",
 				"Finished writing to content collection!")) {
-				Task timeout = Task.Delay(TimeSpan.FromMinutes(30), cancellationToken);
+				Task timeout = Task.Delay(TimeSpan.FromMinutes(15), cancellationToken);
 				Task write = TaskExt.RetryAsync(
 					() => WriteAsync(),
 					TimeSpan.FromSeconds(5), int.MaxValue,
