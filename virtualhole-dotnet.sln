@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtualHole.SDK.V1", "Virtu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtualHole.SDK.V1.Tests", "VirtualHole.SDK.V1.Tests\VirtualHole.SDK.V1.Tests.csproj", "{4556B6FA-7571-4B04-8586-13C53E3F5C49}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtualHole.Sandbox", "VirtualHole.Sandbox\VirtualHole.Sandbox.csproj", "{3526C29D-637C-4F3A-91C7-A2DB84AAA011}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{4556B6FA-7571-4B04-8586-13C53E3F5C49}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4556B6FA-7571-4B04-8586-13C53E3F5C49}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4556B6FA-7571-4B04-8586-13C53E3F5C49}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3526C29D-637C-4F3A-91C7-A2DB84AAA011}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3526C29D-637C-4F3A-91C7-A2DB84AAA011}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3526C29D-637C-4F3A-91C7-A2DB84AAA011}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3526C29D-637C-4F3A-91C7-A2DB84AAA011}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
