@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -74,6 +75,10 @@ namespace VirtualHole.DB
 			IMongoCollection<BsonDocument> collection, Func<T, BsonDocument> filter,
 			IEnumerable<T> objs, DateTime timestamp, CancellationToken cancellationToken = default)
 		{
+			if(objs.Count() <= 0) {
+				return;
+			}
+
 			// TODO: Refactor MongoDBUtilities with better generic filters
 			// for common operations
 			BsonDocument deleteFilter = new BsonDocument();
