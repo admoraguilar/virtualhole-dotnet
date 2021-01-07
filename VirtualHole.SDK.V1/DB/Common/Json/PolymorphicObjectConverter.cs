@@ -30,7 +30,7 @@ namespace VirtualHole.DB
 				}
 				return results;
 			} else {
-				throw new InvalidOperationException();
+				throw new InvalidOperationException($"JToken type: {jToken.GetType()}");
 			}
 
 			T PopulateSerializer(JObject jObject)

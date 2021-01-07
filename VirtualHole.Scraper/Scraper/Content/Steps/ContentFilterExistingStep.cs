@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using Midnight;
 using Midnight.Logs;
+using Midnight.Pipeline;
 using VirtualHole.DB.Contents;
 
 namespace VirtualHole.Scraper

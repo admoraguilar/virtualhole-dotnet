@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using System.Collections.Generic;
 using Midnight.Logs;
+using Midnight.Pipeline;
 using VirtualHole.DB;
 using VirtualHole.DB.Creators;
 
@@ -15,7 +16,14 @@ namespace VirtualHole.Scraper
 				"Start getting all creators from DB.",
 				"Finished getting all creators from DB.")) {
 				FindSettings findSettings = new FindSettings() {
-					Filters = new List<FindFilter>() { new CreatorStrictFilter() }
+					Filters = new List<FindFilter>() { 
+						new CreatorFilter() {
+							IsCheckForIsGroup = true,
+							IsGroup = false,
+							IsHidden = false,
+						},
+						new CreatorStrictFilter() 
+					}
 				};
 				FindResults<Creator> findResults = await Context.InDB.Creators.FindCreatorsAsync(findSettings);
 				while(await findResults.MoveNextAsync()) {
