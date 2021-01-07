@@ -5,14 +5,9 @@ namespace VirtualHole
 {
 	public sealed class PipelineStepAction<T> : PipelineStep<T>
 	{
-		public PipelineStepAction(Func<T, Task<bool>> shouldExecuteAsync, Func<T, Task> executeAsync) 
-			: this(executeAsync)
+		public PipelineStepAction(Func<T, Task> executeAsync, Func<T, Task<bool>> shouldExecuteAsync = null)
 		{
 			this.shouldExecuteAsyncFunc = shouldExecuteAsync;
-		}
-
-		public PipelineStepAction(Func<T, Task> executeAsync)
-		{
 			this.executeAsyncFunc = executeAsync;
 		}
 

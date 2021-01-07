@@ -1,27 +1,40 @@
 ﻿using System.Threading.Tasks;
 using System.Collections.Generic;
+using System;
 
 namespace VirtualHole
 {
-	public sealed class Pipeline<T> : PipelineStep<T>
+	public sealed class Pipeline<TContext> : PipelineStep<TContext>
 	{
-		public Pipeline(T payload)
+		public Pipeline(TContext @in)
 		{
-			Context = payload;
+			Context = @in;
 		}
+
+		public IReadOnlyList<PipelineStep<TContext>> Steps => steps;
+		private List<PipelineStep<TContext>> steps = new List<PipelineStep<TContext>>();
 
 		public override async Task<bool> ShouldExecuteAsync() => await Task.FromResult(true);
 
-		public IReadOnlyList<PipelineStep<T>> Steps => steps;
-		private List<PipelineStep<T>> steps = new List<PipelineStep<T>>();
-
-		public Pipeline<T> AddStep(PipelineStep<T> step)
+		public Pipeline<TContext> Add(PipelineStep<TContext> step)
 		{
 			steps.Add(step);
 			return this;
 		}
 
-		public Pipeline<T> RemoveStep(PipelineStep<T> step)
+		public Pipeline<TContext> Add<T>(Func<TContext, T> inConverter, PipelineStep<T> step)
+		{
+			steps.Add(new PipelineStepConverter<TContext, T>(inConverter, step));
+			return this;
+		}
+
+		public Pipeline<TContext> Add(Func<TContext, Task> executeAsync, Func<TContext, Task<bool>> shouldExecuteAsync = null)
+		{
+			steps.Add(new PipelineStepAction<TContext>(executeAsync, shouldExecuteAsync));
+			return this;
+		}
+
+		public Pipeline<TContext> Remove(PipelineStep<TContext> step)
 		{
 			steps.Remove(step);
 			return this;
@@ -29,7 +42,7 @@ namespace VirtualHole
 
 		public override async Task ExecuteAsync()
 		{
-			foreach(PipelineStep<T> step in Steps) {
+			foreach(PipelineStep<TContext> step in Steps) {
 				step.Context = Context;
 
 				if(await step.ShouldExecuteAsync()) {

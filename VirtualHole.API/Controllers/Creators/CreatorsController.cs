@@ -26,15 +26,18 @@ namespace VirtualHole.API.Controllers
 		[HttpGet]
 		public async Task<IHttpActionResult> GetCreators([FromUri] CreatorsQuery query)
 		{
-			if(query == null) { query = new CreatorsQuery(); }
+			Pipeline<FindContext<CreatorsQuery, Creator>> pipeline =
+				new Pipeline<FindContext<CreatorsQuery, Creator>>(
+					new FindContext<CreatorsQuery, Creator>() {
+						InQuery = query ?? new CreatorsQuery(),
+						InProvider = (FindSettings find) => creatorClient.FindCreatorsAsync(find),
+					});
 
-			FindResultsPipeline<CreatorsQuery, Creator> pipeline = new FindResultsPipeline<CreatorsQuery, Creator>();
-			pipeline.Query = query;
-			pipeline.Steps.Add(new PagingFindStep<CreatorsQuery>());
-			pipeline.Steps.Add(new CreatorFilterFindStep());
-			pipeline.FindProvider = (FindSettings find) => creatorClient.FindCreatorsAsync(find);
+			pipeline.Add(new CreatorFilterStep());
+			pipeline.Add(new GetPagedResultsStep<CreatorsQuery, Creator>());
+			await pipeline.ExecuteAsync();
 
-			return Ok(await pipeline.ExecuteAsync());
+			return Ok(pipeline.Context.OutResults);
 		}
     }
 }

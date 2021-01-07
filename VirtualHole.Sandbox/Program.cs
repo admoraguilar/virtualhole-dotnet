@@ -11,7 +11,7 @@ namespace VirtualHole.Sandbox
 			PipelineBuilder<CounterPayload> pipelineBuilder = new PipelineBuilder<CounterPayload>(new CounterPayload());
 			pipelineBuilder.Add(new IncrementCounter());
 			pipelineBuilder.Add(new CreateCounterMessage());
-			pipelineBuilder.AddConverted(new LogOutput());
+			pipelineBuilder.AddConverted((CounterPayload context) => context, new LogOutput());
 			pipelineBuilder.AddAction((CounterPayload context) => {
 				MLog.Log($"Additional action: {context.Counter}");
 				return Task.CompletedTask;

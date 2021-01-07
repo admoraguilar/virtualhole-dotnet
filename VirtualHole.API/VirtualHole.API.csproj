@@ -212,7 +212,7 @@
     <Compile Include="Controllers\Contents\FindSteps\ContentFilterFindStep.cs" />
     <Compile Include="Controllers\Contents\FindSteps\ContentSortFindStep.cs" />
     <Compile Include="Controllers\Creators\CreatorsController.cs" />
-    <Compile Include="Controllers\Creators\FindSteps\CreatorFilterFindStep.cs" />
+    <Compile Include="Controllers\Creators\Pipeline\CreatorFilterFindStep.cs" />
     <Compile Include="Controllers\ResourcesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\Contents\ContentsController.cs" />
