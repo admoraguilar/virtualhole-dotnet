@@ -1,5 +1,5 @@
 ﻿
-namespace VirtualHole.API.Controllers
+namespace VirtualHole.DB.Creators
 {
 	public static class AffiliationKeys
 	{

@@ -204,7 +204,6 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
-    <Compile Include="Controllers\Common\AffiliationKeys.cs" />
     <Compile Include="Controllers\Common\Pipeline\FindContext.cs" />
     <Compile Include="Controllers\Common\Pipeline\GetPagedResultsStep.cs" />
     <Compile Include="Controllers\Contents\PipelineSteps\CommunityQueryStep.cs" />
