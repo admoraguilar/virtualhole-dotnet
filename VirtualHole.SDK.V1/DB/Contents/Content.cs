@@ -6,6 +6,9 @@ namespace VirtualHole.DB.Contents
 {
 	public abstract class Content
 	{
+		public static bool operator ==(Content a, Content b) => Equals(a, b);
+		public static bool operator !=(Content a, Content b) => !Equals(a, b);
+
 		public abstract string SocialType { get; }
 		public abstract string ContentType { get; }
 
@@ -15,5 +18,23 @@ namespace VirtualHole.DB.Contents
 		public CreatorSimple Creator { get; set; } = new CreatorSimple();
 		public DateTimeOffset CreationDate { get; set; } = DateTimeOffset.MinValue;
 		public List<string> Tags { get; set; } = new List<string>();
-	}
+
+		public bool Equals(Content other)
+		{
+			if(other is null)
+				return false;
+
+			return SocialType == other.SocialType &&
+				ContentType == other.ContentType &&
+				Id == other.Id &&
+				Title == other.Title &&
+				Url == other.Url;
+		}
+
+		public override bool Equals(object obj) => Equals(obj as Content);
+		public override int GetHashCode() => 
+			(SocialType, ContentType,
+				Id, Title,
+				Url).GetHashCode();
+	}		
 }

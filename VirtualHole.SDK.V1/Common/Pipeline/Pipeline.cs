@@ -8,13 +8,18 @@ namespace VirtualHole
 	{
 		public Pipeline(TContext context)
 		{
-			Context = context;
+			SetContext(context);
 		}
 
 		public IReadOnlyList<PipelineStep<TContext>> Steps => steps;
 		private List<PipelineStep<TContext>> steps = new List<PipelineStep<TContext>>();
 
 		public override async Task<bool> ShouldExecuteAsync() => await Task.FromResult(true);
+
+		public void SetContext(TContext context)
+		{
+			Context = context;
+		}
 
 		public Pipeline<TContext> Add(PipelineStep<TContext> step)
 		{

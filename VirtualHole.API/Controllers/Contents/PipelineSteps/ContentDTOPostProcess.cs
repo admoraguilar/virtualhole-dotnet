@@ -2,10 +2,10 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Globalization;
+using Humanizer;
 using VirtualHole.DB;
 using VirtualHole.DB.Contents;
 using VirtualHole.API.Models;
-using Humanizer;
 
 namespace VirtualHole.API.Controllers
 {

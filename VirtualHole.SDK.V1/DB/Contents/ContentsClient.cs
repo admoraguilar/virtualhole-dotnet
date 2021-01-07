@@ -59,5 +59,14 @@ namespace VirtualHole.DB.Contents
 				(Content content) => new BsonDocument(nameof(Content.Id).ToCamelCase(), content.Id),
 				contents, DateTimeOffset.UtcNow.DateTime, cancellationToken);
 		}
+
+		public async Task DeleteManyAsync(
+			IEnumerable<Content> contents, CancellationToken cancellationToken = default)
+		{
+			await MongoDBUtilities.DeleteManyAsync(
+				contentsBsonCollection,
+				(Content content) => new BsonDocument(nameof(Content.Id).ToCamelCase(), content.Id),
+				contents, DateTimeOffset.UtcNow.DateTime, cancellationToken);
+		}
 	}
 }

@@ -1,7 +1,6 @@
-﻿
-namespace VirtualHole.Scraper
+﻿namespace VirtualHole.Scraper
 {
-	public class VirtualHoleScraperSettings
+	public class ContentScraperSettings
 	{
 		public int IterationGapAmount { get; set; } = 3600;
 		public bool UseProxies { get; set; } = true;
