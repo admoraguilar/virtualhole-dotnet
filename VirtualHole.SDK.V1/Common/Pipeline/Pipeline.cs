@@ -6,9 +6,9 @@ namespace VirtualHole
 {
 	public sealed class Pipeline<TContext> : PipelineStep<TContext>
 	{
-		public Pipeline(TContext @in)
+		public Pipeline(TContext context)
 		{
-			Context = @in;
+			Context = context;
 		}
 
 		public IReadOnlyList<PipelineStep<TContext>> Steps => steps;

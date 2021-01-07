@@ -1,0 +1,29 @@
+﻿using System.Threading.Tasks;
+using System.Collections.Generic;
+using VirtualHole.DB.Contents;
+using VirtualHole.API.Models;
+
+namespace VirtualHole.API.Controllers
+{
+	public partial class ContentsController
+	{
+		public class CommunityQueryStep : PipelineStep<FindContext<ContentsQuery, Content>>
+		{
+			public override Task ExecuteAsync()
+			{
+				Context.InQuery.IsContentTypeInclude = true;
+				Context.InQuery.ContentType = new List<string>() { ContentTypes.Video };
+
+				Context.InQuery.IsCheckCreatorAffiliations = true;
+				Context.InQuery.IsAffiliationsAll = true;
+
+				if(Context.InQuery.CreatorAffiliations != null) {
+					Context.InQuery.CreatorAffiliations.Add(AffiliationKeys.Community);
+				} else {
+					Context.InQuery.CreatorAffiliations = new List<string>() { AffiliationKeys.Community };
+				}
+				return Task.CompletedTask;
+			}
+		}
+	}
+}
