@@ -19,7 +19,7 @@ namespace VirtualHole.Scraper
 			string contentsPath = Path.Combine(PathUtilities.GetApplicationPath(), "data/results/contents.json");
 			string contentsDirectory = Path.GetDirectoryName(contentsPath);
 			Directory.CreateDirectory(contentsDirectory);
-			File.WriteAllText(contentsPath, JsonConvert.SerializeObject(Context.OutResults));
+			File.WriteAllText(contentsPath, JsonConvert.SerializeObject(Context.OutAllResults));
 			MLog.Log(nameof(ContentSaveAsJsonToDiskStep), $"Saved contents.json to {contentsPath}.");
 
 			return Task.CompletedTask;

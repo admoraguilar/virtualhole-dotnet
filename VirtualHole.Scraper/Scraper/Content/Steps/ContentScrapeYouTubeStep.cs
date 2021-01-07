@@ -14,7 +14,7 @@ namespace VirtualHole.Scraper
 		public override async Task ExecuteAsync()
 		{
 			await Concurrent.ForEachAsync(Context.InCreators, ProcessCreator, 99);
-			MLog.Log(nameof(ContentScrapeYouTubeStep), $"Scraped a total of {Context.OutResults.Count} contents.");
+			MLog.Log(nameof(ContentScrapeYouTubeStep), $"Scraped a total of {Context.OutAllResults.Count} contents.");
 
 			async Task ProcessCreator(Creator creator)
 			{
@@ -32,17 +32,17 @@ namespace VirtualHole.Scraper
 				foreach(CreatorSocial youtube in creator.Socials.Where(s => s.SocialType == SocialTypes.YouTube)) {
 					await Task.WhenAll(
 						Task.Run(async () => {
-							Context.OutResults.AddRange(await ProcessSocialVideo(
+							Context.OutAllResults.AddRange(await ProcessSocialVideo(
 							   youtube, "Videos",
 							   (CreatorSocial yt) => Context.InScraper.Youtube.Get().GetChannelVideosAsync(creator, yt, channelVideoSettings)));
 						}),
 						Task.Run(async () => {
-							Context.OutResults.AddRange(await ProcessSocialVideo(
+							Context.OutAllResults.AddRange(await ProcessSocialVideo(
 							   youtube, "Scheduled",
 							   (CreatorSocial yt) => Context.InScraper.Youtube.Get().GetChannelUpcomingBroadcastsAsync(creator, yt)));
 						}),
 						Task.Run(async () => {
-							Context.OutResults.AddRange(await ProcessSocialVideo(
+							Context.OutAllResults.AddRange(await ProcessSocialVideo(
 								youtube, "Live",
 								(CreatorSocial yt) => Context.InScraper.Youtube.Get().GetChannelLiveBroadcastsAsync(creator, yt)));
 						})

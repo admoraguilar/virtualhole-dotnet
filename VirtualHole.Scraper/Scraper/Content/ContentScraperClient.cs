@@ -85,11 +85,12 @@ namespace VirtualHole.Scraper
 		private ContentScraperContext CreateScraperContext(ContentScraperSettings settings)
 		{
 			return new ContentScraperContext(
-				settings,
 				new ScraperClient(settings.ProxyPool),
 				new VirtualHoleDBClient(
 					settings.ConnectionString, settings.UserName,
-					settings.Password));
+					settings.Password)) {
+				InIsIncremental = settings.IsStartIncremental
+			};
 		}
 	}
 }

@@ -11,7 +11,7 @@ namespace VirtualHole.Scraper
 			// TODO: Compare with previously scraped contents
 			// so that only new and old ones are written to MongoDB
 			// hence reducing load
-			Task write = Context.InDB.Contents.UpsertManyContentsAsync(Context.OutResults);
+			Task write = Context.InDB.Contents.UpsertManyContentsAsync(Context.OutAllResults);
 
 			using(StopwatchScope s = new StopwatchScope(
 				nameof(ContentWriteToDBStep),
@@ -20,7 +20,7 @@ namespace VirtualHole.Scraper
 				await TaskExtV.Timeout(write, TimeSpan.FromMinutes(15));
 			}
 
-			MLog.Log(nameof(ContentWriteToDBStep), $"Wrote a total of {Context.OutResults.Count} content to database, during this iteration!");
+			MLog.Log(nameof(ContentWriteToDBStep), $"Wrote a total of {Context.OutAllResults.Count} content to database, during this iteration!");
 
 			//Task WriteAsync()
 			//{
