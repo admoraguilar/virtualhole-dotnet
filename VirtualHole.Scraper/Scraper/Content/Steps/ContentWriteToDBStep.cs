@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Midnight.Logs;
+using Midnight.Tasks;
+using Midnight.Pipeline;
 
 namespace VirtualHole.Scraper
 {
@@ -16,7 +18,7 @@ namespace VirtualHole.Scraper
 				nameof(ContentWriteToDBStep),
 				"Writing to content collection...",
 				"Finished writing to content collection!")) {
-				await TaskExtV.Timeout(WriteAsync(), TimeSpan.FromMinutes(15));
+				await TaskExt.Timeout(WriteAsync(), TimeSpan.FromMinutes(15));
 			}
 
 			MLog.Log(nameof(ContentWriteToDBStep), $"Wrote a total of {Context.OutNewResults.Count} content to database, during this iteration!");

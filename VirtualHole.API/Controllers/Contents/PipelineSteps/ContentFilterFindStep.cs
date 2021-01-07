@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Midnight.Pipeline;
 using VirtualHole.DB;
 using VirtualHole.DB.Contents;
 using VirtualHole.DB.Creators;

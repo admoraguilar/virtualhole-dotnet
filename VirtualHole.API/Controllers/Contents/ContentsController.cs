@@ -1,5 +1,6 @@
 ﻿using System.Web.Http;
 using System.Threading.Tasks;
+using Midnight.Pipeline;
 using VirtualHole.DB;
 using VirtualHole.DB.Contents;
 using VirtualHole.DB.Creators;

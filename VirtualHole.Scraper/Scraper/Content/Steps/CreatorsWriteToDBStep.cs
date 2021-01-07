@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Midnight.Logs;
+using Midnight.Pipeline;
 
 namespace VirtualHole.Scraper
 {

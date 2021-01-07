@@ -3,6 +3,7 @@ using System.Web.Http;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Swashbuckle.Swagger.Annotations;
+using Midnight.Pipeline;
 using VirtualHole.DB;
 using VirtualHole.DB.Creators;
 using VirtualHole.API.Models;

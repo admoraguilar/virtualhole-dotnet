@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using System.Collections.Generic;
 using Midnight.Tasks;
+using Midnight.Pipeline;
 using VirtualHole.DB;
 using VirtualHole.API.Models;
 

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Midnight.Logs;
 using Midnight.Tasks;
+using Midnight.Pipeline;
 using VirtualHole.DB;
 using VirtualHole.DB.Creators;
 
@@ -13,7 +14,7 @@ namespace VirtualHole.Scraper
 	{
 		public override async Task ExecuteAsync()
 		{
-			await Concurrent.ForEachAsync(Context.InCreators, ProcessCreator, 99);
+			await Concurrent.ForEachAsync(Context.InCreators, ProcessCreator, 100);
 			MLog.Log(nameof(ContentScrapeYouTubeStep), $"Scraped a total of {Context.OutAllResults.Count} contents.");
 
 			async Task ProcessCreator(Creator creator)

@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Midnight.Pipeline;
 using VirtualHole.DB.Contents;
 using VirtualHole.API.Models;
 
