@@ -7,20 +7,20 @@ namespace VirtualHole.API.Services
 	{
 		public VirtualHoleDBClient Client { get; private set; }
 
-		public VirtualHoleDBService(VirtualHoleDBServiceSettings settings = null)
+		public VirtualHoleDBService(Settings settings = null)
 		{
-			if(settings == null) { settings = VirtualHoleDBServiceSettings.Default; }
+			if(settings == null) { settings = Settings.Default; }
 			Client = new VirtualHoleDBClient(
 				settings.ConnectionString, settings.UserName,
 				settings.Password);
 		}
 
-		public class VirtualHoleDBServiceSettings
+		public class Settings
 		{
-			public static VirtualHoleDBServiceSettings Default
+			public static Settings Default
 			{
 				get {
-					return new VirtualHoleDBServiceSettings {
+					return new Settings {
 						ConnectionString = WebConfigurationManager.AppSettings["VirtualHoleDBClientConnectionString"],
 						UserName = WebConfigurationManager.AppSettings["VirtualHoleDBClientUserName"],
 						Password = WebConfigurationManager.AppSettings["VirtualHoleDBClientPassword"]

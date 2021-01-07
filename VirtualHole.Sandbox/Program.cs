@@ -8,29 +8,17 @@ namespace VirtualHole.Sandbox
 	{
 		private static async Task Main(string[] args)
 		{
-			PipelineBuilder<CounterPayload> pipelineBuilder = new PipelineBuilder<CounterPayload>(new CounterPayload());
-			pipelineBuilder.Add(new IncrementCounter());
-			pipelineBuilder.Add(new CreateCounterMessage());
-			pipelineBuilder.AddConverted((CounterPayload context) => context, new LogOutput());
-			pipelineBuilder.AddAction((CounterPayload context) => {
+			Pipeline<CounterPayload> pipeline = new Pipeline<CounterPayload>(new CounterPayload());
+			pipeline.Add(new IncrementCounter());
+			pipeline.Add(new CreateCounterMessage());
+			pipeline.Add((CounterPayload context) => context, new LogOutput());
+			pipeline.Add((CounterPayload context) => {
 				MLog.Log($"Additional action: {context.Counter}");
 				return Task.CompletedTask;
 			});
-			await pipelineBuilder.ExecuteAsync();
+			await pipeline.ExecuteAsync();
 
-			//Pipeline<CounterPayload> pipeline = new Pipeline<CounterPayload>(new CounterPayload());
-			//pipeline.AddStep(new IncrementCounter())
-			//	.AddStep(new CreateCounterMessage())
-			//	.AddStep(new PipelineStepConverter<CounterPayload, IOutputLog>(
-			//		new LogOutput()
-			//		))
-			//	.AddStep(new PipelineStepAction<CounterPayload>((CounterPayload context) => {
-			//		MLog.Log("Additional action");
-			//		return Task.CompletedTask;
-			//	}));
-			//await pipeline.ExecuteAsync();
-
-			MLog.Log(MLogLevel.Warning, $"Hello World. {pipelineBuilder.Result.Counter}");
+			MLog.Log(MLogLevel.Warning, $"Hello World. {pipeline.Context.Counter}");
 			Console.ReadLine();
 		}
 	}
