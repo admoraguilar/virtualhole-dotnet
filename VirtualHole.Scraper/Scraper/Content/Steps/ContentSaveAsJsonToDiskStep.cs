@@ -10,6 +10,12 @@ namespace VirtualHole.Scraper
 	{
 		public override Task ExecuteAsync()
 		{
+			// TODO:
+			// * Separate two contents.json: contents.json, contents-prev.json
+			// * Do a comparison and divide it by: OutNewResults, OutDeleteResults
+			// * Upsert the OutNewResults to DB
+			// * Delete the OutDeleteResults on DB
+
 			string contentsPath = Path.Combine(PathUtilities.GetApplicationPath(), "data/results/contents.json");
 			string contentsDirectory = Path.GetDirectoryName(contentsPath);
 			Directory.CreateDirectory(contentsDirectory);

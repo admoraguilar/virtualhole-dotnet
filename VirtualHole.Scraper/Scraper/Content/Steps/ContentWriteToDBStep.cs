@@ -20,7 +20,7 @@ namespace VirtualHole.Scraper
 				await TaskExtV.Timeout(write, TimeSpan.FromMinutes(15));
 			}
 
-			MLog.Log(nameof(DBClient), $"Wrote a total of {Context.OutResults.Count} content to database, during this iteration!");
+			MLog.Log(nameof(ContentWriteToDBStep), $"Wrote a total of {Context.OutResults.Count} content to database, during this iteration!");
 
 			//Task WriteAsync()
 			//{
