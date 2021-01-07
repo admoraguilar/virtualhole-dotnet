@@ -56,9 +56,12 @@ namespace VirtualHole.Scraper
 				using(StopwatchScope stopwatch = new StopwatchScope(
 					nameof(ContentScraperClient),
 					"Start run..",
-					$"Success! Taking a break before next iteration. Next run {DateTime.Now.AddSeconds(settings.IterationGapAmount)}")) {
+					$"Success! Taking a break before next iteration.")) {
 					await TaskExt.RetryAsync(
-						() => pipeline.ExecuteAsync(),
+						() => {
+							pipeline.SetContext(CreateScraperContext(settings));
+							return pipeline.ExecuteAsync();
+						},
 						TimeSpan.FromSeconds(5), int.MaxValue,
 						cancellationToken);
 				}
@@ -70,14 +73,13 @@ namespace VirtualHole.Scraper
 					nameof(ContentScraperClient),
 					$"Run details: {Environment.NewLine}" +
 					$"Run count: {RunCount} | Last Run: {LastRun} {Environment.NewLine}" +
-					$"Last Full Run: {LastFullRun}");
+					$"Last full run: {LastFullRun} | Next run: {DateTime.Now.AddSeconds(settings.IterationGapAmount)}");
 
 				await Task.Delay(TimeSpan.FromSeconds(settings.IterationGapAmount), cancellationToken);
 
 				if(DateTime.Now.Subtract(LastFullRun).Days > 0) {
 					LastFullRun = DateTime.Now;
 					settings.IsStartIncremental = false;
-					pipeline.SetContext(CreateScraperContext(settings));
 				}
 			}
 		}

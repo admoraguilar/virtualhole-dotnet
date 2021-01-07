@@ -23,10 +23,13 @@ namespace VirtualHole.Scraper
 
 			async Task WriteAsync()
 			{
-				MLog.Log(nameof(ContentWriteToDBStep), $"Writing new content {Context.OutNewResults.Count}...");
+				MLog.Log(nameof(ContentWriteToDBStep), $"Will write new content: {Context.OutNewResults.Count}...");
+				MLog.Log(nameof(ContentWriteToDBStep), $"Will deleting non-existent content: {Context.OutDeletedResults.Count}...");
+
+				MLog.Log(nameof(ContentWriteToDBStep), "Writing...");
 				await Context.InDB.Contents.UpsertManyContentsAsync(Context.OutNewResults);
 
-				MLog.Log(nameof(ContentWriteToDBStep), $"Deleting non-existent content {Context.OutDeletedResults.Count}...");
+				MLog.Log(nameof(ContentWriteToDBStep), "Deleting...");
 				await Context.InDB.Contents.DeleteManyAsync(Context.OutDeletedResults);
 			}
 		}
