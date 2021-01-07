@@ -95,7 +95,7 @@ namespace VirtualHole.API.Controllers
 						InPostProcess = ContentDTOPostProcess.ContentDTOFactory
 					});
 
-			pipeline.Add(new LiveQueryStep());
+			pipeline.Add(new ScheduledQueryStep());
 			pipeline.Add(new ContentFilterStep(creatorsClient));
 			pipeline.Add(new BroadcastLiveFilterStep() { IsLive = false });
 			pipeline.Add(new BroadcastSortStep());

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace VirtualHole
 {
-	public sealed class Pipeline<TContext> : PipelineStep<TContext>
+	public class Pipeline<TContext> : PipelineStep<TContext>
 	{
 		public Pipeline(TContext context)
 		{

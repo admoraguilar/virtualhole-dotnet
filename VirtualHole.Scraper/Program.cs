@@ -4,12 +4,14 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Midnight;
 using Midnight.Logs;
+using VirtualHole.DB;
+using VirtualHole.DB.Contents;
 
 namespace VirtualHole.Scraper
 {
 	internal class Program
 	{
-		private static VirtualHoleScraperSettings GetSettings()
+		private static ContentScraperSettings GetSettings()
 		{
 			string settingsPath = Path.Combine(PathUtilities.GetApplicationPath(), "data/settings.json");
 			string settingsTxt = File.ReadAllText(settingsPath);
@@ -17,7 +19,7 @@ namespace VirtualHole.Scraper
 			string proxyListPath = Path.Combine(PathUtilities.GetApplicationPath(), "data/proxy-list.txt");
 			string proxyList = File.ReadAllText(proxyListPath);
 
-			VirtualHoleScraperSettings settings = JsonConvert.DeserializeObject<VirtualHoleScraperSettings>(settingsTxt);
+			ContentScraperSettings settings = JsonConvert.DeserializeObject<ContentScraperSettings>(settingsTxt);
 			settings.ProxyPool = new ProxyPool(proxyList);
 
 			return settings;
@@ -28,9 +30,11 @@ namespace VirtualHole.Scraper
 			JsonConfig.Initialize();
 
 			MLog.Log("Running scraper...");
+			ContentScraperClient client = new ContentScraperClient(GetSettings());
+			Task.Run(() => client.RunAsync());
 
-			VirtualHoleScraperClient runner = new VirtualHoleScraperClient(GetSettings());
-			Task.Run(() => runner.RunAsync());
+			//VirtualHoleScraperClient runner = new VirtualHoleScraperClient(GetSettings());
+			//Task.Run(() => runner.RunAsync());
 
 			Console.ReadLine();
 		}
