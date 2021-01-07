@@ -16,7 +16,7 @@ namespace VirtualHole.Scraper
 			pipeline = new Pipeline<ContentScraperContext>(CreateScraperContext(settings));
 			pipeline.Add(new CreatorsGetFromDBStep());
 			pipeline.Add(new ContentScrapeYouTubeStep());
-			pipeline.Add(new ContentSaveAsJsonToDiskStep());
+			pipeline.Add(new ContentFilterExistingStep());
 			pipeline.Add(new ContentWriteToDBStep());
 		}
 

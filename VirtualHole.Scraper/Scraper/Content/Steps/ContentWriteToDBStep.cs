@@ -11,22 +11,24 @@ namespace VirtualHole.Scraper
 			// TODO: Compare with previously scraped contents
 			// so that only new and old ones are written to MongoDB
 			// hence reducing load
-			Task write = Context.InDB.Contents.UpsertManyContentsAsync(Context.OutAllResults);
 
 			using(StopwatchScope s = new StopwatchScope(
 				nameof(ContentWriteToDBStep),
 				"Writing to content collection...",
 				"Finished writing to content collection!")) {
-				await TaskExtV.Timeout(write, TimeSpan.FromMinutes(15));
+				await TaskExtV.Timeout(WriteAsync(), TimeSpan.FromMinutes(15));
 			}
 
-			MLog.Log(nameof(ContentWriteToDBStep), $"Wrote a total of {Context.OutAllResults.Count} content to database, during this iteration!");
+			MLog.Log(nameof(ContentWriteToDBStep), $"Wrote a total of {Context.OutNewResults.Count} content to database, during this iteration!");
 
-			//Task WriteAsync()
-			//{
-			//	if(isIncremental) { return dbClient.Contents.UpsertManyContentsAsync(contents, cancellationToken); } 
-			//	else { return dbClient.Contents.UpsertManyContentsAndDeleteDanglingAsync(contents, cancellationToken); }
-			//}
+			async Task WriteAsync()
+			{
+				MLog.Log(nameof(ContentWriteToDBStep), $"Writing new content {Context.OutNewResults.Count}...");
+				await Context.InDB.Contents.UpsertManyContentsAsync(Context.OutNewResults);
+
+				MLog.Log(nameof(ContentWriteToDBStep), $"Deleting non-existent content {Context.OutDeletedResults.Count}...");
+				await Context.InDB.Contents.DeleteManyAsync(Context.OutDeletedResults);
+			}
 		}
 	}
 }

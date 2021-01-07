@@ -63,11 +63,25 @@ namespace VirtualHole.DB
 			foreach(T obj in objs) {
 				bulkReplace.Add(
 					new ReplaceOneModel<BsonDocument>(filter(obj), ToBsonDocumentWithTimestamp(obj, timestamp)) {
-						IsUpsert = true
+						IsUpsert = true,
 					});
 			}
 
 			await collection.BulkWriteAsync(bulkReplace, null, cancellationToken);
+		}
+
+		public static async Task DeleteManyAsync<T>(
+			IMongoCollection<BsonDocument> collection, Func<T, BsonDocument> filter,
+			IEnumerable<T> objs, DateTime timestamp, CancellationToken cancellationToken = default)
+		{
+			// TODO: Refactor MongoDBUtilities with better generic filters
+			// for common operations
+			BsonDocument deleteFilter = new BsonDocument();
+			foreach(T obj in objs) {
+				deleteFilter.AddRange(filter(obj));
+			}
+
+			await collection.DeleteManyAsync(deleteFilter, cancellationToken);
 		}
 
 		public static BsonDocument ToBsonDocumentWithTimestamp<T>(T obj, DateTime timestamp)

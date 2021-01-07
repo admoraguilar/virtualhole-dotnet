@@ -94,7 +94,7 @@
     <Compile Include="Scraper\Content\Settings\ContentScraperSettings.cs" />
     <Compile Include="Scraper\Content\Settings\ContentScraperSettingsProvider.cs" />
     <Compile Include="Scraper\Content\Settings\LocalContentScraperSettingsProvider.cs" />
-    <Compile Include="Scraper\Content\Steps\ContentSaveAsJsonToDiskStep.cs" />
+    <Compile Include="Scraper\Content\Steps\ContentFilterExistingStep.cs" />
     <Compile Include="Scraper\Content\Steps\ContentScrapeYouTubeStep.cs" />
     <Compile Include="Scraper\Content\Steps\ContentWriteToDBStep.cs" />
     <Compile Include="Scraper\Content\Steps\CreatorsWriteToDBStep.cs" />
