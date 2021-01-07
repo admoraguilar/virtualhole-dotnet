@@ -10,7 +10,7 @@ namespace VirtualHole.API.Controllers
 	{
 		public ActionResult Index()
 		{
-			ViewBag.Title = "Virtual Hole - Home";
+			ViewBag.Title = "VirtualHole - Home";
 
 			return View();
 		}

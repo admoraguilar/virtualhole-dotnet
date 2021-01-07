@@ -4,7 +4,7 @@ using VirtualHole.API.Models;
 
 namespace VirtualHole.API.Controllers
 {
-	public class BroadcastLiveFilterStep : PipelineStep<FindContext<ContentsQuery, Content>>
+	public class BroadcastLiveFilterStep : PipelineStep<FindContext<ContentQuery, Content>>
 	{
 		public bool IsLive { get; set; } = true;
 

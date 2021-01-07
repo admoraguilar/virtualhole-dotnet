@@ -11,7 +11,7 @@ namespace VirtualHole.API.Controllers
 {
 	public static class ContentDTOPostProcess
 	{
-		public static async Task<object> ContentDTOFactory(ContentsQuery query, Content content)
+		public static async Task<object> ContentDTOFactory(ContentQuery query, Content content)
 		{
 			HttpClient httpClient = HttpClientFactory.HttpClient;
 

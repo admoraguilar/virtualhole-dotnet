@@ -13,7 +13,7 @@ namespace VirtualHole.API.Controllers
 		// (HttpResponseMessage vs IHttpActionResult)
 		[Route("api/v1/resources")]
 		[HttpGet]
-        public async Task<HttpResponseMessage> Get([FromUri] ResourcesQuery query)
+        public async Task<HttpResponseMessage> Get([FromUri] ResourceQuery query)
         {
 			HttpClient httpClient = HttpClientFactory.HttpClient;
 

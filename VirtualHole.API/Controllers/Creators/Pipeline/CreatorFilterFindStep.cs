@@ -4,7 +4,7 @@ using VirtualHole.API.Models;
 
 namespace VirtualHole.API.Controllers
 {
-	public class CreatorFilterStep : PipelineStep<FindContext<CreatorsQuery, Creator>>
+	public class CreatorFilterStep : PipelineStep<FindContext<CreatorQuery, Creator>>
 	{
 		public override Task ExecuteAsync()
 		{

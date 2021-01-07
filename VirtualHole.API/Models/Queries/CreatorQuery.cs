@@ -2,7 +2,7 @@
 
 namespace VirtualHole.API.Models
 {
-	public class CreatorsQuery : PagedQuery
+	public class CreatorQuery : PagedQuery
 	{
 		public string Search { get; set; } = string.Empty;
 		

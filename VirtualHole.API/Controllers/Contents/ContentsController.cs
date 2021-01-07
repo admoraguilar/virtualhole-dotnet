@@ -21,12 +21,12 @@ namespace VirtualHole.API.Controllers
 
 		[Route("api/v1/contents/discover")]
 		[HttpGet]
-		public async Task<IHttpActionResult> GetDiscover([FromUri] ContentsQuery query)
+		public async Task<IHttpActionResult> GetDiscover([FromUri] ContentQuery query)
 		{
-			Pipeline<FindContext<ContentsQuery, Content>> pipeline =
-				new Pipeline<FindContext<ContentsQuery, Content>>(
-					new FindContext<ContentsQuery, Content>() {
-						InQuery = query ?? new ContentsQuery(),
+			Pipeline<FindContext<ContentQuery, Content>> pipeline =
+				new Pipeline<FindContext<ContentQuery, Content>>(
+					new FindContext<ContentQuery, Content>() {
+						InQuery = query ?? new ContentQuery(),
 						InProvider = (FindSettings find) => contentsClient.FindContentsAsync(find),
 						InPostProcess = ContentDTOPostProcess.ContentDTOFactory
 					});
@@ -34,7 +34,7 @@ namespace VirtualHole.API.Controllers
 			pipeline.Add(new DiscoverQueryStep());
 			pipeline.Add(new ContentFilterStep(creatorsClient));
 			pipeline.Add(new ContentSortStep());
-			pipeline.Add(new GetPagedResultsStep<ContentsQuery, Content>());
+			pipeline.Add(new GetPagedResultsStep<ContentQuery, Content>());
 			await pipeline.ExecuteAsync();
 
 			return Ok(pipeline.Context.OutResults);
@@ -42,12 +42,12 @@ namespace VirtualHole.API.Controllers
 
 		[Route("api/v1/contents/community")]
 		[HttpGet]
-		public async Task<IHttpActionResult> GetCommunity([FromUri] ContentsQuery query)
+		public async Task<IHttpActionResult> GetCommunity([FromUri] ContentQuery query)
 		{
-			Pipeline<FindContext<ContentsQuery, Content>> pipeline =
-				new Pipeline<FindContext<ContentsQuery, Content>>(
-					new FindContext<ContentsQuery, Content>() {
-						InQuery = query ?? new ContentsQuery(),
+			Pipeline<FindContext<ContentQuery, Content>> pipeline =
+				new Pipeline<FindContext<ContentQuery, Content>>(
+					new FindContext<ContentQuery, Content>() {
+						InQuery = query ?? new ContentQuery(),
 						InProvider = (FindSettings find) => contentsClient.FindContentsAsync(find),
 						InPostProcess = ContentDTOPostProcess.ContentDTOFactory
 					});
@@ -55,7 +55,7 @@ namespace VirtualHole.API.Controllers
 			pipeline.Add(new CommunityQueryStep());
 			pipeline.Add(new ContentFilterStep(creatorsClient));
 			pipeline.Add(new ContentSortStep());
-			pipeline.Add(new GetPagedResultsStep<ContentsQuery, Content>());
+			pipeline.Add(new GetPagedResultsStep<ContentQuery, Content>());
 			await pipeline.ExecuteAsync();
 
 			return Ok(pipeline.Context.OutResults);
@@ -63,12 +63,12 @@ namespace VirtualHole.API.Controllers
 
 		[Route("api/v1/contents/live")]
 		[HttpGet]
-		public async Task<IHttpActionResult> GetLive([FromUri] ContentsQuery query)
+		public async Task<IHttpActionResult> GetLive([FromUri] ContentQuery query)
 		{
-			Pipeline<FindContext<ContentsQuery, Content>> pipeline =
-				new Pipeline<FindContext<ContentsQuery, Content>>(
-					new FindContext<ContentsQuery, Content>() {
-						InQuery = query ?? new ContentsQuery(),
+			Pipeline<FindContext<ContentQuery, Content>> pipeline =
+				new Pipeline<FindContext<ContentQuery, Content>>(
+					new FindContext<ContentQuery, Content>() {
+						InQuery = query ?? new ContentQuery(),
 						InProvider = (FindSettings find) => contentsClient.FindContentsAsync(find),
 						InPostProcess = ContentDTOPostProcess.ContentDTOFactory
 					});
@@ -77,7 +77,7 @@ namespace VirtualHole.API.Controllers
 			pipeline.Add(new ContentFilterStep(creatorsClient));
 			pipeline.Add(new BroadcastLiveFilterStep() { IsLive = true });
 			pipeline.Add(new ContentSortStep());
-			pipeline.Add(new GetPagedResultsStep<ContentsQuery, Content>());
+			pipeline.Add(new GetPagedResultsStep<ContentQuery, Content>());
 			await pipeline.ExecuteAsync();
 
 			return Ok(pipeline.Context.OutResults);
@@ -85,12 +85,12 @@ namespace VirtualHole.API.Controllers
 
 		[Route("api/v1/contents/scheduled")]
 		[HttpGet]
-		public async Task<IHttpActionResult> GetScheduled([FromUri] ContentsQuery query)
+		public async Task<IHttpActionResult> GetScheduled([FromUri] ContentQuery query)
 		{
-			Pipeline<FindContext<ContentsQuery, Content>> pipeline =
-				new Pipeline<FindContext<ContentsQuery, Content>>(
-					new FindContext<ContentsQuery, Content>() {
-						InQuery = query ?? new ContentsQuery(),
+			Pipeline<FindContext<ContentQuery, Content>> pipeline =
+				new Pipeline<FindContext<ContentQuery, Content>>(
+					new FindContext<ContentQuery, Content>() {
+						InQuery = query ?? new ContentQuery(),
 						InProvider = (FindSettings find) => contentsClient.FindContentsAsync(find),
 						InPostProcess = ContentDTOPostProcess.ContentDTOFactory
 					});
@@ -99,7 +99,7 @@ namespace VirtualHole.API.Controllers
 			pipeline.Add(new ContentFilterStep(creatorsClient));
 			pipeline.Add(new BroadcastLiveFilterStep() { IsLive = false });
 			pipeline.Add(new BroadcastSortStep());
-			pipeline.Add(new GetPagedResultsStep<ContentsQuery, Content>());
+			pipeline.Add(new GetPagedResultsStep<ContentQuery, Content>());
 			await pipeline.ExecuteAsync();
 
 			return Ok(pipeline.Context.OutResults);

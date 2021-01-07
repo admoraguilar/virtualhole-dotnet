@@ -1,7 +1,7 @@
 ﻿
 namespace VirtualHole.API.Models
 {
-	public class ResourcesQuery : APIQuery
+	public class ResourceQuery : APIQuery
 	{
 		public string Path { get; set; } = string.Empty;
 	}

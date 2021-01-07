@@ -4,7 +4,7 @@ using VirtualHole.API.Models;
 
 namespace VirtualHole.API.Controllers
 {
-	public class BroadcastSortStep : PipelineStep<FindContext<ContentsQuery, Content>>
+	public class BroadcastSortStep : PipelineStep<FindContext<ContentQuery, Content>>
 	{
 		public override Task ExecuteAsync()
 		{

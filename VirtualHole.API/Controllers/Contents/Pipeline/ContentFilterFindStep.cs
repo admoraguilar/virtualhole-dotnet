@@ -8,7 +8,7 @@ using VirtualHole.API.Models;
 
 namespace VirtualHole.API.Controllers
 {
-	public class ContentFilterStep : PipelineStep<FindContext<ContentsQuery, Content>>
+	public class ContentFilterStep : PipelineStep<FindContext<ContentQuery, Content>>
 	{
 		private CreatorsClient creatorsClient;
 
