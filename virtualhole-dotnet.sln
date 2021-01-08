@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30225.117
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtualHole.SDK.Legacy", "VirtualHole.SDK\VirtualHole.SDK.Legacy.csproj", "{6A27DD80-815B-482B-81F7-441FD659AAD2}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtualHole.API", "VirtualHole.API\VirtualHole.API.csproj", "{E9E25B62-8C84-43FD-BF35-57B33843CDA9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtualHole.Scraper", "VirtualHole.Scraper\VirtualHole.Scraper.csproj", "{D1708660-F198-4D88-A132-FFB00B86659F}"
@@ -21,10 +19,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{6A27DD80-815B-482B-81F7-441FD659AAD2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6A27DD80-815B-482B-81F7-441FD659AAD2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6A27DD80-815B-482B-81F7-441FD659AAD2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6A27DD80-815B-482B-81F7-441FD659AAD2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E9E25B62-8C84-43FD-BF35-57B33843CDA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E9E25B62-8C84-43FD-BF35-57B33843CDA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E9E25B62-8C84-43FD-BF35-57B33843CDA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
