@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace VirtualHole.Storage.Data
+namespace VirtualHole.Storage.Models
 {
 	[Serializable]
 	public class SupportInfo
