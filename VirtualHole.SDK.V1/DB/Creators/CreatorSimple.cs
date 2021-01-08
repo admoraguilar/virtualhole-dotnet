@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace VirtualHole.DB.Creators
 {
@@ -16,9 +17,8 @@ namespace VirtualHole.DB.Creators
 
 		public CreatorSimple(Creator creator, CreatorSocial creatorSocial)
 		{
-			if(creator == null || creatorSocial == null) { 
-				throw new NullReferenceException(); 
-			}
+			Debug.Assert(creator != null);
+			Debug.Assert(creatorSocial != null);
 
 			Id = creator.Id;
 			Name = creator.Name;

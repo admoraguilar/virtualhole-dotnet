@@ -2,6 +2,7 @@
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Diagnostics;
 using Midnight;
 
 namespace VirtualHole.Storage
@@ -10,9 +11,18 @@ namespace VirtualHole.Storage
 	{
 		public string Root { get; private set; } = string.Empty;
 
-		public VirtualHoleStorageClient(string root)
+		private readonly HttpClient httpClient = null;
+
+		public VirtualHoleStorageClient(string root) 
+			: this(HttpClientFactory.HttpClient, root) { }
+
+		public VirtualHoleStorageClient(HttpClient httpClient, string root)
 		{
+			Debug.Assert(httpClient != null);
+			Debug.Assert(!string.IsNullOrEmpty(root));
+
 			Root = root;
+			this.httpClient = httpClient;
 		}
 
 		public async Task<HttpResponseMessage> GetAsync(
@@ -22,8 +32,9 @@ namespace VirtualHole.Storage
 				throw new InvalidOperationException("Object path mustn't be empty.");
 			}
 
-			HttpClient httpClient = HttpClientFactory.HttpClient;
-			return await httpClient.GetAsync(UriUtilities.CombineUri(Root, relativeObjectPath));
+			return await httpClient.GetAsync(
+				UriUtilities.CombineUri(Root, relativeObjectPath), 
+				cancellationToken);
 		}
 	}
 }

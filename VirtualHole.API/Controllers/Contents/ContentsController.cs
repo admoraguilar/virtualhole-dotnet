@@ -28,7 +28,7 @@ namespace VirtualHole.API.Controllers
 				new Pipeline<FindContext<ContentQuery, Content>>(
 					new FindContext<ContentQuery, Content>() {
 						InQuery = query ?? new ContentQuery(),
-						InProvider = (FindSettings find) => contentsClient.FindContentsAsync(find),
+						InProvider = (FindSettings find) => contentsClient.FindAsync(find),
 						InPostProcess = ContentDTOPostProcess.ContentDTOFactory
 					});
 
@@ -49,7 +49,7 @@ namespace VirtualHole.API.Controllers
 				new Pipeline<FindContext<ContentQuery, Content>>(
 					new FindContext<ContentQuery, Content>() {
 						InQuery = query ?? new ContentQuery(),
-						InProvider = (FindSettings find) => contentsClient.FindContentsAsync(find),
+						InProvider = (FindSettings find) => contentsClient.FindAsync(find),
 						InPostProcess = ContentDTOPostProcess.ContentDTOFactory
 					});
 
@@ -70,7 +70,7 @@ namespace VirtualHole.API.Controllers
 				new Pipeline<FindContext<ContentQuery, Content>>(
 					new FindContext<ContentQuery, Content>() {
 						InQuery = query ?? new ContentQuery(),
-						InProvider = (FindSettings find) => contentsClient.FindContentsAsync(find),
+						InProvider = (FindSettings find) => contentsClient.FindAsync(find),
 						InPostProcess = ContentDTOPostProcess.ContentDTOFactory
 					});
 
@@ -92,7 +92,7 @@ namespace VirtualHole.API.Controllers
 				new Pipeline<FindContext<ContentQuery, Content>>(
 					new FindContext<ContentQuery, Content>() {
 						InQuery = query ?? new ContentQuery(),
-						InProvider = (FindSettings find) => contentsClient.FindContentsAsync(find),
+						InProvider = (FindSettings find) => contentsClient.FindAsync(find),
 						InPostProcess = ContentDTOPostProcess.ContentDTOFactory
 					});
 

@@ -25,7 +25,7 @@ namespace VirtualHole.Scraper
 						new CreatorStrictFilter() 
 					}
 				};
-				FindResults<Creator> findResults = await Context.InDB.Creators.FindCreatorsAsync(findSettings);
+				FindResults<Creator> findResults = await Context.InDB.Creators.FindAsync(findSettings);
 				while(await findResults.MoveNextAsync()) {
 					Context.InCreators.AddRange(findResults.Current);
 				}
