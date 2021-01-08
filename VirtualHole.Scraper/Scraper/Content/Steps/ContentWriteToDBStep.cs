@@ -32,7 +32,7 @@ namespace VirtualHole.Scraper
 
 				MLog.Log(nameof(ContentWriteToDBStep), "Writing...");
 				LogContentsTitle(Context.OutNewResults);
-				await Context.InDB.Contents.UpsertManyContentsAsync(Context.OutNewResults);
+				await Context.InDB.Contents.UpsertManyAsync(Context.OutNewResults);
 
 				MLog.Log(nameof(ContentWriteToDBStep), "Deleting...");
 				LogContentsTitle(Context.OutDeletedResults);

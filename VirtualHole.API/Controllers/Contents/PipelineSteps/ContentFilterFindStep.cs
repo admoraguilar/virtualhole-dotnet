@@ -74,7 +74,7 @@ namespace VirtualHole.API.Controllers
 			creatorFind.Filters.Add(new CreatorStrictFilter() {
 				Id = new List<string>(creatorIds),
 			});
-			FindResults<Creator> creatorFindResults = await creatorsClient.FindCreatorsAsync(creatorFind);
+			FindResults<Creator> creatorFindResults = await creatorsClient.FindAsync(creatorFind);
 			await creatorFindResults.MoveNextAsync();
 
 			return creatorFindResults.Current;

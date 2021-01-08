@@ -31,7 +31,7 @@ namespace VirtualHole.API.Controllers
 				new Pipeline<FindContext<CreatorQuery, Creator>>(
 					new FindContext<CreatorQuery, Creator>() {
 						InQuery = query ?? new CreatorQuery(),
-						InProvider = (FindSettings find) => creatorClient.FindCreatorsAsync(find),
+						InProvider = (FindSettings find) => creatorClient.FindAsync(find),
 					});
 
 			pipeline.Add(new CreatorFilterStep());

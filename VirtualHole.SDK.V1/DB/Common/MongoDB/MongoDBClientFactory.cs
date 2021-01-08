@@ -2,15 +2,13 @@
 
 namespace VirtualHole.DB
 {
-	internal static class ClientFactory
+	internal static class MongoDBClientFactory
 	{
 		private static IMongoClient client = null;
 
 		public static IMongoClient GetMongoClient(string connectionString)
 		{
 			if(client != null) { return client; }
-
-			BsonConfig.Initialize();
 			return client = new MongoClient(connectionString);
 		}
 	}

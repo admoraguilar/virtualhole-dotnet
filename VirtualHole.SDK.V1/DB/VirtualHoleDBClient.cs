@@ -36,7 +36,7 @@ namespace VirtualHole.DB
 				.Replace("<username>", userName)
 				.Replace("<password>", password);
 
-			_client = ClientFactory.GetMongoClient(connectionString);
+			_client = MongoDBClientFactory.GetMongoClient(connectionString);
 			_rootDatabase = _client.GetDatabase(rootDatabaseName);
 
 			Contents = new ContentsClient(_rootDatabase);
