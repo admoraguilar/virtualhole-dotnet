@@ -20,7 +20,14 @@ namespace VirtualHole.DB
 
 		public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
 		{
+			// Ignore null JTokens and read until 
+			// there's a non-null JToken
 			JToken jToken = JToken.Load(reader);
+			while((jToken == null || jToken.Type == JTokenType.Null) &&
+				  reader.Read()) {
+				jToken = JToken.Load(reader);
+			}
+
 			if(jToken is JObject jObj) {
 				return PopulateSerializer(jObj);
 			} else if(jToken is JArray jArr) {

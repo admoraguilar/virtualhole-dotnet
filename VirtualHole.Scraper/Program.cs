@@ -13,14 +13,16 @@ namespace VirtualHole.Scraper
 {
 	internal class Program
 	{
-		private static void Main(string[] args)
+		private static async Task Main(string[] args)
 		{
 			JsonConfig.Initialize();
 
 			MLog.Log("Running scraper...");
 			ContentScraperSettingsProvider settingsProvider = new LocalContentScraperSettingsProvider();
 			ContentScraperClient client = new ContentScraperClient(settingsProvider.Get());
-			Task.Run(() => client.RunAsync());
+			await client.RunAsync();
+
+			MLog.Log(MLogLevel.Error, nameof(Program), "Scraper has been terminated.");
 
 			// TESTS
 			//string contentsPath = Path.Combine(PathUtilities.GetApplicationPath(), "data/results/contents.json");
@@ -32,7 +34,7 @@ namespace VirtualHole.Scraper
 			//List<Content> newContents = prevContents.Except(prevContents2).ToList();
 			//MLog.Log(newContents.Count);
 
-			Console.ReadLine();
+			//Console.ReadLine();
 		}
 	}
 }
