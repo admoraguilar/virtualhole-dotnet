@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using Midnight.Logs;
 using Midnight.Tasks;
 using Midnight.Pipeline;
 using VirtualHole.DB.Contents;
-using System.Collections.Generic;
 
 namespace VirtualHole.Scraper
 {
@@ -16,33 +17,44 @@ namespace VirtualHole.Scraper
 			// so that only new and old ones are written to MongoDB
 			// hence reducing load
 
+			List<Content> prevContents = ContentScraperUtilities.LoadFromDisk();
+
+			List<Content> toDeleteContents = prevContents.Except(Context.OutResults).ToList();
+			List<Content> toUpdateContents = Context.OutResults.Except(prevContents).ToList();
+			
+			ContentScraperUtilities.SaveToDisk(Context.OutResults);
+
 			using(StopwatchScope s = new StopwatchScope(
 				nameof(ContentWriteToDBStep),
-				"Writing to content collection...",
-				"Finished writing to content collection!")) {
-				await TaskExt.Timeout(WriteAsync(), TimeSpan.FromMinutes(15));
+				"Running operations to content collection...",
+				"Finished operations to content collection!")) {
+				MLog.Log(nameof(ContentWriteToDBStep), $"Will delete: {toDeleteContents.Count}");
+				MLog.Log(nameof(ContentWriteToDBStep), $"Will update: {toUpdateContents.Count}");
+
+				await TaskExt.Timeout(DeleteAsync(), TimeSpan.FromMinutes(15));
+				await TaskExt.Timeout(UpdateAsync(), TimeSpan.FromMinutes(15));
 			}
 
-			MLog.Log(nameof(ContentWriteToDBStep), $"Wrote a total of {Context.OutNewResults.Count} content to database, during this iteration!");
-
-			async Task WriteAsync()
+			async Task DeleteAsync()
 			{
-				MLog.Log(nameof(ContentWriteToDBStep), $"Will write new content: {Context.OutNewResults.Count}...");
-				MLog.Log(nameof(ContentWriteToDBStep), $"Will deleting non-existent content: {Context.OutDeletedResults.Count}...");
+				using(new StopwatchScope(nameof(ContentWriteToDBStep), $"Start deleting...", $"Finished deleting!")) {
+					LogContentDetails(toDeleteContents);
+					await Context.InDB.Contents.DeleteManyAsync(toDeleteContents);
+				}
+			}
 
-				MLog.Log(nameof(ContentWriteToDBStep), "Writing...");
-				LogContentsTitle(Context.OutNewResults);
-				await Context.InDB.Contents.UpsertManyAsync(Context.OutNewResults);
+			async Task UpdateAsync()
+			{
+				using(new StopwatchScope(nameof(ContentWriteToDBStep), $"Start updating...", $"Finished updating!")) {
+					LogContentDetails(toUpdateContents);
+					await Context.InDB.Contents.UpsertManyAsync(toUpdateContents);
+				}
+			}
 
-				MLog.Log(nameof(ContentWriteToDBStep), "Deleting...");
-				LogContentsTitle(Context.OutDeletedResults);
-				await Context.InDB.Contents.DeleteManyAsync(Context.OutDeletedResults);
-
-				void LogContentsTitle(IEnumerable<Content> contents)
-				{
-					foreach(Content content in contents) {
-						MLog.Log(nameof(ContentWriteToDBStep), $"Social: {content.SocialType} | Type: {content.ContentType} | Title: {content.Title}");
-					}
+			void LogContentDetails(IEnumerable<Content> contents)
+			{
+				foreach(Content content in contents) {
+					MLog.Log(nameof(ContentWriteToDBStep), $"{content.SocialType}-{content.ContentType} | Creator: {content.Creator.Name} | Title: {content.Title}");
 				}
 			}
 		}

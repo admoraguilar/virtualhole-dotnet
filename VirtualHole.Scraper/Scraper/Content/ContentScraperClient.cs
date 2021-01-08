@@ -1,28 +1,45 @@
-﻿using Midnight.Logs;
-using Midnight.Tasks;
-using Midnight.Pipeline;
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Diagnostics;
+using Midnight.Logs;
+using Midnight.Tasks;
+using Midnight.Pipeline;
 using VirtualHole.DB;
 
 namespace VirtualHole.Scraper
 {
 	public class ContentScraperClient
 	{
+		private ScraperClient scraperClient = null;
+		private VirtualHoleDBClient dbClient = null;
+
 		public ContentScraperClient(ContentScraperSettings settings)
 		{
+			Debug.Assert(settings != null);
+
 			this.settings = settings;
-			
-			pipeline = new Pipeline<ContentScraperContext>(CreateScraperContext(settings));
-			pipeline.Add(new CreatorsGetFromDBStep());
-			pipeline.Add(new ContentScrapeYouTubeStep());
-			pipeline.Add(new ContentFilterExistingStep());
-			pipeline.Add(new ContentWriteToDBStep());
+
+			scraperClient = new ScraperClient(settings.ProxyPool);
+			dbClient = new VirtualHoleDBClient(
+				settings.ConnectionString, settings.UserName, 
+				settings.Password);
+
+			firstPipeline = new Pipeline<ContentScraperContext>(new ContentScraperContext(scraperClient, dbClient));
+			firstPipeline.Add(new ContentGetAllFromDBAndStoreStep());
+			firstPipeline.Add(new CreatorGetFromDBStep());
+			firstPipeline.Add(new ContentScrapeYouTubeStep());
+			firstPipeline.Add(new ContentWriteToDBStep());
+
+			secondPipeline = new Pipeline<ContentScraperContext>(new ContentScraperContext(scraperClient, dbClient));
+			secondPipeline.Add(new CreatorGetFromDBStep());
+			secondPipeline.Add(new ContentScrapeYouTubeStep());
+			secondPipeline.Add(new ContentWriteToDBStep());
 		}
 
 		private ContentScraperSettings settings = null;
-		private Pipeline<ContentScraperContext> pipeline = null;
+		private Pipeline<ContentScraperContext> firstPipeline = null;
+		private Pipeline<ContentScraperContext> secondPipeline = null;
 
 		public bool IsRunning { get; private set; } = false;
 		public int RunCount { get; private set; } = 0;
@@ -34,17 +51,6 @@ namespace VirtualHole.Scraper
 			if(IsRunning) { return; }
 			IsRunning = true;
 
-			// 1st scrape
-			// 1. Scrape contents
-			// 2. Store scraped contents in json
-
-			// 2nd scrape
-			// 1. Scrape contents
-			// 2. Compare scraped contents with previous
-			// 3. Only write changed ones:
-			//   * Contents existing on new but not on old are "NEW"
-			//   * Contents existing on old but not on new are "DELETED, PRIVATED"
-			// This makes the load on MongoDB much lighter
 			while(true) {
 				if(cancellationToken.IsCancellationRequested) {
 					IsRunning = false;
@@ -60,8 +66,13 @@ namespace VirtualHole.Scraper
 					$"Success! Taking a break before next iteration.")) {
 					await TaskExt.RetryAsync(
 						() => {
-							pipeline.SetContext(CreateScraperContext(settings));
-							return pipeline.ExecuteAsync();
+							if(RunCount <= 0) {
+								firstPipeline.Context.Reset();
+								return firstPipeline.ExecuteAsync();
+							} else {
+								secondPipeline.Context.Reset();
+								return secondPipeline.ExecuteAsync();
+							}
 						},
 						TimeSpan.FromSeconds(5), int.MaxValue,
 						cancellationToken);
@@ -83,17 +94,6 @@ namespace VirtualHole.Scraper
 					settings.IsStartIncremental = false;
 				}
 			}
-		}
-
-		private ContentScraperContext CreateScraperContext(ContentScraperSettings settings)
-		{
-			return new ContentScraperContext(
-				new ScraperClient(settings.ProxyPool),
-				new VirtualHoleDBClient(
-					settings.ConnectionString, settings.UserName,
-					settings.Password)) {
-				InIsIncremental = settings.IsStartIncremental
-			};
 		}
 	}
 }

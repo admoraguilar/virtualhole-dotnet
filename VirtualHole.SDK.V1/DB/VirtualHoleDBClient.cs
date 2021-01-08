@@ -23,7 +23,6 @@ namespace VirtualHole.DB
 			string rootDatabaseName, string connectionString, 
 			string userName, string password)
 		{
-			Debug.Assert(!string.IsNullOrEmpty(rootDatabaseName));
 			Debug.Assert(!string.IsNullOrEmpty(connectionString));
 			Debug.Assert(!string.IsNullOrEmpty(userName));
 			Debug.Assert(!string.IsNullOrEmpty(password));

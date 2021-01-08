@@ -9,29 +9,38 @@ namespace VirtualHole.DB
 {
 	public class FindResults<T> : IDisposable
 	{
-		public IEnumerable<T> Current => cursor.Current;
-		private IAsyncCursor<T> cursor = null;
+		public IEnumerable<T> Current => Cursor.Current;
+		internal IAsyncCursor<T> Cursor { get; private set; } = null;
 
 		internal FindResults(IAsyncCursor<T> cursor)
 		{
 			Debug.Assert(cursor != null);
 
-			this.cursor = cursor;
+			this.Cursor = cursor;
 		}
 
 		public bool MoveNext(CancellationToken cancellationToken = default)
 		{
-			return cursor.MoveNext(cancellationToken);
+			return Cursor.MoveNext(cancellationToken);
 		}
 
 		public async Task<bool> MoveNextAsync(CancellationToken cancellationToken = default)
 		{
-			return await cursor.MoveNextAsync(cancellationToken);
+			return await Cursor.MoveNextAsync(cancellationToken);
 		}
 
 		public void Dispose()
 		{
-			cursor.Dispose();
+			Cursor.Dispose();
+		}
+	}
+
+	public static class FindResultsExtension
+	{
+		public static Task<List<T>> ToListAsync<T>(
+			this FindResults<T> findResults, CancellationToken cancellationToken = default)
+		{
+			return findResults.Cursor.ToListAsync(cancellationToken);
 		}
 	}
 }

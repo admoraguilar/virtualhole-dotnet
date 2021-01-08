@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using VirtualHole.DB;
 using VirtualHole.DB.Contents;
 using VirtualHole.DB.Creators;
@@ -9,6 +10,9 @@ namespace VirtualHole.Scraper
 	{
 		public ContentScraperContext(ScraperClient scraper, VirtualHoleDBClient db)
 		{
+			Debug.Assert(scraper != null);
+			Debug.Assert(db != null);
+
 			InScraper = scraper;
 			InDB = db;
 		}
@@ -17,10 +21,12 @@ namespace VirtualHole.Scraper
 		public VirtualHoleDBClient InDB { get; private set; }
 
 		public List<Creator> InCreators { get; set; } = new List<Creator>();
-		public bool InIsIncremental { get; set; } = false;
+		public List<Content> OutResults { get; set; } = new List<Content>();
 
-		public List<Content> OutAllResults { get; set; } = new List<Content>();
-		public List<Content> OutNewResults { get; set; } = new List<Content>();
-		public List<Content> OutDeletedResults { get; set; } = new List<Content>();
+		public void Reset()
+		{
+			InCreators = new List<Creator>();
+			OutResults = new List<Content>();
+		}
 	}
 }

@@ -16,6 +16,7 @@ namespace VirtualHole.Scraper
 		private static async Task Main(string[] args)
 		{
 			JsonConfig.Initialize();
+			VirtualHoleClient.Initialize();
 
 			MLog.Log("Running scraper...");
 			ContentScraperSettingsProvider settingsProvider = new LocalContentScraperSettingsProvider();

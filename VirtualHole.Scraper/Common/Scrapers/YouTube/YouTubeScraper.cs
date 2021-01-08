@@ -13,12 +13,6 @@ namespace VirtualHole.Scraper
 {
 	public class YoutubeScraper
 	{
-		public class GetChannelVideoSettings
-		{
-			public DateTimeOffset AnchorDate = DateTimeOffset.MinValue;
-			public bool IsForward = true;
-		}
-
 		private YoutubeClient client = null;
 
 		public YoutubeScraper()
@@ -43,8 +37,7 @@ namespace VirtualHole.Scraper
 		}
 
 		public async Task<List<YouTubeVideo>> GetChannelVideosAsync(
-			Creator creator, CreatorSocial creatorSocial,
-			GetChannelVideoSettings settings = null)
+			Creator creator, CreatorSocial creatorSocial)
 		{
 			List<YouTubeVideo> results = new List<YouTubeVideo>();
 
@@ -75,11 +68,6 @@ namespace VirtualHole.Scraper
 					uploadDateAnchor = video.UploadDate;
 				}
 
-				if(settings != null) {
-					if(settings.IsForward && settings.AnchorDate > uploadDateAnchor) { continue; }
-					if(!settings.IsForward && settings.AnchorDate < uploadDateAnchor) { continue; }
-				}
-
 				results.Add(new YouTubeVideo {
 					Title = video.Title,
 					Id = video.Id,
@@ -99,12 +87,14 @@ namespace VirtualHole.Scraper
 			return results;
 		}
 
-		public async Task<List<YouTubeBroadcast>> GetChannelLiveBroadcastsAsync(Creator creator, CreatorSocial creatorSocial)
+		public async Task<List<YouTubeBroadcast>> GetChannelLiveBroadcastsAsync(
+			Creator creator, CreatorSocial creatorSocial)
 		{
 			return await GetChannelBroadcastsAsync(creator, creatorSocial, BroadcastType.Now);
 		}
 
-		public async Task<List<YouTubeBroadcast>> GetChannelUpcomingBroadcastsAsync(Creator creator, CreatorSocial creatorSocial)
+		public async Task<List<YouTubeBroadcast>> GetChannelUpcomingBroadcastsAsync(
+			Creator creator, CreatorSocial creatorSocial)
 		{
 			return await GetChannelBroadcastsAsync(creator, creatorSocial, BroadcastType.Upcoming);
 		}

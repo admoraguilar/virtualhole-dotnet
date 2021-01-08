@@ -7,12 +7,12 @@ using VirtualHole.DB.Creators;
 
 namespace VirtualHole.Scraper
 {
-	public class CreatorsGetFromDBStep : PipelineStep<ContentScraperContext>
+	public class CreatorGetFromDBStep : PipelineStep<ContentScraperContext>
 	{
 		public override async Task ExecuteAsync()
 		{
 			using(StopwatchScope stopwatch = new StopwatchScope(
-				nameof(CreatorsGetFromDBStep),
+				nameof(CreatorGetFromDBStep),
 				"Start getting all creators from DB.",
 				"Finished getting all creators from DB.")) {
 				FindSettings findSettings = new FindSettings() {
@@ -26,9 +26,7 @@ namespace VirtualHole.Scraper
 					}
 				};
 				FindResults<Creator> findResults = await Context.InDB.Creators.FindAsync(findSettings);
-				while(await findResults.MoveNextAsync()) {
-					Context.InCreators.AddRange(findResults.Current);
-				}
+				Context.InCreators.AddRange(await findResults.ToListAsync());
 			}
 		}
 	}
