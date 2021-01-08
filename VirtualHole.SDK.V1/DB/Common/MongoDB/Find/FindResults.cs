@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Diagnostics;
 using MongoDB.Driver;
 
 namespace VirtualHole.DB
@@ -13,6 +14,8 @@ namespace VirtualHole.DB
 
 		internal FindResults(IAsyncCursor<T> cursor)
 		{
+			Debug.Assert(cursor != null);
+
 			this.cursor = cursor;
 		}
 

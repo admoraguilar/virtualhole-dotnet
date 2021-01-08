@@ -1,4 +1,5 @@
-﻿using MongoDB.Driver;
+﻿using System.Diagnostics;
+using MongoDB.Driver;
 
 namespace VirtualHole.DB
 {
@@ -8,6 +9,8 @@ namespace VirtualHole.DB
 
 		public static IMongoClient GetMongoClient(string connectionString)
 		{
+			Debug.Assert(!string.IsNullOrEmpty(connectionString));
+
 			if(client != null) { return client; }
 			return client = new MongoClient(connectionString);
 		}

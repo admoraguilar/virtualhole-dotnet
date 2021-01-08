@@ -12,7 +12,7 @@ namespace VirtualHole.Scraper
 				nameof(CreatorsWriteToDBStep),
 				"Start writing creators to DB.",
 				"Finished writing creators to DB.")) {
-				await Context.InDB.Creators.UpsertManyCreatorsAndDeleteDanglingAsync(Context.InCreators);
+				await Context.InDB.Creators.UpsertManyAsync(Context.InCreators);
 			}
 		}
 	}

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Diagnostics;
 using MongoDB.Bson;
 
 namespace VirtualHole.DB
@@ -41,6 +42,8 @@ namespace VirtualHole.DB
 
 		private BsonDocument MergeFindDefinitions(IEnumerable<FindDefinition> definitions)
 		{
+			Debug.Assert(definitions != null);
+
 			BsonDocument bson = new BsonDocument();
 			if(definitions != null) {
 				foreach(FindDefinition definition in definitions) {

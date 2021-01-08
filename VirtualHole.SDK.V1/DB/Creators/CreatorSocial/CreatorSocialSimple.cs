@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Diagnostics;
 
 namespace VirtualHole.DB.Creators
 {
@@ -13,9 +13,7 @@ namespace VirtualHole.DB.Creators
 
 		public CreatorSocialSimple(CreatorSocial creatorSocial)
 		{
-			if(creatorSocial == null) { 
-				throw new NullReferenceException(); 
-			}
+			Debug.Assert(creatorSocial != null);
 
 			Id = creatorSocial.Id;
 			Name = creatorSocial.Name;

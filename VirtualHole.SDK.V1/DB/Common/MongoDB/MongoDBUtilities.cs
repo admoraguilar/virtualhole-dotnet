@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Diagnostics;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
@@ -13,6 +14,8 @@ namespace VirtualHole.DB
 		public static async Task<List<T>> FindAllAsync<T>(
 			IMongoCollection<T> collection, CancellationToken cancellationToken = default)
 		{
+			Debug.Assert(collection != null);
+
 			return await collection
 				.Find(Builders<T>.Filter.Empty)
 				.ToListAsync(cancellationToken);
@@ -22,6 +25,9 @@ namespace VirtualHole.DB
 			IMongoCollection<T> collection, FindSettings settings,
 			CancellationToken cancellationToken = default)
 		{
+			Debug.Assert(collection != null);
+			Debug.Assert(settings != null);
+
 			return await collection.FindAsync(
 				settings.FilterDocument,
 				new FindOptions<T, T> {
@@ -36,8 +42,11 @@ namespace VirtualHole.DB
 		public static async Task UpsertManyAsync<T>(
 			IMongoCollection<T> collection, Func<T, FilterDefinition<T>> filter,
 			IEnumerable<T> objs, CancellationToken cancellationToken = default)
-
 		{
+			Debug.Assert(collection != null);
+			Debug.Assert(filter != null);
+			Debug.Assert(objs != null);
+
 			if(objs.Count() <= 0) { return; }
 
 			List<WriteModel<T>> bulkReplace = new List<WriteModel<T>>();
@@ -55,6 +64,10 @@ namespace VirtualHole.DB
 			IMongoCollection<T> collection, Func<T, BsonDocument> filter,
 			IEnumerable<T> objs, CancellationToken cancellationToken = default)
 		{
+			Debug.Assert(collection != null);
+			Debug.Assert(filter != null);
+			Debug.Assert(objs != null);
+
 			if(objs.Count() <= 0) { return; }
 
 			// TODO: Refactor MongoDBUtilities with better generic filters
