@@ -19,10 +19,10 @@ namespace VirtualHole.DB.Contents
 		public DateTimeOffset CreationDate { get; set; } = DateTimeOffset.MinValue;
 		public List<string> Tags { get; set; } = new List<string>();
 
-		public bool Equals(Content other)
+		public override bool Equals(object obj) 
 		{
-			if(other is null)
-				return false;
+			Content other = obj as Content;
+			if(other is null) { return false; }
 
 			return SocialType == other.SocialType &&
 				ContentType == other.ContentType &&
@@ -31,10 +31,11 @@ namespace VirtualHole.DB.Contents
 				Url == other.Url;
 		}
 
-		public override bool Equals(object obj) => Equals(obj as Content);
-		public override int GetHashCode() => 
-			(SocialType, ContentType,
+		public override int GetHashCode()
+		{
+			return (SocialType, ContentType,
 				Id, Title,
 				Url).GetHashCode();
+		}
 	}		
 }

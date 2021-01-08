@@ -13,5 +13,18 @@ namespace VirtualHole.DB.Contents
 		public long ViewsCount { get; set; } = 0;
 		public long LikesCount { get; set; } = 0;
 		public long DislikesCount { get; set; } = 0;
+
+		public override bool Equals(object obj)
+		{
+			YouTubeVideo other = obj as YouTubeVideo;
+			if(other is null) { return false; }
+
+			return base.Equals(obj) && ThumbnailUrl == other.ThumbnailUrl;
+		}
+
+		public override int GetHashCode()
+		{
+			return base.GetHashCode() ^ (ThumbnailUrl).GetHashCode();
+		}
 	}
 }
