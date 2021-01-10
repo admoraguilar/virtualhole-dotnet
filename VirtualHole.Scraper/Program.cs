@@ -35,7 +35,7 @@ namespace VirtualHole.Scraper
 			//List<Content> newContents = prevContents.Except(prevContents2).ToList();
 			//MLog.Log(newContents.Count);
 
-			//Console.ReadLine();
+			Console.ReadLine();
 		}
 	}
 }

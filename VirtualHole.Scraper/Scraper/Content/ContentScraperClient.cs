@@ -64,7 +64,7 @@ namespace VirtualHole.Scraper
 					nameof(ContentScraperClient),
 					"Start run..",
 					$"Success! Taking a break before next iteration.")) {
-					await TaskExt.RetryAsync(
+					await TaskExt.Timeout(TaskExt.RetryAsync(
 						() => {
 							if(RunCount <= 0) {
 								firstPipeline.Context.Reset();
@@ -75,7 +75,7 @@ namespace VirtualHole.Scraper
 							}
 						},
 						TimeSpan.FromSeconds(5), int.MaxValue,
-						cancellationToken);
+						cancellationToken), TimeSpan.FromMinutes(20));
 				}
 
 				RunCount++;
