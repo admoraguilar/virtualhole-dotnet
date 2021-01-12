@@ -217,6 +217,7 @@
     <Compile Include="Controllers\Contents\PipelineSteps\ScheduledQueryStep.cs" />
     <Compile Include="Controllers\Creators\CreatorsController.cs" />
     <Compile Include="Controllers\Creators\PipelineSteps\CreatorFilterFindStep.cs" />
+    <Compile Include="Controllers\Creators\PipelineSteps\CreatorSortStep.cs" />
     <Compile Include="Controllers\ResourcesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\Contents\ContentsController.cs" />

@@ -25,9 +25,14 @@ namespace VirtualHole.API.Controllers
 
 			await Concurrent.ForAsync(0, results.Count, async (int i) => {
 				object result = null;
+
 				if(Context.InPostProcess != null) { result = await Context.InPostProcess(Context.InQuery, findResultsList[i]); }
+				else { result = findResultsList[i]; }
+
 				if(result != null) { results[i] = result; }
 			});
+
+			results.RemoveAll(r => r == null);
 
 			Context.OutResults = results;
 		}

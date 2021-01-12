@@ -35,6 +35,7 @@ namespace VirtualHole.API.Controllers
 					});
 
 			pipeline.Add(new CreatorFilterStep());
+			pipeline.Add(new CreatorSortStep());
 			pipeline.Add(new GetPagedResultsStep<CreatorQuery, Creator>());
 			await pipeline.ExecuteAsync();
 
