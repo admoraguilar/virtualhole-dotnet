@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using Midnight.Tasks;
 using Midnight.Pipeline;
@@ -16,15 +17,16 @@ namespace VirtualHole.API.Controllers
 			Context.InFindSettings.PageSize = Context.InQuery.PageSize;
 			Context.InFindSettings.MaxPages = Context.InQuery.MaxPages;
 
-			List<object> results = new List<object>();
-
 			FindResults<TResult> findResults = await Context.InProvider(Context.InFindSettings);
 			await findResults.MoveNextAsync();
 
-			await Concurrent.ForEachAsync(findResults.Current, async (TResult findResult) => {
-				object result = findResult;
-				if(Context.InPostProcess != null) { result = await Context.InPostProcess(Context.InQuery, findResult); }
-				if(result != null) { results.Add(result); }
+			List<TResult> findResultsList = findResults.Current.ToList();
+			List<object> results = new List<object>(new object[findResultsList.Count]);
+
+			await Concurrent.ForAsync(0, results.Count, async (int i) => {
+				object result = null;
+				if(Context.InPostProcess != null) { result = await Context.InPostProcess(Context.InQuery, findResultsList[i]); }
+				if(result != null) { results[i] = result; }
 			});
 
 			Context.OutResults = results;

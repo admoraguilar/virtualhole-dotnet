@@ -14,6 +14,8 @@ namespace VirtualHole.API
 		public static void Register(HttpConfiguration config)
 		{
 			// Web API configuration and services
+			VirtualHoleClient.Initialize();
+
 			JsonConvert.DefaultSettings = () => new JsonSerializerSettings {
 				ContractResolver = new CamelCasePropertyNamesContractResolver(),
 				ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
