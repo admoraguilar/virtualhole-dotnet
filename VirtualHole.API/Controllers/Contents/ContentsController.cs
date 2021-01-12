@@ -1,4 +1,5 @@
-﻿using System.Web.Http;
+﻿using System;
+using System.Web.Http;
 using System.Threading.Tasks;
 using Midnight.Pipeline;
 using VirtualHole.DB;
@@ -74,9 +75,9 @@ namespace VirtualHole.API.Controllers
 						InPostProcess = ContentDTOPostProcess.ContentDTOFactory
 					});
 
-			pipeline.Add(new LiveQueryStep());
+			pipeline.Add(new BroadcastQueryStep());
 			pipeline.Add(new ContentFilterStep(creatorsClient));
-			pipeline.Add(new BroadcastLiveFilterStep() { IsLive = true });
+			pipeline.Add(new BroadcastFilterStep() { IsLive = true });
 			pipeline.Add(new ContentSortStep());
 			pipeline.Add(new GetPagedResultsStep<ContentQuery, Content>());
 			await pipeline.ExecuteAsync();
@@ -96,9 +97,11 @@ namespace VirtualHole.API.Controllers
 						InPostProcess = ContentDTOPostProcess.ContentDTOFactory
 					});
 
-			pipeline.Add(new ScheduledQueryStep());
+			pipeline.Add(new BroadcastQueryStep());
 			pipeline.Add(new ContentFilterStep(creatorsClient));
-			pipeline.Add(new BroadcastLiveFilterStep() { IsLive = false });
+			pipeline.Add(new BroadcastFilterStep() { 
+				IsLive = false, 
+				UntilDate = DateTimeOffset.UtcNow.AddDays(15) });
 			pipeline.Add(new BroadcastSortStep());
 			pipeline.Add(new GetPagedResultsStep<ContentQuery, Content>());
 			await pipeline.ExecuteAsync();

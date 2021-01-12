@@ -209,12 +209,11 @@
     <Compile Include="Controllers\Contents\PipelineSteps\CommunityQueryStep.cs" />
     <Compile Include="Controllers\Contents\PipelineSteps\ContentDTOPostProcess.cs" />
     <Compile Include="Controllers\Contents\PipelineSteps\DiscoverQueryStep.cs" />
-    <Compile Include="Controllers\Contents\PipelineSteps\LiveQueryStep.cs" />
+    <Compile Include="Controllers\Contents\PipelineSteps\BroadcastQueryStep.cs" />
     <Compile Include="Controllers\Contents\PipelineSteps\BroadcastLiveFilterFindStep.cs" />
     <Compile Include="Controllers\Contents\PipelineSteps\BroadcastSortFindStep.cs" />
     <Compile Include="Controllers\Contents\PipelineSteps\ContentFilterFindStep.cs" />
     <Compile Include="Controllers\Contents\PipelineSteps\ContentSortFindStep.cs" />
-    <Compile Include="Controllers\Contents\PipelineSteps\ScheduledQueryStep.cs" />
     <Compile Include="Controllers\Creators\CreatorsController.cs" />
     <Compile Include="Controllers\Creators\PipelineSteps\CreatorFilterFindStep.cs" />
     <Compile Include="Controllers\Creators\PipelineSteps\CreatorSortStep.cs" />

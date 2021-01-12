@@ -9,7 +9,7 @@ namespace VirtualHole.API.Controllers
 {
 	public partial class ContentsController
 	{
-		public class LiveQueryStep : PipelineStep<FindContext<ContentQuery, Content>>
+		public class BroadcastQueryStep : PipelineStep<FindContext<ContentQuery, Content>>
 		{
 			public override Task ExecuteAsync()
 			{
