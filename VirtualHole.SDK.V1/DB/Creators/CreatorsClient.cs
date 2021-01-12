@@ -40,5 +40,14 @@ namespace VirtualHole.DB.Creators
 				(Creator creator) => new BsonDocument(nameof(Creator.Id).ToCamelCase(), creator.Id),
 				creators, cancellationToken);
 		}
+
+		public async Task DeleteManyAsync(
+			IEnumerable<Creator> creators, CancellationToken cancellationToken = default)
+		{
+			await MongoDBUtilities.DeleteManyAsync(
+				creatorsCollection,
+				(Creator creator) => new BsonDocument(nameof(Creator.Id).ToCamelCase(), creator.Id),
+				creators, cancellationToken);
+		}
 	}
 }

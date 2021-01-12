@@ -9,6 +9,8 @@ using MongoDB.Driver;
 
 namespace VirtualHole.DB
 {
+	// TODO: Refactor MongoDBUtilities with better generic filters
+	// for common operations
 	internal static class MongoDBUtilities
 	{
 		public static async Task<List<T>> FindAllAsync<T>(
@@ -57,11 +59,17 @@ namespace VirtualHole.DB
 					});
 			}
 
-			await collection.BulkWriteAsync(bulkReplace, null, cancellationToken);
+			await collection.BulkWriteAsync(
+				bulkReplace,
+				new BulkWriteOptions() {
+					BypassDocumentValidation = true,
+					IsOrdered = false,
+				},
+				cancellationToken);
 		}
 
 		public static async Task DeleteManyAsync<T>(
-			IMongoCollection<T> collection, Func<T, BsonDocument> filter,
+			IMongoCollection<T> collection, Func<T, FilterDefinition<T>> filter,
 			IEnumerable<T> objs, CancellationToken cancellationToken = default)
 		{
 			Debug.Assert(collection != null);
@@ -70,11 +78,18 @@ namespace VirtualHole.DB
 
 			if(objs.Count() <= 0) { return; }
 
-			// TODO: Refactor MongoDBUtilities with better generic filters
-			// for common operations
-			BsonDocument deleteFilter = new BsonDocument();
-			foreach(T obj in objs) { deleteFilter.AddRange(filter(obj)); }
-			await collection.DeleteManyAsync(deleteFilter, cancellationToken);
+			List<WriteModel<T>> bulkDelete = new List<WriteModel<T>>();
+			foreach(T obj in objs) {
+				bulkDelete.Add(new DeleteOneModel<T>(filter(obj)));
+			}
+
+			await collection.BulkWriteAsync(
+				bulkDelete, 
+				new BulkWriteOptions() {
+					BypassDocumentValidation = true,
+					IsOrdered = false,
+				}, 
+				cancellationToken);
 		}
 	}
 }
