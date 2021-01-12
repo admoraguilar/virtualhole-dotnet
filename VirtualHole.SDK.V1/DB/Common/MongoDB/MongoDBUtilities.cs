@@ -59,13 +59,7 @@ namespace VirtualHole.DB
 					});
 			}
 
-			await collection.BulkWriteAsync(
-				bulkReplace,
-				new BulkWriteOptions() {
-					BypassDocumentValidation = true,
-					IsOrdered = false,
-				},
-				cancellationToken);
+			await collection.BulkWriteAsync(bulkReplace, null, cancellationToken);
 		}
 
 		public static async Task DeleteManyAsync<T>(
@@ -83,13 +77,7 @@ namespace VirtualHole.DB
 				bulkDelete.Add(new DeleteOneModel<T>(filter(obj)));
 			}
 
-			await collection.BulkWriteAsync(
-				bulkDelete, 
-				new BulkWriteOptions() {
-					BypassDocumentValidation = true,
-					IsOrdered = false,
-				}, 
-				cancellationToken);
+			await collection.BulkWriteAsync(bulkDelete, null, cancellationToken);
 		}
 	}
 }
