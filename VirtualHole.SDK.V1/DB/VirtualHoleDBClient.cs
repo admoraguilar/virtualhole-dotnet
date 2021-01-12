@@ -7,6 +7,9 @@ namespace VirtualHole.DB
 {
 	public class VirtualHoleDBClient
 	{
+		public const string prodRootDatabaseName = "virtualhole-prod";
+		public const string devRootDatabaseName = "virtualhole-dev";
+
 		public ContentsClient Contents { get; private set; } = null;
 		public CreatorsClient Creators { get; private set; } = null;
 
@@ -28,7 +31,7 @@ namespace VirtualHole.DB
 			Debug.Assert(!string.IsNullOrEmpty(password));
 
 			if(string.IsNullOrEmpty(rootDatabaseName)) {
-				rootDatabaseName = "virtualhole-prod";
+				rootDatabaseName = prodRootDatabaseName;
 			}
 
 			connectionString = connectionString

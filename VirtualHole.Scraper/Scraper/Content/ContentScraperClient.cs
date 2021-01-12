@@ -22,6 +22,7 @@ namespace VirtualHole.Scraper
 
 			scraperClient = new ScraperClient(settings.ProxyPool);
 			dbClient = new VirtualHoleDBClient(
+				settings.GetRootDatabaseName(),
 				settings.ConnectionString, settings.UserName, 
 				settings.Password);
 
@@ -43,7 +44,7 @@ namespace VirtualHole.Scraper
 
 		public bool IsRunning { get; private set; } = false;
 		public int RunCount { get; private set; } = 0;
-		public DateTime LastFullRun { get; private set; } = DateTime.MinValue;
+		public int ErrorCount { get; private set; } = 0;
 		public DateTime LastRun { get; private set; } = DateTime.MinValue;
 
 		public async Task RunAsync(CancellationToken cancellationToken = default)
@@ -58,24 +59,27 @@ namespace VirtualHole.Scraper
 				cancellationToken.ThrowIfCancellationRequested();
 
 				MLog.Clear();
-				LastFullRun = DateTime.Now;
 
 				using(StopwatchScope stopwatch = new StopwatchScope(
 					nameof(ContentScraperClient),
 					"Start run..",
 					$"Success! Taking a break before next iteration.")) {
-					await TaskExt.Timeout(TaskExt.RetryAsync(
-						() => {
-							if(RunCount <= 0) {
-								firstPipeline.Context.Reset();
-								return firstPipeline.ExecuteAsync();
-							} else {
-								secondPipeline.Context.Reset();
-								return secondPipeline.ExecuteAsync();
-							}
-						},
-						TimeSpan.FromSeconds(5), int.MaxValue,
-						cancellationToken), TimeSpan.FromMinutes(20));
+					try {
+						await TaskExt.Timeout(TaskExt.RetryAsync(
+							() => {
+								if(RunCount <= 0) {
+									firstPipeline.Context.Reset();
+									return firstPipeline.ExecuteAsync();
+								} else {
+									secondPipeline.Context.Reset();
+									return secondPipeline.ExecuteAsync();
+								}
+							},
+							TimeSpan.FromSeconds(5), int.MaxValue,
+							cancellationToken), TimeSpan.FromMinutes(20));
+					} catch {
+						ErrorCount++;
+					}
 				}
 
 				RunCount++;
@@ -85,14 +89,9 @@ namespace VirtualHole.Scraper
 					nameof(ContentScraperClient),
 					$"Run details: {Environment.NewLine}" +
 					$"Run count: {RunCount} | Last Run: {LastRun} {Environment.NewLine}" +
-					$"Last full run: {LastFullRun} | Next run: {DateTime.Now.AddSeconds(settings.IterationGapAmount)}");
+					$"Error count: {ErrorCount} | Next run: {DateTime.Now.AddSeconds(settings.IterationGapAmount)}");
 
 				await Task.Delay(TimeSpan.FromSeconds(settings.IterationGapAmount), cancellationToken);
-
-				if(DateTime.Now.Subtract(LastFullRun).Days > 0) {
-					LastFullRun = DateTime.Now;
-					settings.IsStartIncremental = false;
-				}
 			}
 		}
 	}

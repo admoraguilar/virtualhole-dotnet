@@ -6,8 +6,12 @@ namespace VirtualHole.Scraper
 {
 	public class LocalContentScraperSettingsProvider : ContentScraperSettingsProvider
 	{
+		public bool IsDevMode { get; set; } = false;
+
 		public override ContentScraperSettings Get()
 		{
+			Directory.CreateDirectory(Path.Combine(PathUtilities.GetApplicationPath(), "data/"));
+
 			string settingsPath = Path.Combine(PathUtilities.GetApplicationPath(), "data/settings.json");
 			string settingsTxt = File.ReadAllText(settingsPath);
 
@@ -16,6 +20,8 @@ namespace VirtualHole.Scraper
 
 			ContentScraperSettings settings = JsonConvert.DeserializeObject<ContentScraperSettings>(settingsTxt);
 			settings.ProxyPool = new ProxyPool(proxyList);
+
+			settings.IsDevMode = IsDevMode;
 
 			return settings;
 		}

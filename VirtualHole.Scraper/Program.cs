@@ -21,7 +21,13 @@ namespace VirtualHole.Scraper
 			MLog.Log("Running scraper...");
 			ContentScraperSettingsProvider settingsProvider = new LocalContentScraperSettingsProvider();
 			ContentScraperClient client = new ContentScraperClient(settingsProvider.Get());
-			await client.RunAsync();
+			while(true) {
+				try {
+					await client.RunAsync();
+				} catch {
+					MLog.Log(MLogLevel.Error, nameof(Program), "Scraper fatal error, restarting...");
+				}
+			}
 
 			MLog.Log(MLogLevel.Error, nameof(Program), "Scraper has been terminated.");
 
