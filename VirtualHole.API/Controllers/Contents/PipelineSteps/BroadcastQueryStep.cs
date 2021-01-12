@@ -20,6 +20,8 @@ namespace VirtualHole.API.Controllers
 				Context.InQuery.IsAffiliationsAll = false;
 				Context.InQuery.IsAffiliationsInclude = false;
 
+				Context.InQuery.IsSortAscending = true;
+
 				if(Context.InQuery.CreatorAffiliations != null) {
 					Context.InQuery.CreatorAffiliations.Add(AffiliationKeys.Community);
 				} else {
