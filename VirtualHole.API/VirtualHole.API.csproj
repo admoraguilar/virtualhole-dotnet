@@ -323,18 +323,18 @@
     <Content Include="Scripts\jquery-3.4.1.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\VirtualHole.SDK.V1\VirtualHole.SDK.V1.csproj">
-      <Project>{d654e642-b6d5-408c-a95b-d026e97ff067}</Project>
-      <Name>VirtualHole.SDK.V1</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="Humanizer.Core">
       <Version>2.8.26</Version>
     </PackageReference>
     <PackageReference Include="Swashbuckle">
       <Version>5.6.0</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VirtualHole.SDK.V1\VirtualHole.SDK.V1.csproj">
+      <Project>{d654e642-b6d5-408c-a95b-d026e97ff067}</Project>
+      <Name>VirtualHole.SDK.V1</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
